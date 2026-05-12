@@ -1,0 +1,126 @@
+/* ============================================
+   Teko — Páginas internas (termos, privacidade…)
+   Depende de: style.css (carregado antes)
+   ============================================ */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--cream);
+}
+ 
+main {
+    flex: 1;
+}
+ 
+/* ── navbar simplificada ── */
+.navbar-cadastro {
+    justify-content: space-between;
+}
+ 
+.navbar-cadastro .btn-default {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-left: auto;
+}
+ 
+/* ── botão voltar mobile ── */
+.btn-voltar-mobile {
+    display: none;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--yellow);
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 1rem;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(248, 212, 119, 0.4);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+ 
+.btn-voltar-mobile:hover {
+    background: var(--yellow-dark);
+    transform: translateY(-1px);
+}
+
+/* ── footer simples (páginas internas) ── */
+footer {
+    background: #0f3d28;
+    padding: 32px 8%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    text-decoration: none;
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.footer-logo .logo-teko { color: var(--white); }
+.footer-logo .logo-dot  { color: var(--green); }
+
+.footer-copy {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.45);
+    text-align: center;
+}
+
+.footer-copy span {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+}
+
+.footer-social {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-social a {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.footer-social a:hover {
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+@media (max-width: 900px) {
+    .navbar-cadastro .btn-default {
+        display: none;
+    }
+ 
+    .btn-voltar-mobile {
+        display: inline-flex;
+    }
+
+    footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 28px 6%;
+        gap: 20px;
+    }
+}

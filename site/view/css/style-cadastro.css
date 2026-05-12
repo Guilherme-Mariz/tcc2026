@@ -1,0 +1,607 @@
+/* ============================================
+   Teko — Cadastro (layout novo)
+   ============================================ */
+
+/* ── página ── */
+.cadastro-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #d4f0e2 0%, #a8d5ba 35%, #6bb08a 70%, #3a8c60 100%);
+}
+
+/* ── header transparente ── */
+.cad-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 5%;
+  background: transparent;
+}
+
+.cad-logo {
+  text-decoration: none;
+  font-family: 'Fraunces', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cad-logo .logo-teko { color: #ffffff; }
+.cad-logo .logo-dot  { color: #FAFAF7; }
+
+.cad-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  transition: opacity 0.2s ease, gap 0.2s ease;
+  opacity: 0.85;
+}
+
+.cad-voltar:hover {
+  opacity: 1;
+  gap: 12px;
+}
+
+/* ── main ── */
+.cad-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1.5rem 2rem;
+}
+
+/* ── card principal (split) ── */
+.cad-card {
+  display: flex;
+  width: 100%;
+  max-width: 860px;
+  min-height: 480px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+  animation: cardEntrada 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+
+@keyframes cardEntrada {
+  from { opacity: 0; transform: translateY(32px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── lado esquerdo: login ── */
+.cad-lado {
+  display: flex;
+  flex-direction: column;
+}
+
+.cad-login {
+  flex: 1.1;
+  background: #ffffff;
+  padding: 3rem 2.8rem;
+  justify-content: center;
+  gap: 1.6rem;
+}
+
+.cad-titulo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.25;
+  margin-bottom: 0.25rem;
+}
+
+.cad-titulo em {
+  font-style: italic;
+  color: #3a8c60;
+}
+
+/* ── divisor vertical ── */
+.cad-divisor {
+  width: 1px;
+  background: #e2e8f0;
+  flex-shrink: 0;
+}
+
+/* ── lado direito: mascote + cadastro ── */
+.cad-direita {
+  flex: 0.9;
+  background: linear-gradient(160deg, #3a8c60 0%, #2d7a52 60%, #1a6b4a 100%);
+  padding: 2.5rem 2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cad-direita::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cad-direita::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* mascote */
+.cad-mascote {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.cad-mascote img {
+  width: 260px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,0.2));
+}
+
+/* box de cadastro */
+.cad-register-box {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 1.1rem 1.4rem;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.cad-register-box:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.cad-register-box span {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 400;
+}
+
+.cad-register-box strong {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  color: #ffffff;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s ease;
+}
+
+.cad-register-box:hover strong {
+  gap: 10px;
+}
+
+/* ── formulário de login ── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input-group label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper > i:first-child {
+  position: absolute;
+  left: 14px;
+  color: #a0aec0;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.78rem 1rem 0.78rem 2.5rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.88rem;
+  color: #2C2C2C;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-wrapper input:focus {
+  border-color: #6BB08A;
+  box-shadow: 0 0 0 3px rgba(107, 176, 138, 0.15);
+  background: #fff;
+}
+
+.toggle-senha {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a0aec0;
+  font-size: 0.85rem;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.toggle-senha i {
+  position: static;
+  left: unset;
+  pointer-events: none;
+}
+
+.toggle-senha:hover { color: #4a5568; }
+
+.esqueci-senha {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  color: #6BB08A;
+  text-decoration: none;
+  text-align: right;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.esqueci-senha:hover { color: #3a8c60; }
+
+.btn-entrar {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: #3a8c60;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(58, 140, 96, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-entrar:hover {
+  background: #2f7550;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(58, 140, 96, 0.45);
+}
+
+.btn-entrar:active { transform: translateY(0); }
+
+/* ── animação sacudir (erro) ── */
+@keyframes sacudir {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-6px); }
+  80%       { transform: translateX(6px); }
+}
+
+.sacudir { animation: sacudir 0.4s ease; }
+
+/* ── navbar-cadastro (para outras páginas que usam style-cadastro) ── */
+.navbar-cadastro {
+  justify-content: space-between;
+}
+
+.navbar-cadastro .btn-default {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
+.btn-voltar-mobile {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm, 10px);
+  background: var(--yellow, #F8D477);
+  border: none;
+  cursor: pointer;
+  color: var(--text, #2C2C2C);
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(248, 212, 119, 0.4);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-voltar-mobile:hover {
+  background: var(--yellow-dark, #E8BE50);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .navbar-cadastro .btn-default { display: none; }
+  .btn-voltar-mobile { display: inline-flex; }
+}
+
+/* ── footer simples ── */
+footer {
+  background: #0f3d28;
+  padding: 24px 8%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  text-decoration: none;
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.footer-logo .logo-teko { color: #ffffff; }
+.footer-logo .logo-dot  { color: #A8D5BA; }
+
+.footer-copy {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.45);
+  text-align: center;
+}
+
+.footer-copy span {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.footer-social {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-social a {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.footer-social a:hover {
+  background: #6BB08A;
+  color: #ffffff;
+}
+
+/* ── modal styles (mantidos para compatibilidade) ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.modal-overlay.aberto {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  padding: 2.2rem 2rem;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  transform: scale(0.92) translateY(12px);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.modal-overlay.aberto .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-fechar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #f0f4f8;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #718096;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.modal-fechar:hover {
+  background: #e2e8f0;
+  color: #2C2C2C;
+}
+
+.modal-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.modal-logo .logo-teko { color: #2C2C2C; }
+.modal-logo .logo-dot  { color: #6BB08A; }
+
+.modal h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a202c;
+  text-align: center;
+  margin: 0;
+}
+
+.modal .login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVO
+══════════════════════════════════════ */
+
+/* tablet: empilha verticalmente */
+@media (max-width: 760px) {
+  .cad-card {
+    flex-direction: column;
+    max-width: 440px;
+    min-height: unset;
+  }
+
+  .cad-divisor {
+    width: 100%;
+    height: 1px;
+  }
+
+  .cad-login {
+    padding: 2.5rem 2rem;
+  }
+
+  .cad-direita {
+    flex-direction: row;
+    padding: 1.75rem 2rem;
+    gap: 1.2rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cad-mascote {
+    flex: 0 0 auto;
+  }
+
+  .cad-mascote img {
+    width: 110px;
+  }
+
+  .cad-register-box {
+    flex: 1;
+  }
+}
+
+/* mobile pequeno */
+@media (max-width: 480px) {
+  .cad-header {
+    padding: 1rem 5%;
+  }
+
+  .cad-voltar span {
+    display: none;
+  }
+
+  .cad-main {
+    padding: 5rem 1rem 1.5rem;
+  }
+
+  .cad-login {
+    padding: 2rem 1.5rem;
+  }
+
+  .cad-direita {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .cad-mascote img {
+    width: 130px;
+  }
+
+  .cad-titulo {
+    font-size: 1.4rem;
+  }
+
+  footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 6%;
+    gap: 14px;
+  }
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Fraunces:ital,wght@0,700;1,700&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/home.css">
+
+    <title>Teko — Meu Mundo!</title>
+</head>
+<body>
+
+    <div class="clouds-bg" aria-hidden="true">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+    </div>
+
+    <header id="header">
+        <nav id="navbar">
+
+            <a href="/" id="nav_logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
+            <ul id="nav_list">
+                <li class="nav_item">
+                    <a href="/home" class="active">
+                        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+                        Home
+                    </a>
+                </li>
+                <li class="nav_item">
+                    <a href="/atividades">
+                        <span class="nav-icon"><i class="fa-solid fa-gamepad"></i></span>
+                        Atividades
+                    </a>
+                </li>
+                <li class="nav_item">
+                    <a href="/tekoia">
+                        <span class="nav-icon">
+                            <img src="../img/mascot/teko-icn.png" alt="TEKO.IA" class="nav-icon-img">
+                        </span>
+                        TEKO.IA
+                    </a>
+                </li>
+                <li class="nav_item">
+                    <a href="/responsavel">
+                        <span class="nav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                        Responsável
+                    </a>
+                </li>
+                <li class="nav_item">
+                    <a href="/configuracoes">
+                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                        Config.
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-avatar" id="user-avatar" title="Meu perfil">T</div>
+
+            <button id="mobile_btn" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+        </nav>
+    </header>
+
+    <main>
+
+        <section id="hero">
+
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Pronto para se<br>
+                    <span class="highlight">divertir brincando</span>?
+                </h1>
+
+                <p class="hero-sub">
+                    Explore o seu mundo junto com o TEKO.
+                </p>
+
+                <div class="tekoia-cta">
+                    <div class="tekoia-cta-mascot">
+                        <img src="../img/mascot/teko-apontando.png" alt="TEKO apontando">
+                    </div>
+                    <div class="tekoia-cta-text">
+                        <div class="tekoia-cta-label">Com dúvidas?</div>
+                        <div class="tekoia-cta-title">É só chamar o TEKO!</div>
+                    </div>
+                    <a href="tekoia.html" class="tekoia-cta-btn">
+                        Vamos lá
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-mascot">
+                <img src="../img/mascot/mascote-voador.png" alt="Mascote TEKO voando">
+            </div>
+
+        </section>
+
+        <section id="nav-cards">
+            <h2 class="section-title">O que vamos fazer <span>hoje</span>?</h2>
+
+            <div class="genre-grid">
+
+                <a href="atividades.html" class="genre-card genre-emocional">
+                    <div class="genre-icon">🧠</div>
+                    <div class="genre-title">Minhas Emoções</div>
+                    <div class="genre-subtitle">Reconheça e entenda seus sentimentos</div>
+                    <div class="genre-activities">
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Quebra-Cabeça de Emoções
+                        </div>
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Monstro das Cores
+                        </div>
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Semáforo Emocional
+                        </div>
+                    </div>
+                </a>
+
+                <a href="atividades.html" class="genre-card genre-comportamental">
+                    <div class="genre-icon">🎯</div>
+                    <div class="genre-title">Meu Comportamento</div>
+                    <div class="genre-subtitle">Flexibilidade, espera e rotinas</div>
+                    <div class="genre-activities">
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Jogo da Espera
+                        </div>
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Sequência de Rotina
+                        </div>
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Escolha Flexível
+                        </div>
+                    </div>
+                </a>
+
+                <a href="atividades.html" class="genre-card genre-comunicacao">
+                    <div class="genre-icon">💬</div>
+                    <div class="genre-title">Minha Comunicação</div>
+                    <div class="genre-subtitle">Expresse-se e interaja com o mundo</div>
+                    <div class="genre-activities">
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Cartões de Escolha
+                        </div>
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> Role-Play Social
+                        </div>
+                        <div class="genre-activity-item">
+                            <span class="genre-activity-dot"></span> GuessWhat Social
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <section id="daily-section">
+            <h2 class="section-title">Meu <span>progresso</span></h2>
+
+            <div class="daily-grid">
+
+                <div class="streak-card">
+                    <div class="streak-icon">🔥</div>
+                    <div class="streak-info">
+                        <div class="streak-number" id="streak-count">3</div>
+                        <div class="streak-label">Dias seguidos</div>
+                        <div class="streak-sub">Continue assim, você é incrível!</div>
+                    </div>
+                </div>
+
+                <div class="progress-card">
+                    <div class="progress-card-title">O que aprendemos essa semana</div>
+                    <div class="progress-items">
+
+                        <div class="progress-item">
+                            <div class="progress-item-header">
+                                <span class="progress-item-name">😊 Reconhecer emoções</span>
+                                <span class="progress-item-pct">70%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill fill-green" style="width: 70%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div class="progress-item-header">
+                                <span class="progress-item-name">🗣️ Situações sociais</span>
+                                <span class="progress-item-pct">45%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill fill-yellow" style="width: 45%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div class="progress-item-header">
+                                <span class="progress-item-name">🧩 Expressões e metáforas</span>
+                                <span class="progress-item-pct">20%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill fill-purple" style="width: 20%"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="featured-section">
+            <h2 class="section-title">Atividade do <span>dia</span></h2>
+
+            <div class="featured-card">
+                <div class="featured-icon">🎭</div>
+                <div class="featured-content">
+                    <span class="featured-tag">⭐ Em destaque</span>
+                    <div class="featured-title">Como você se sentiria se...?</div>
+                    <div class="featured-desc">
+                        Aprenda a reconhecer emoções em diferentes situações do dia a dia.
+                        São 5 mini-histórias divertidas esperando por você!
+                    </div>
+                </div>
+                <a href="atividades.html" class="btn-play">
+                    <i class="fa-solid fa-play"></i> Jogar agora
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function atualizarSaudacao() {
+            const session = JSON.parse(localStorage.getItem('teko_session') || '{}');
+            const nome = session?.crianca?.nome || session?.user?.email?.split('@')[0] || 'T';
+            document.getElementById('user-avatar').textContent = nome.charAt(0).toUpperCase();
+        }
+
+        function carregarStreak() {
+            const streak = localStorage.getItem('teko_streak') || 3;
+            document.getElementById('streak-count').textContent = streak;
+        }
+
+        function animarBarras() {
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+                    const w = bar.style.width;
+                    bar.style.width = '0';
+                    requestAnimationFrame(() => {
+                        setTimeout(() => { bar.style.width = w; }, 50);
+                    });
+                });
+            }, 400);
+        }
+
+        atualizarSaudacao();
+        carregarStreak();
+        animarBarras();
+    </script>
+
+</body>
+</html>

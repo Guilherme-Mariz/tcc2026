@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teko — Entrar</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/style-cadastro.css">
+</head>
+<body class="cadastro-page">
+
+  <header class="cad-header">
+    <a onclick="irParaIndex()" class="cad-logo">
+      <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+    </a>
+    <a onclick="irParaIndex()" class="cad-voltar">
+      <i class="fa-solid fa-arrow-left"></i>
+      Voltar ao início
+    </a>
+  </header>
+
+  <main class="cad-main">
+    <div class="cad-card">
+
+      <!-- Lado esquerdo: Login -->
+      <div class="cad-lado cad-login">
+        <h2 class="cad-titulo">Olá! Bem-vindo<br>ao <em>teko</em>.</h2>
+
+        <form class="login-form" method="POST" action="/" id="form-login" novalidate>
+          <div class="input-group">
+            <label for="email">E-mail</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="senha">Senha</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="senha" name="senha" placeholder="••••••••" autocomplete="current-password" />
+              <button type="button" class="toggle-senha" aria-label="Mostrar senha" onclick="toggleSenha()">
+                <i class="fa-solid fa-eye" id="icone-olho"></i>
+              </button>
+            </div>
+          </div>
+
+          <a href="#" class="esqueci-senha">Esqueci minha senha</a>
+
+          <button type="submit" class="btn-entrar">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Entrar
+          </button>
+        </form>
+      </div>
+
+      <!-- Divisor vertical -->
+      <div class="cad-divisor"></div>
+
+      <!-- Lado direito: Mascote + Cadastro -->
+      <div class="cad-lado cad-direita">
+        <div class="cad-mascote">
+          <img src="../img/mascot/teko-comprimento.png" alt="Mascote Teko" />
+        </div>
+
+        <a onclick="irParaRegister()" class="cad-register-box">
+          <span>Ainda não possui conta?</span>
+          <strong>Cadastre-se! <i class="fa-solid fa-arrow-right"></i></strong>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <a href="/" class="footer-logo">
+      <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+    </a>
+    <p class="footer-copy">
+      © 2025 <span>Teko</span> — Educação Socioemocional. Todos os direitos reservados.
+    </p>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/tcctekotea" target="_blank" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube">
+        <i class="fa-brands fa-youtube"></i>
+      </a>
+    </div>
+  </footer>
+
+  <script src="../js/script.js"></script>
+  <script src="../js/login.js"></script>
+</body>
+</html>

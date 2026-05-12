@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teko — Criar conta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/style-cadastro.css">
+  <link rel="stylesheet" href="../css/register.css">
+</head>
+<body class="cadastro-page">
+
+  <header class="cad-header">
+    <a href="/" class="cad-logo">
+      <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+    </a>
+    <a onclick="irParaLogin()" class="cad-voltar">
+      <i class="fa-solid fa-arrow-left"></i>
+      Voltar
+    </a>
+  </header>
+
+  <main class="register-main">
+    <div class="register-container">
+
+      <!-- ═══ ETAPA 1: Cadastro do Responsável ═══ -->
+      <form class="etapa active" id="etapa1" method="POST" action="/cadastro/responsavel" novalidate>
+
+        <div class="etapa-header">
+          <div>
+            <h2 class="etapa-titulo">Cadastro do Responsável</h2>
+            <p class="etapa-subtitulo">Preencha seus dados de acesso à plataforma.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="input-group full">
+            <label for="nome">Nome completo <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="nome" name="nome" placeholder="Seu nome completo" />
+            </div>
+          </div>
+
+          <div class="input-group full">
+            <label for="cpf-responsavel">CPF do responsável <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-id-card"></i>
+              <input type="text" id="cpf-responsavel" name="cpf_responsavel" placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="input-group full">
+            <label for="reg-email">E-mail <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="reg-email" name="email" placeholder="seu@email.com" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="reg-senha">Senha <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="reg-senha" name="senha" placeholder="Mínimo 8 caracteres" />
+              <button type="button" class="toggle-senha" onclick="togglePass('reg-senha','olho1')">
+                <i class="fa-solid fa-eye" id="olho1"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="confirmar-senha">Confirmar senha <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="confirmar-senha" name="confirmar_senha" placeholder="Repita a senha" />
+              <button type="button" class="toggle-senha" onclick="togglePass('confirmar-senha','olho2')">
+                <i class="fa-solid fa-eye" id="olho2"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="input-group full">
+            <label for="telefone">Telefone <span class="opcional">(opcional)</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-phone"></i>
+              <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="11" />
+            </div>
+          </div>
+
+          <div class="input-group full">
+            <label>Relação com a criança <span class="obrigatorio">*</span></label>
+            <div class="radio-group">
+              <label class="radio-card">
+                <input type="radio" name="relacao" value="pai" />
+                <span><i class="fa-solid fa-person"></i> Pai</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="relacao" value="mae" />
+                <span><i class="fa-solid fa-person-dress"></i> Mãe</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="relacao" value="responsavel" />
+                <span><i class="fa-solid fa-user-shield"></i> Responsável legal</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="input-group full">
+            <label class="checkbox-label">
+              <input type="checkbox" id="termos" name="aceite_termos" value="1" />
+              <span>Li e concordo com os
+                <a href="./termos.html" target="_blank">Termos de Uso</a>
+                e a
+                <a href="./privacidade.html" target="_blank">Política de Privacidade</a>.
+              </span>
+            </label>
+          </div>
+
+        </div>
+
+        <div class="etapa-actions">
+          <button type="submit" class="btn-avancar">
+            Continuar <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </form>
+
+      <!-- ═══ ETAPA 2: Dados da Criança ═══ -->
+      <form class="etapa" id="etapa2" method="POST" action="/cadastro/crianca" novalidate>
+
+        <div class="etapa-header">
+          <div>
+            <h2 class="etapa-titulo">Dados da Criança</h2>
+            <p class="etapa-subtitulo">Informe os dados básicos da criança que utilizará a plataforma.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="input-group full">
+            <label for="nome-crianca">Nome da criança <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-child"></i>
+              <input type="text" id="nome-crianca" name="nome_crianca" placeholder="Nome da criança" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="data-nascimento">Data de nascimento <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-cake-candles"></i>
+              <input type="date" id="data-nascimento" name="data_nascimento" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="cpf">CPF da criança <span class="obrigatorio">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-id-card"></i>
+              <input type="text" id="cpf" name="cpf_crianca" placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="input-group full">
+            <label for="genero">Gênero</label>
+            <div class="input-wrapper select-wrapper">
+              <i class="fa-solid fa-venus-mars"></i>
+              <select id="genero" name="genero">
+                <option value="">Selecione</option>
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+                <option value="outro">Outro</option>
+                <option value="nao-informar">Prefiro não informar</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="etapa-actions">
+          <button type="button" class="btn-voltar-etapa" onclick="voltar(2)">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
+          <button type="submit" class="btn-avancar">
+            Concluir cadastro <i class="fa-solid fa-check"></i>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Pop-up de sucesso -->
+  <div class="sucesso-overlay" id="sucessoOverlay">
+    <div class="sucesso-modal">
+      <div class="sucesso-icone">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h2>Cadastro realizado!</h2>
+      <p>Bem-vindo à plataforma Teko. Estamos felizes em ter você e sua família conosco.</p>
+      <a href="/login" class="btn-avancar">
+        Ir para Login <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <a href="/" class="footer-logo">
+      <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+    </a>
+    <p class="footer-copy">
+      © 2025 <span>Teko</span> — Educação Socioemocional. Todos os direitos reservados.
+    </p>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/tcctekotea" target="_blank" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube">
+        <i class="fa-brands fa-youtube"></i>
+      </a>
+    </div>
+  </footer>
+
+  <script src="../js/script.js"></script>
+  <script  src="../js/register.js"></script>
+</body>
+</html>

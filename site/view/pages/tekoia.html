@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/tekoia.css">
+
+    <title>Teko — TEKO.IA</title>
+</head>
+<body>
+
+    <div class="bg-scene" aria-hidden="true">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+        <div class="bg-orb orb-3"></div>
+        <div class="bg-orb orb-4"></div>
+        <div class="bg-orb orb-5"></div>
+        <div class="bg-dots"></div>
+    </div>
+
+    <div class="clouds-bg" aria-hidden="true">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+    </div>
+
+    <header id="header">
+        <nav id="navbar">
+            <a href="/" id="nav_logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+            <ul id="nav_list">
+                <li class="nav_item">
+                    <a href="/home"><span class="nav-icon"><i class="fa-solid fa-house"></i></span>Home</a>
+                </li>
+                <li class="nav_item">
+                    <a href="/atividades"><span class="nav-icon"><i class="fa-solid fa-gamepad"></i></span>Atividades</a>
+                </li>
+                <li class="nav_item">
+                    <a href="/tekoia" class="active">
+                        <span class="nav-icon"><img src="../img/mascot/teko-icn.png" alt="TEKO.IA" class="nav-icon-img"></span>TEKO.IA
+                    </a>
+                </li>
+                <li class="nav_item">
+                    <a href="/responsavel"><span class="nav-icon"><i class="fa-solid fa-people-roof"></i></span>Responsável</a>
+                </li>
+                <li class="nav_item">
+                    <a href="/configuracoes"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span>Config.</a>
+                </li>
+            </ul>
+            <div class="nav-avatar" id="user-avatar" title="Meu perfil">T</div>
+            <button id="mobile_btn" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+        </nav>
+    </header>
+
+    <main class="tekoia-main">
+
+        <div class="tekoia-layout">
+
+            <!-- ── Esquerda: título + subtítulo + mascote ── -->
+            <div class="tekoia-left">
+
+                <div class="left-text">
+                    <h1 class="hero-title">
+                        <em class="title-gradient">teko.ia</em>
+                    </h1>
+                    <p class="hero-subtitle">
+                        O teko.ia está aqui para conversar com você,
+                        te ajudando nas lições e te apoiando seja no que for!
+                    </p>
+                </div>
+
+                <div class="left-mascote">
+                    <div class="mascote-glow"></div>
+                    <img src="../img/mascot/teko-sentado.png" alt="Teko sentado" class="mascote-img">
+                </div>
+
+            </div>
+
+            <!-- ── Direita: chat formato celular ── -->
+            <div class="tekoia-right">
+                <div class="phone-shell">
+
+                    <!-- Notch do celular -->
+                    <div class="phone-notch">
+                        <div class="notch-camera"></div>
+                    </div>
+
+                    <!-- Cabeçalho do chat dentro do celular -->
+                    <div class="chat-header">
+                        <div class="chat-header-avatar">
+                            <img src="../img/mascot/teko-comprimento.png" alt="Teko">
+                            <span class="online-dot"></span>
+                        </div>
+                        <div class="chat-header-info">
+                            <span class="chat-name">Teko</span>
+                            <span class="chat-status">
+                                <span class="status-dot"></span>
+                                Online agora
+                            </span>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="chat-action-btn" title="Limpar" aria-label="Limpar conversa">
+                                <i class="fa-solid fa-broom"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mensagens -->
+                    <div class="chat-messages" id="chat-messages">
+
+                        <div class="msg-date-divider"><span>Hoje</span></div>
+
+                        <div class="msg-row msg-teko">
+                            <div class="msg-avatar">
+                                <img src="../img/mascot/teko-comprimento.png" alt="Teko">
+                            </div>
+                            <div class="msg-bubble msg-bubble-teko">
+                                <p>Oi! 👋 Eu sou o <strong>Teko</strong>, seu amigo virtual!</p>
+                                <span class="msg-time">agora</span>
+                            </div>
+                        </div>
+
+                        <div class="msg-row msg-teko">
+                            <div class="msg-avatar msg-avatar-hidden">
+                                <img src="../img/mascot/teko-comprimento.png" alt="Teko">
+                            </div>
+                            <div class="msg-bubble msg-bubble-teko">
+                                <p>Como você está se sentindo hoje? 😊 Pode me contar!</p>
+                                <span class="msg-time">agora</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Input -->
+                    <div class="chat-input-area">
+                        <button class="emoji-btn" aria-label="Emojis">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+                        <input
+                            type="text"
+                            class="chat-input"
+                            id="chat-input"
+                            placeholder="Escreva uma mensagem..."
+                            autocomplete="off"
+                        >
+                        <button class="send-btn" id="send-btn" aria-label="Enviar">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                    <!-- Barra home do celular -->
+                    <div class="phone-home-bar"></div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        const session = JSON.parse(localStorage.getItem('teko_session') || '{}');
+        const nome = session?.crianca?.nome || session?.user?.email?.split('@')[0] || 'T';
+        document.getElementById('user-avatar').textContent = nome.charAt(0).toUpperCase();
+    </script>
+
+</body>
+</html>
