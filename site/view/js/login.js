@@ -10,36 +10,34 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
         login.classList.add('sacudir');
         login.addEventListener('animationend', () => login.classList.remove('sacudir'), { once: true });
         return;
-      }
+    }
+
+    // exibe tela de carregamento
+    document.getElementById('loading-screen').classList.add('ativo');
 
     try {
         const resposta = await fetch("http://localhost:3000/login", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             credentials: 'include',
             body: JSON.stringify({ email, senha })
         });
 
         const resultado = await resposta.json();
 
-        
-        
         if (!resposta.ok) {
-            alert(resultado.erro);
+            document.getElementById('loading-screen').classList.remove('ativo');
+            validarLogin();
+            login.classList.add('sacudir');
+            login.addEventListener('animationend', () => login.classList.remove('sacudir'), { once: true });
             return;
         }
-
-        // 🔥 salvar sessão (IMPORTANTE)
-
-        alert("Login realizado!");
 
         window.location.href = "/home";
 
     } catch (erro) {
         console.error(erro);
-        alert("Erro ao fazer login");
+        document.getElementById('loading-screen').classList.remove('ativo');
     }
 });
 
