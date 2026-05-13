@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <link rel="stylesheet" href="css/style.css">
-
     <title>Teko — Educação Socioemocional</title>
 </head>
 <body>
@@ -20,16 +17,13 @@
             <a href="#home" id="nav_logo">
                 <span class="logo-teko">teko</span><span class="logo-dot">.</span>
             </a>
-
             <ul id="nav_list">
                 <li class="nav_item"><a href="#home">Início</a></li>
                 <li class="nav_item"><a href="#sobre">Sobre</a></li>
                 <li class="nav_item"><a href="#metodologia">Metodologia</a></li>
                 <li class="nav_item"><a href="#contato">Contato</a></li>
             </ul>
-
             <a onclick="irParaLogin()" class="btn-default">Estude conosco!</a>
-
             <button id="mobile_btn" aria-label="Abrir menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -53,11 +47,11 @@
     <main id="content">
 
         <section id="home">
-            <!-- Formas decorativas do fundo -->
             <div class="home-deco home-deco-1" aria-hidden="true"></div>
             <div class="home-deco home-deco-2" aria-hidden="true"></div>
             <div class="home-deco home-deco-3" aria-hidden="true"></div>
             <div class="home-deco home-deco-4" aria-hidden="true"></div>
+            <div class="home-deco home-deco-5" aria-hidden="true"></div>
             <div class="home-deco-stripe" aria-hidden="true"></div>
 
             <div id="cta">
@@ -66,7 +60,8 @@
                 </h1>
 
                 <p class="description">
-                    Um espaço acolhedor pensado para crianças com TEA desenvolverem suas habilidades socioemocionais.
+                    Um espaço acolhedor pensado para crianças com TEA desenvolverem
+                    suas habilidades socioemocionais de forma divertida e segura.
                 </p>
 
                 <div id="cta_buttons">
@@ -92,40 +87,100 @@
 
         <section id="sobre" class="section-fade">
             <div class="video-sobre">
-                <img src="img/video_foto.png" alt="Vídeo sobre o Teko">
+                <img src="img/video_foto.png" alt="Sobre o Teko">
+            </div>
+            <div class="txt-sobre">
+                <h1>Quem Somos</h1>
+                <p>O <b>TEKO</b> é uma plataforma de aprendizagem socioemocional criada para que crianças de 6 a 10 anos com Transtorno do Espectro Autista (TEA) possam desenvolver habilidades emocionais e sociais de forma divertida, segura e acolhedora.</p>
+                <p>Por meio de atividades interativas, jogos e um assistente virtual inteligente, o TEKO guia cada criança no seu próprio ritmo, respeitando suas necessidades e celebrando cada conquista.</p>
+                <a onclick="irParaLogin()" class="btn-sobre">
+                    Conhecer a plataforma <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <section id="destaques" class="section-fade">
+            <div class="destaques-header">
+                <h2>Feito <em>com cuidado</em> para cada criança</h2>
             </div>
 
-            <div class="txt-sobre txt-sobre-centered">
-                <h1>Sobre nós</h1>
-                <p>O TEKO é uma plataforma de aprendizagem socioemocional voltada para o desenvolvimento de crianças de 6 a 10 anos de idade diagnosticadas com Transtorno do Espectro Autista (TEA). Nosso foco é criar um espaço seguro e acolhedor para que essas crianças possam explorar suas emoções.</p>
-                <p>O projeto foi idealizado e desenvolvido por Davi Sobral, Guilherme Mariz e Gustavo Camargo, estudantes da Etec Ferrucio Humberto Gazzetta, em Nova Odessa. Unimos tecnologia e empatia para promover a inclusão e fazer a diferença na nossa comunidade.</p>
+            <div class="destaques-grid">
+
+                <div class="destaque-card destaque-green">
+                    <div class="destaque-icon">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3>Ambiente Seguro</h3>
+                    <p>Conteúdo pensado especialmente para crianças com TEA, respeitando o ritmo e as necessidades de cada uma.</p>
+                    <!-- placeholder para foto futura -->
+                    <div class="destaque-img-placeholder">
+                        <span>📸 foto: criança usando o app</span>
+                    </div>
+                </div>
+
+                <div class="destaque-card destaque-yellow">
+                    <div class="destaque-icon">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3>Aprendizado Lúdico</h3>
+                    <p>Atividades interativas e jogos que transformam o aprendizado emocional em uma experiência divertida.</p>
+                    <div class="destaque-img-placeholder">
+                        <span>📸 foto: atividade na tela</span>
+                    </div>
+                </div>
+
+                <div class="destaque-card destaque-blue">
+                    <div class="destaque-icon">
+                        <i class="fa-solid fa-people-roof"></i>
+                    </div>
+                    <h3>Para Toda a Família</h3>
+                    <p>Painel exclusivo para responsáveis acompanharem o progresso e entenderem o desenvolvimento da criança.</p>
+                    <div class="destaque-img-placeholder">
+                        <span>📸 foto: família junto</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="tekoia-banner" class="section-fade">
+            <div class="tekoia-banner-inner">
+                <div class="tekoia-banner-text">
+                    <span class="section-label light">Novidade</span>
+                    <h2>Conheça o <em>TEKO.IA</em></h2>
+                    <p>Um assistente inteligente pronto para conversar com sua criança, responder dúvidas e apoiar o aprendizado a qualquer hora do dia.</p>
+                    <a onclick="irParaLogin()" class="btn-banner">
+                        Experimentar agora <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <!-- foto sugerida: img/mascot/teko-apontando.png -->
+                <div class="tekoia-banner-img">
+                    <img src="img/mascot/teko-apontando.png" alt="Teko apontando" onerror="this.style.display='none'">
+                </div>
             </div>
         </section>
 
         <section id="metodologia" class="section-fade">
             <div class="conteudo-metodologia">
-                <h1>Nossa Metodologia:</h1>
+                <span class="section-label">Como funciona</span>
+                <h1>Nossa Metodologia</h1>
                 <p>Para criar o TEKO, realizamos pesquisas aprofundadas sobre educação socioemocional e analisamos as necessidades reais das crianças com TEA. A partir desses dados, estruturamos o sistema com foco total na acessibilidade, garantindo um ambiente seguro e engajador.</p>
 
                 <div class="content-metodologia">
                     <div class="card-metodologia">
-                        <div class="card-metodologia-titulo">
-                            <span>Emoções</span>
-                        </div>
+                        <!-- foto sugerida: img/metod-emocoes.jpg — expressões faciais coloridas -->
+                        <div class="card-metodologia-titulo"><span>Emoções</span></div>
                     </div>
                     <div class="card-metodologia">
-                        <div class="card-metodologia-titulo">
-                            <span>Comportamento</span>
-                        </div>
+                        <!-- foto sugerida: img/metod-comportamento.jpg — criança organizando blocos -->
+                        <div class="card-metodologia-titulo"><span>Comportamento</span></div>
                     </div>
                     <div class="card-metodologia">
-                        <div class="card-metodologia-titulo">
-                            <span>Comunicação</span>
-                        </div>
+                        <!-- foto sugerida: img/metod-comunicacao.jpg — duas crianças conversando -->
+                        <div class="card-metodologia-titulo"><span>Comunicação</span></div>
                     </div>
                 </div>
             </div>
-
         </section>
 
         <section id="contato">
@@ -133,22 +188,16 @@
                 <h2>Ficou com dúvidas?<br>Entre em contato!</h2>
                 <p>Estamos aqui para te ajudar. Fale com a gente pelo WhatsApp ou e-mail.</p>
             </div>
-
             <div class="contato-cards">
                 <a href="https://wa.me/55XXXXXXXXXXX" class="contato-card" target="_blank" aria-label="WhatsApp">
-                    <div class="contato-card-icon">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
+                    <div class="contato-card-icon"><i class="fa-brands fa-whatsapp"></i></div>
                     <div class="contato-card-info">
                         <span class="contato-card-label">WhatsApp</span>
                         <span class="contato-card-valor">(XX) XXXXX-XXXX</span>
                     </div>
                 </a>
-
                 <a href="mailto:tekoteatcc@gmail.com" class="contato-card" aria-label="E-mail">
-                    <div class="contato-card-icon">
-                        <i class="fa-solid fa-envelope"></i>
-                    </div>
+                    <div class="contato-card-icon"><i class="fa-solid fa-envelope"></i></div>
                     <div class="contato-card-info">
                         <span class="contato-card-label">E-mail</span>
                         <span class="contato-card-valor">tekoteatcc@gmail.com</span>
@@ -161,48 +210,35 @@
 
     <footer class="footer-extenso">
         <div class="footer-inner">
-
             <div class="footer-brand">
                 <a href="#home" class="footer-logo">
                     <span class="logo-teko">teko</span><span class="logo-dot">.</span>
                 </a>
                 <p class="footer-tagline">Educação socioemocional para crianças com TEA, famílias e educadores.</p>
             </div>
-
             <div class="footer-cols">
-
                 <div class="footer-col">
                     <span class="footer-col-title">Quem Somos</span>
                     <a href="#sobre">Sobre</a>
                     <a href="#metodologia">Metodologia</a>
                 </div>
-
                 <div class="footer-col">
                     <span class="footer-col-title">Contato</span>
                     <a href="#contato">Fale conosco</a>
                     <a href="mailto:tekoteatcc@gmail.com">tekoteatcc@gmail.com</a>
                 </div>
-
                 <div class="footer-col">
                     <span class="footer-col-title">Redes Sociais</span>
-                    <a href="https://www.instagram.com/tcctekotea" target="_blank">
-                        <i class="fa-brands fa-instagram"></i> Instagram
-                    </a>
-                    <a href="https://www.youtube.com/" target="_blank">
-                        <i class="fa-brands fa-youtube"></i> YouTube
-                    </a>
+                    <a href="https://www.instagram.com/tcctekotea" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                    <a href="https://www.youtube.com/" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
                 </div>
-
                 <div class="footer-col">
                     <span class="footer-col-title">Legal</span>
                     <a href="pages/termos.html">Termos de Uso</a>
                     <a href="pages/privacidade.html">Política de Privacidade</a>
                 </div>
-
             </div>
-
         </div>
-
         <div class="footer-bottom">
             <p>© 2025 <span>Teko</span> — Educação Socioemocional. Todos os direitos reservados.</p>
         </div>
