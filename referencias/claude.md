@@ -157,3 +157,7 @@ Quando gerar código:
 Nunca gerar interfaces genéricas ou visualmente poluídas.
 
 Qnd eu pedir para alterar pequenas partes do código, só me mostre aonde alterar. Só faça o codigo inteiro se eu pedir.
+
+#Regras obrigatorias:
+
+- A logo sempre será "teko." na fonte Franceus em negrito, as cores podem alterar de acordo com o fundo, mas a tipografia sempre será essa.
