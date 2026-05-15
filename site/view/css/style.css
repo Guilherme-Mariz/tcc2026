@@ -413,17 +413,32 @@ body { font-family:'Poppins',sans-serif; background:var(--cream); color:var(--te
     cursor:default;
 }
 .destaque-card:hover { transform:translateY(-8px); box-shadow:var(--shadow-md); }
+
 .destaque-icon { width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+
 .destaque-green .destaque-icon { background:#D4F1E2; color:var(--green-deep); }
+
 .destaque-yellow .destaque-icon { background:#FFF3CC; color:#C98000; }
+
 .destaque-blue .destaque-icon { background:#DBF0FF; color:#1A7ABF; }
+
 .destaque-card h3 { font-family:'Fraunces',serif; font-size:1.18rem; font-weight:700; color:var(--text); }
+
 .destaque-card p { font-size:0.88rem; line-height:1.72; color:var(--text-soft); }
+
 .destaque-img-placeholder {
-    margin-top:8px; border-radius:12px;
-    border:2px dashed rgba(168,213,186,0.5); background:rgba(168,213,186,0.05);
-    min-height:110px; display:flex; align-items:center; justify-content:center;
-    font-size:0.75rem; color:#bbb; text-align:center; padding:12px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.destaque-img-placeholder img {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 2px solid rgba(168,213,186,0.4);
 }
 
 /* ══ NUMBERS (nova seção) ══ */
