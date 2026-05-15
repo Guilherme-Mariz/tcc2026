@@ -1,30 +1,7 @@
-detalhes no fundo - index.html
-
-correção de tipografia
-
-ajuste da foto do teko - cadastro.html
-
-conteudo termos.html / privacidade.html
-
-ajustar textos para parentes
-
-arrumar o margin do sobre nos
-
-fazer o cadastro
-
-sessão registro: -parentesco
-enter - passar de bgl
-tirar diagnostico
-tirar nível de suporte
-gênero deixar masculino/feminino - selecione
+precisa corrigir o botao voltar do register, n ta funcionando
 
 
 IMPLEMENTAÇÕES FUTURAS:
 esqueci a senha?
 acessibilidade - sons e cores
 perfil comportamental - interesses (personalização)
-
-testando
-
-qualquer bosta 
-

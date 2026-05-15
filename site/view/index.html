@@ -211,20 +211,32 @@
         </div>
     </section>
 
-    <!-- ── TEKO.IA BANNER ── -->
-    <section id="tekoia-banner" class="section-reveal">
-        <div class="tekoia-banner-inner">
-            <div class="tekoia-banner-text">
-                <span class="section-label">Inteligência Artificial</span>
-                <h2>Conheça o <em>TEKO.IA</em></h2>
-                <p>Um assistente inteligente pronto para conversar com sua criança, responder dúvidas e apoiar o aprendizado a qualquer hora do dia — com linguagem simples, acolhedora e adaptada para TEA.</p>
-                <a onclick="irParaLogin()" class="btn-banner">
-                    Experimentar agora <i class="fa-solid fa-arrow-right"></i>
+    <!-- ── TEKO.IA ── -->
+    <section id="tekoia" class="section-reveal">
+        <h1>E <em>não</em> para por aí...</h1>
+        <div class="tia-block" id="tia-block">
+ 
+            <canvas id="tia-canvas" aria-hidden="true"></canvas>
+            <div class="tia-bg-logo" aria-hidden="true">
+                <span>teko<span class="tia-logo-dot">.</span>ia</span>
+            </div>
+            <div class="tia-content">
+                <span class="tia-tag">Inteligência Artificial</span>
+                <h2 class="tia-headline">Uma IA feita para <em>acolher</em>.</h2>
+                <p class="tia-desc">
+                    O TEKO.IA conversa com sua criança, responde dúvidas e apoia
+                    o aprendizado a qualquer hora — com linguagem simples, calma
+                    e adaptada para o TEA.
+                </p>
+                <a class="tia-cta" onclick="irParaLogin()" role="button" tabindex="0">
+                    Testar agora
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </a>
             </div>
-            <div class="tekoia-banner-img">
-                <img src="img/mascot/teko-apontando.png" alt="Mascote Teko apontando" onerror="this.style.display='none'">
-            </div>
+            <div class="tia-cursor" id="tia-cursor" aria-hidden="true"></div>
+            <div class="tia-hint" aria-hidden="true">passe o mouse para explorar</div>
         </div>
     </section>
 

@@ -1,3 +1,17 @@
+// ROTAS DE NAVEGAÇÃO 
+
+function irParaLogin() {
+  window.location.href = "/login";
+}
+
+function irParaRegister() {
+  window.location.href = "/register";
+}
+
+function irParaIndex() {
+  window.location.href = "/";
+}
+
 /* ── Lenis smooth scroll ── */
 (function(){
     const lenis = {
@@ -202,4 +216,177 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     document.querySelector('.carrossel-prev').addEventListener('click', () => goTo(current - 1));
     document.querySelector('.carrossel-next').addEventListener('click', () => goTo(current + 1));
     dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+})();
+
+/* sessao teko.ia  */
+
+(function () {
+    'use strict';
+
+    const block  = document.getElementById('tia-block');
+    const canvas = document.getElementById('tia-canvas');
+    const cursor = document.getElementById('tia-cursor');
+    if (!block || !canvas) return;
+
+    /* ── WebGL: ondas pretas com reação ao mouse ── */
+    const gl = canvas.getContext('webgl', { antialias: true, alpha: true });
+    if (!gl) return;
+
+    const VS = `
+        attribute vec2 a_pos;
+        void main(){ gl_Position = vec4(a_pos, 0., 1.); }
+    `;
+
+    const FS = `
+        precision highp float;
+        uniform float u_time;
+        uniform vec2  u_res;
+        uniform vec2  u_mouse;
+
+        float wave(vec2 uv, float freq, float speed, float amp, float phase){
+            return sin(uv.x * freq + u_time * speed + phase) * amp;
+        }
+
+        void main(){
+            vec2 uv = gl_FragCoord.xy / u_res;
+
+            /* influência do mouse */
+            vec2 m  = u_mouse; m.y = 1.0 - m.y;
+            float md = distance(uv, m);
+            float mp = smoothstep(0.38, 0.0, md) * 0.065;
+
+            float lines = 0.0;
+            float thick  = 0.009;
+
+            for(int i = 0; i < 6; i++){
+                float fi  = float(i);
+                float off = fi * 0.16 + 0.06;
+                float spd = 0.42 + fi * 0.11;
+                float frq = 6.0  + fi * 1.8;
+                float amp = 0.028 + fi * 0.004;
+                float ph  = fi * 1.15;
+
+                float wl = wave(uv, frq, spd, amp, ph)
+                         + mp * sin(uv.x * (4.5 + fi) + u_time * (0.4 + fi * 0.15));
+
+                float dist = abs(uv.y - off - wl);
+                lines += smoothstep(thick, 0.0, dist) * (1.0 - fi * 0.10);
+            }
+
+            float alpha = clamp(lines * 1.5, 0.0, 1.0);
+            gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.52);
+        }
+    `;
+
+    function compile(src, type) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return s;
+    }
+
+    const prog = gl.createProgram();
+    gl.attachShader(prog, compile(VS, gl.VERTEX_SHADER));
+    gl.attachShader(prog, compile(FS, gl.FRAGMENT_SHADER));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime  = gl.getUniformLocation(prog, 'u_time');
+    const uRes   = gl.getUniformLocation(prog, 'u_res');
+    const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width  = Math.floor(block.offsetWidth  * dpr);
+        canvas.height = Math.floor(block.offsetHeight * dpr);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(block);
+
+    /* mouse tracking */
+    let mx = 0.5, my = 0.5, txm = 0.5, tym = 0.5;
+
+    block.addEventListener('mousemove', e => {
+        const r = block.getBoundingClientRect();
+        txm = (e.clientX - r.left) / r.width;
+        tym = (e.clientY - r.top)  / r.height;
+        if (cursor) {
+            cursor.style.left = (e.clientX - r.left) + 'px';
+            cursor.style.top  = (e.clientY - r.top)  + 'px';
+        }
+    }, { passive: true });
+
+    block.addEventListener('touchmove', e => {
+        const r = block.getBoundingClientRect();
+        const t = e.touches[0];
+        txm = (t.clientX - r.left) / r.width;
+        tym = (t.clientY - r.top)  / r.height;
+    }, { passive: true });
+
+    /* render loop — só quando visível */
+    let visible = false;
+    const start = performance.now();
+
+    const io = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) tick(performance.now());
+    }, { threshold: 0.05 });
+    io.observe(block);
+
+    function tick(now) {
+        if (!visible) return;
+        requestAnimationFrame(tick);
+        mx += (txm - mx) * 0.07;
+        my += (tym - my) * 0.07;
+        const t = (now - start) * 0.001;
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(uTime, t);
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform2f(uMouse, mx, my);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+
+    /* ── hover desktop ── */
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+
+    if (!isTouchDevice) {
+        block.addEventListener('mouseenter', () => block.classList.add('hovered'));
+        block.addEventListener('mouseleave', () => {
+            block.classList.remove('hovered');
+            if (cursor) { cursor.style.left = '-100px'; cursor.style.top = '-100px'; }
+        });
+    } else {
+        /* mobile: ativa ao entrar no viewport */
+        const mobIO = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => block.classList.add('hovered'), 250);
+                mobIO.disconnect();
+            }
+        }, { threshold: 0.45 });
+        mobIO.observe(block);
+    }
+
+    /* GSAP scroll reveal */
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.fromTo(block,
+            { opacity: 0, y: 30 },
+            {
+                opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+                scrollTrigger: { trigger: block, start: 'top 85%', once: true }
+            }
+        );
+    }
+
 })();
