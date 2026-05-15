@@ -5,243 +5,427 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+    <title>teko. — Educação Socioemocional para Crianças com TEA</title>
     <link rel="stylesheet" href="css/style.css">
-    <title>Teko — Educação Socioemocional</title>
 </head>
 <body>
 
-    <header id="header">
-        <nav id="navbar">
-            <a href="#home" id="nav_logo">
-                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
-            </a>
-            <ul id="nav_list">
-                <li class="nav_item"><a href="#home">Início</a></li>
-                <li class="nav_item"><a href="#sobre">Sobre</a></li>
-                <li class="nav_item"><a href="#metodologia">Metodologia</a></li>
-                <li class="nav_item"><a href="#contato">Contato</a></li>
-            </ul>
-            <a onclick="irParaLogin()" class="btn-default">Estude conosco!</a>
-            <button id="mobile_btn" aria-label="Abrir menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </nav>
-    </header>
+<!-- Page transition overlay -->
+<div id="page-transition">
+    <div class="pt-logo">teko<span>.</span></div>
+</div>
 
-    <div id="mobile_overlay"></div>
-    <div id="mobile_menu">
-        <button id="mobile_close_btn" aria-label="Fechar menu">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-        <ul id="mobile_nav_list">
+<header id="header">
+    <nav id="navbar">
+        <a href="#home" id="nav_logo">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <ul id="nav_list">
             <li class="nav_item"><a href="#home">Início</a></li>
             <li class="nav_item"><a href="#sobre">Sobre</a></li>
             <li class="nav_item"><a href="#metodologia">Metodologia</a></li>
             <li class="nav_item"><a href="#contato">Contato</a></li>
         </ul>
-        <a onclick="irParaLogin()" class="btn-default mobile-cta">Estude conosco!</a>
+        <a onclick="irParaLogin()" class="btn-nav">Entrar na plataforma</a>
+        <button id="mobile_btn" aria-label="Abrir menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </nav>
+</header>
+
+<div id="mobile_overlay"></div>
+<div id="mobile_menu">
+    <button id="mobile_close_btn" aria-label="Fechar menu">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    <ul id="mobile_nav_list">
+        <li class="nav_item"><a href="#home">Início</a></li>
+        <li class="nav_item"><a href="#sobre">Sobre</a></li>
+        <li class="nav_item"><a href="#metodologia">Metodologia</a></li>
+        <li class="nav_item"><a href="#contato">Contato</a></li>
+    </ul>
+    <a onclick="irParaLogin()" class="btn-nav mobile-cta">Entrar na plataforma</a>
+</div>
+
+<main id="content">
+
+    <!-- ── HERO ── -->
+    <section id="home">
+        <div class="home-deco home-deco-1" aria-hidden="true"></div>
+        <div class="home-deco home-deco-2" aria-hidden="true"></div>
+        <div class="home-deco home-deco-3" aria-hidden="true"></div>
+        <div class="home-deco home-deco-4" aria-hidden="true"></div>
+        <div class="home-deco home-deco-5" aria-hidden="true"></div>
+        <div class="home-deco-stripe" aria-hidden="true"></div>
+
+        <div id="cta">
+            <h1 class="title">
+                <em>Aprendendo</em> com alegria <b class="gradient-text">&</b> do seu jeito!
+            </h1>
+
+            <p class="description">
+                Um espaço acolhedor pensado para crianças com TEA desenvolverem
+                suas habilidades socioemocionais de forma divertida, segura e no próprio ritmo.
+            </p>
+
+            <div id="cta_buttons">
+                <a onclick="irParaLogin()" class="btn-primary">
+                    Começar agora
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="#sobre" class="btn-ghost">
+                    Saiba mais
+                </a>
+            </div>
+
+            <div class="social-row">
+                <span class="social-label">Siga a gente:</span>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/tcctekotea" class="social-icon" aria-label="Instagram" target="_blank">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/" class="social-icon" aria-label="YouTube" target="_blank">
+                        <i class="fa-brands fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+            <span>Rolar</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ── TRUSTBAR ── -->
+    <div id="trustbar" class="section-reveal">
+        <div class="trust-item">
+            <i class="fa-solid fa-shield-heart"></i>
+            <span>Ambiente 100% seguro para crianças</span>
+        </div>
+        <div class="trust-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Baseado em pesquisa educacional</span>
+        </div>
+        <div class="trust-item">
+            <i class="fa-solid fa-brain"></i>
+            <span>Metodologia para TEA</span>
+        </div>
+        <div class="trust-item">
+            <i class="fa-solid fa-lock"></i>
+            <span>Privacidade e dados protegidos</span>
+        </div>
     </div>
 
-    <main id="content">
-
-        <section id="home">
-            <div class="home-deco home-deco-1" aria-hidden="true"></div>
-            <div class="home-deco home-deco-2" aria-hidden="true"></div>
-            <div class="home-deco home-deco-3" aria-hidden="true"></div>
-            <div class="home-deco home-deco-4" aria-hidden="true"></div>
-            <div class="home-deco home-deco-5" aria-hidden="true"></div>
-            <div class="home-deco-stripe" aria-hidden="true"></div>
-
-            <div id="cta">
-                <h1 class="title">
-                    <em>Aprendendo</em> com alegria <b class="gradient-text">&</b> do seu jeito!
-                </h1>
-
-                <p class="description">
-                    Um espaço acolhedor pensado para crianças com TEA desenvolverem
-                    suas habilidades socioemocionais de forma divertida e segura.
-                </p>
-
-                <div id="cta_buttons">
-                    <a onclick="irParaLogin()" class="btn-primary">
-                        Começar agora
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-
-                <div class="social-row">
-                    <span class="social-label">Siga a gente:</span>
-                    <div class="social-icons">
-                        <a href="https://www.instagram.com/tcctekotea" class="social-icon" aria-label="Instagram" target="_blank">
-                            <i class="fa-brands fa-instagram"></i>
-                        </a>
-                        <a href="https://www.youtube.com/" class="social-icon" aria-label="YouTube" target="_blank">
-                            <i class="fa-brands fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
+    <!-- ── SOBRE ── -->
+    <section id="sobre" class="section-reveal">
+        <div class="sobre-visual">
+            <div class="sobre-glow"></div>
+            <div class="sobre-img-frame">
+                <img src="img/video_foto.png" alt="Sobre o Teko" onerror="this.style.background='var(--beige)';this.style.minHeight='320px'">
             </div>
-        </section>
-
-        <section id="sobre" class="section-fade">
-            <div class="video-sobre">
-                <img src="img/video_foto.png" alt="Sobre o Teko">
-            </div>
-            <div class="txt-sobre">
-                <h1>Quem Somos</h1>
-                <p>O <b>TEKO</b> é uma plataforma de aprendizagem socioemocional criada para que crianças de 6 a 10 anos com Transtorno do Espectro Autista (TEA) possam desenvolver habilidades emocionais e sociais de forma divertida, segura e acolhedora.</p>
-                <p>Por meio de atividades interativas, jogos e um assistente virtual inteligente, o TEKO guia cada criança no seu próprio ritmo, respeitando suas necessidades e celebrando cada conquista.</p>
-                <a onclick="irParaLogin()" class="btn-sobre">
-                    Conhecer a plataforma <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </section>
-
-        <section id="destaques" class="section-fade">
-            <div class="destaques-header">
-                <h2>Feito <em>com cuidado</em> para cada criança</h2>
-            </div>
-
-            <div class="destaques-grid">
-
-                <div class="destaque-card destaque-green">
-                    <div class="destaque-icon">
-                        <i class="fa-solid fa-heart"></i>
-                    </div>
-                    <h3>Ambiente Seguro</h3>
-                    <p>Conteúdo pensado especialmente para crianças com TEA, respeitando o ritmo e as necessidades de cada uma.</p>
-                    <!-- placeholder para foto futura -->
-                    <div class="destaque-img-placeholder">
-                        <span>📸 foto: criança usando o app</span>
-                    </div>
-                </div>
-
-                <div class="destaque-card destaque-yellow">
-                    <div class="destaque-icon">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <h3>Aprendizado Lúdico</h3>
-                    <p>Atividades interativas e jogos que transformam o aprendizado emocional em uma experiência divertida.</p>
-                    <div class="destaque-img-placeholder">
-                        <span>📸 foto: atividade na tela</span>
-                    </div>
-                </div>
-
-                <div class="destaque-card destaque-blue">
-                    <div class="destaque-icon">
-                        <i class="fa-solid fa-people-roof"></i>
-                    </div>
-                    <h3>Para Toda a Família</h3>
-                    <p>Painel exclusivo para responsáveis acompanharem o progresso e entenderem o desenvolvimento da criança.</p>
-                    <div class="destaque-img-placeholder">
-                        <span>📸 foto: família junto</span>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section id="tekoia-banner" class="section-fade">
-            <div class="tekoia-banner-inner">
-                <div class="tekoia-banner-text">
-                    <h2>Conheça o <em>TEKO.IA</em></h2>
-                    <p>Um assistente inteligente pronto para conversar com sua criança, responder dúvidas e apoiar o aprendizado a qualquer hora do dia.</p>
-                    <a onclick="irParaLogin()" class="btn-banner">
-                        Experimentar agora <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-                <!-- foto sugerida: img/mascot/teko-apontando.png -->
-                <div class="tekoia-banner-img">
-                    <img src="img/mascot/teko-apontando.png" alt="Teko apontando" onerror="this.style.display='none'">
-                </div>
-            </div>
-        </section>
-
-        <section id="metodologia" class="section-fade">
-            <div class="conteudo-metodologia">
-                <h1>Nossa Metodologia</h1>
-                <p>Para criar o TEKO, realizamos pesquisas aprofundadas sobre educação socioemocional e analisamos as necessidades reais das crianças com TEA. A partir desses dados, estruturamos o sistema com foco total na acessibilidade, garantindo um ambiente seguro e engajador.</p>
-
-                <div class="content-metodologia">
-                    <div class="card-metodologia">
-                        <!-- foto sugerida: img/metod-emocoes.jpg — expressões faciais coloridas -->
-                        <div class="card-metodologia-titulo"><span>Emoções</span></div>
-                    </div>
-                    <div class="card-metodologia">
-                        <!-- foto sugerida: img/metod-comportamento.jpg — criança organizando blocos -->
-                        <div class="card-metodologia-titulo"><span>Comportamento</span></div>
-                    </div>
-                    <div class="card-metodologia">
-                        <!-- foto sugerida: img/metod-comunicacao.jpg — duas crianças conversando -->
-                        <div class="card-metodologia-titulo"><span>Comunicação</span></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="contato">
-            <div class="contato-titulo">
-                <h2>Ficou com dúvidas?<br>Entre em contato!</h2>
-                <p>Estamos aqui para te ajudar. Fale com a gente pelo WhatsApp ou e-mail.</p>
-            </div>
-            <div class="contato-cards">
-                <a href="https://wa.me/55XXXXXXXXXXX" class="contato-card" target="_blank" aria-label="WhatsApp">
-                    <div class="contato-card-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                    <div class="contato-card-info">
-                        <span class="contato-card-label">WhatsApp</span>
-                        <span class="contato-card-valor">(XX) XXXXX-XXXX</span>
-                    </div>
-                </a>
-                <a href="mailto:tekoteatcc@gmail.com" class="contato-card" aria-label="E-mail">
-                    <div class="contato-card-icon"><i class="fa-solid fa-envelope"></i></div>
-                    <div class="contato-card-info">
-                        <span class="contato-card-label">E-mail</span>
-                        <span class="contato-card-valor">tekoteatcc@gmail.com</span>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="footer-extenso">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <a href="#home" class="footer-logo">
-                    <span class="logo-teko">teko</span><span class="logo-dot">.</span>
-                </a>
-                <p class="footer-tagline">Educação socioemocional para crianças com TEA, famílias e educadores.</p>
-            </div>
-            <div class="footer-cols">
-                <div class="footer-col">
-                    <span class="footer-col-title">Quem Somos</span>
-                    <a href="#sobre">Sobre</a>
-                    <a href="#metodologia">Metodologia</a>
-                </div>
-                <div class="footer-col">
-                    <span class="footer-col-title">Contato</span>
-                    <a href="#contato">Fale conosco</a>
-                    <a href="mailto:tekoteatcc@gmail.com">tekoteatcc@gmail.com</a>
-                </div>
-                <div class="footer-col">
-                    <span class="footer-col-title">Redes Sociais</span>
-                    <a href="https://www.instagram.com/tcctekotea" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
-                    <a href="https://www.youtube.com/" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
-                </div>
-                <div class="footer-col">
-                    <span class="footer-col-title">Legal</span>
-                    <a href="pages/termos.html">Termos de Uso</a>
-                    <a href="pages/privacidade.html">Política de Privacidade</a>
+            <div class="sobre-badge-float">
+                <span class="badge-icon">🏆</span>
+                <div class="badge-info">
+                    <span class="badge-title">TCC — Etec Gazzetta</span>
+                    <span class="badge-sub">Desenvolvimento de Sistemas</span>
                 </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2025 <span>Teko</span> — Educação Socioemocional. Todos os direitos reservados.</p>
+        <div class="txt-sobre">
+            <span class="section-label">Quem Somos</span>
+            <h1>Tecnologia feita com <em>cuidado</em> e propósito</h1>
+            <p>O <b>TEKO</b> é uma plataforma de aprendizagem socioemocional criada para que crianças de 6 a 10 anos com Transtorno do Espectro Autista (TEA) possam desenvolver habilidades emocionais e sociais de forma divertida, segura e acolhedora.</p>
+            <p>Por meio de atividades interativas, jogos e um assistente virtual inteligente, o TEKO guia cada criança no seu próprio ritmo, respeitando suas necessidades e celebrando cada conquista.</p>
+            <a onclick="irParaLogin()" class="btn-sobre">
+                Conhecer a plataforma <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
-    </footer>
+    </section>
 
-    <script src="js/script.js"></script>
+    <!-- ── DESTAQUES ── -->
+    <section id="destaques" class="section-reveal">
+        <div class="destaques-header">
+            <span class="section-label" style="margin-inline:auto;display:inline-flex;">Por que o teko.</span>
+            <h2>Feito <em>com cuidado</em> para cada criança</h2>
+            <p>Cada detalhe foi pensado para proporcionar conforto, segurança e aprendizado real.</p>
+        </div>
+
+        <div class="destaques-grid">
+            <div class="destaque-card destaque-green">
+                <div class="destaque-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h3>Ambiente Seguro</h3>
+                <p>Conteúdo pensado especialmente para crianças com TEA, respeitando o ritmo e as necessidades de cada uma. Sem anúncios, sem distrações desnecessárias.</p>
+                <div class="destaque-img-placeholder">
+                    <span>📸 foto: criança usando o app</span>
+                </div>
+            </div>
+
+            <div class="destaque-card destaque-yellow">
+                <div class="destaque-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3>Aprendizado Lúdico</h3>
+                <p>Atividades interativas e jogos que transformam o aprendizado emocional em uma experiência divertida, com progressão adaptada a cada criança.</p>
+                <div class="destaque-img-placeholder">
+                    <span>📸 foto: atividade na tela</span>
+                </div>
+            </div>
+
+            <div class="destaque-card destaque-blue">
+                <div class="destaque-icon">
+                    <i class="fa-solid fa-people-roof"></i>
+                </div>
+                <h3>Para Toda a Família</h3>
+                <p>Painel exclusivo para responsáveis acompanharem o progresso e entenderem o desenvolvimento da criança com relatórios simples e claros.</p>
+                <div class="destaque-img-placeholder">
+                    <span>📸 foto: família junto</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── NUMBERS ── -->
+    <section id="numeros" class="section-reveal">
+        <div class="numeros-inner">
+            <div class="numero-item">
+                <div class="numero-num">+180</div>
+                <div class="numero-label">horas de pesquisa<br>e desenvolvimento</div>
+            </div>
+            <div class="numero-item">
+                <div class="numero-num">3</div>
+                <div class="numero-label">áreas de<br>desenvolvimento</div>
+            </div>
+            <div class="numero-item">
+                <div class="numero-num">6 a 10 anos</div>
+                <div class="numero-label">anos, faixa etária<br>atendida</div>
+            </div>
+            <div class="numero-item">
+                <div class="numero-num">100%</div>
+                <div class="numero-label">gratuito e<br>acessível</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── TEKO.IA BANNER ── -->
+    <section id="tekoia-banner" class="section-reveal">
+        <div class="tekoia-banner-inner">
+            <div class="tekoia-banner-text">
+                <span class="section-label">Inteligência Artificial</span>
+                <h2>Conheça o <em>TEKO.IA</em></h2>
+                <p>Um assistente inteligente pronto para conversar com sua criança, responder dúvidas e apoiar o aprendizado a qualquer hora do dia — com linguagem simples, acolhedora e adaptada para TEA.</p>
+                <a onclick="irParaLogin()" class="btn-banner">
+                    Experimentar agora <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="tekoia-banner-img">
+                <img src="img/mascot/teko-apontando.png" alt="Mascote Teko apontando" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </section>
+
+    <!-- ── METODOLOGIA ── -->
+    <section id="metodologia" class="section-reveal">
+        <div class="conteudo-metodologia">
+            <span class="section-label">Como funciona</span>
+            <h1>Nossa Metodologia</h1>
+            <p>Para criar o TEKO, realizamos pesquisas aprofundadas sobre educação socioemocional e analisamos as necessidades reais das crianças com TEA. A partir desses dados, estruturamos três pilares de desenvolvimento.</p>
+            <div class="carrossel-metodologia">
+                <button class="carrossel-btn carrossel-prev" aria-label="Anterior">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            
+                <div class="carrossel-track-wrap">
+                    <div class="carrossel-track">
+                        <div class="card-metodologia">
+                            <img src="img/atv/emocoes.png" alt="Emoções" onerror="this.remove()">
+                            <div class="card-metodologia-overlay"></div>
+                            <div class="card-metodologia-titulo">
+                                <span>Emoções</span>
+                                <p>Reconhecimento e expressão emocional</p>
+                            </div>
+                        </div>
+                        <div class="card-metodologia">
+                            <img src="img/atv/comportamento.png" alt="Comportamento" onerror="this.remove()">
+                            <div class="card-metodologia-overlay"></div>
+                            <div class="card-metodologia-titulo">
+                                <span>Comportamento</span>
+                                <p>Autonomia e habilidades sociais</p>
+                            </div>
+                        </div>
+                        <div class="card-metodologia">
+                            <img src="img/atv/comunicacao.png" alt="Comunicação" onerror="this.remove()">
+                            <div class="card-metodologia-overlay"></div>
+                            <div class="card-metodologia-titulo">
+                                <span>Comunicação</span>
+                                <p>Linguagem e interação social</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <button class="carrossel-btn carrossel-next" aria-label="Próximo">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            
+                <div class="carrossel-dots">
+                    <span class="carrossel-dot active"></span>
+                    <span class="carrossel-dot"></span>
+                    <span class="carrossel-dot"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── DEPOIMENTOS ── -->
+    <section id="depoimentos" class="section-reveal">
+        <div class="depoimentos-header">
+            <span class="section-label" style="margin-inline:auto;display:inline-flex;">O que dizem sobre nós</span>
+            <h2>Histórias que nos <em>motivam</em></h2>
+        </div>
+
+        <div class="depoimentos-grid">
+            <div class="depoimento-card">
+                <div class="depoimento-quote">"</div>
+                <p class="depoimento-texto">O TEKO ajudou meu filho a identificar emoções que ele tinha dificuldade de nomear. É uma ferramenta incrível, fácil de usar e ele ama o mascote!</p>
+                <div class="depoimento-autor">
+                    <div class="autor-avatar">M</div>
+                    <div class="autor-info">
+                        <span class="autor-nome">Mãe de Lucas, 8 anos</span>
+                        <span class="autor-role">Responsável</span>
+                    </div>
+                </div>
+                <div class="depoimento-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+            </div>
+
+            <div class="depoimento-card">
+                <div class="depoimento-quote">"</div>
+                <p class="depoimento-texto">Como educadora, recomendo o TEKO para todas as famílias que acompanho. A metodologia é clara, respeitosa e muito bem pensada para as especificidades do TEA.</p>
+                <div class="depoimento-autor">
+                    <div class="autor-avatar">C</div>
+                    <div class="autor-info">
+                        <span class="autor-nome">Carla S.</span>
+                        <span class="autor-role">Educadora Especial</span>
+                    </div>
+                </div>
+                <div class="depoimento-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+            </div>
+
+            <div class="depoimento-card">
+                <div class="depoimento-quote">"</div>
+                <p class="depoimento-texto">A interface é limpa e minha filha consegue navegar sozinha, sem precisar de ajuda. A parte de comunicação fez uma diferença enorme no cotidiano dela.</p>
+                <div class="depoimento-autor">
+                    <div class="autor-avatar">R</div>
+                    <div class="autor-info">
+                        <span class="autor-nome">Rafael T.</span>
+                        <span class="autor-role">Pai de Ana, 7 anos</span>
+                    </div>
+                </div>
+                <div class="depoimento-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA FINAL ── -->
+    <section id="cta-final" class="section-reveal">
+        <span class="cta-final-label">Comece hoje mesmo</span>
+        <h2>Cada criança merece<br>aprender <em>do seu jeito</em></h2>
+        <p>Acesse gratuitamente e descubra como o TEKO pode apoiar o desenvolvimento emocional e social da sua criança com TEA.</p>
+        <div class="cta-final-btns">
+            <a onclick="irParaLogin()" class="btn-cta-solid">
+                Acessar a plataforma <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+        <p class="cta-final-disclaimer">Gratuito · Sem necessidade de cartão · Pronto para usar</p>
+    </section>
+
+    <!-- ── CONTATO ── -->
+    <section id="contato" class="section-reveal">
+        <div class="contato-titulo">
+            <h2>Ficou com dúvidas?<br>Entre em contato!</h2>
+            <p>Estamos aqui para te ajudar. Fale com a gente pelo WhatsApp ou e-mail.</p>
+        </div>
+        <div class="contato-cards">
+            <a href="https://wa.me/55XXXXXXXXXXX" class="contato-card" target="_blank" aria-label="WhatsApp">
+                <div class="contato-card-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="contato-card-info">
+                    <span class="contato-card-label">WhatsApp</span>
+                    <span class="contato-card-valor">(XX) XXXXX-XXXX</span>
+                </div>
+            </a>
+            <a href="mailto:tekoteatcc@gmail.com" class="contato-card" aria-label="E-mail">
+                <div class="contato-card-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="contato-card-info">
+                    <span class="contato-card-label">E-mail</span>
+                    <span class="contato-card-valor">tekoteatcc@gmail.com</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer-extenso">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="#home" class="footer-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+            <p class="footer-tagline">Educação socioemocional para crianças com TEA, famílias e educadores.</p>
+        </div>
+        <div class="footer-cols">
+            <div class="footer-col">
+                <span class="footer-col-title">Quem Somos</span>
+                <a href="#sobre">Sobre</a>
+                <a href="#metodologia">Metodologia</a>
+            </div>
+            <div class="footer-col">
+                <span class="footer-col-title">Contato</span>
+                <a href="#contato">Fale conosco</a>
+                <a href="mailto:tekoteatcc@gmail.com">tekoteatcc@gmail.com</a>
+            </div>
+            <div class="footer-col">
+                <span class="footer-col-title">Redes Sociais</span>
+                <a href="https://www.instagram.com/tcctekotea" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                <a href="https://www.youtube.com/" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
+            </div>
+            <div class="footer-col">
+                <span class="footer-col-title">Legal</span>
+                <a href="pages/termos.html">Termos de Uso</a>
+                <a href="pages/privacidade.html">Política de Privacidade</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 <span>Teko</span> — Educação Socioemocional. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<!-- GSAP + ScrollTrigger + SplitType + Lenis -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
