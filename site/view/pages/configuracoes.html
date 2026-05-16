@@ -13,33 +13,93 @@
 </head>
 <body>
 
-    <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="colorblind-filter">
-                <feColorMatrix type="matrix" values="0.567 0.433 0 0 0 0.558 0.442 0 0 0 0 0.242 0.758 0 0 0 0 0 1 0"/>
-            </filter>
-        </defs>
-    </svg>
+    <aside id="sidebar" role="navigation" aria-label="Menu principal">
+        <a href="/" class="sidebar-logo" aria-label="teko. início">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
 
-    <div class="clouds-bg" aria-hidden="true">
-        <div class="cloud cloud-1"></div><div class="cloud cloud-2"></div>
-        <div class="cloud cloud-3"></div><div class="cloud cloud-4"></div>
-    </div>
-
-    <header id="header">
-        <nav id="navbar">
-            <a href="/" id="nav_logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
-            <ul id="nav_list">
-                <li class="nav_item"><a href="/home"><span class="nav-icon"><i class="fa-solid fa-house"></i></span>Home</a></li>
-                <li class="nav_item"><a href="/atividades"><span class="nav-icon"><i class="fa-solid fa-gamepad"></i></span>Atividades</a></li>
-                <li class="nav_item"><a href="/tekoia"><span class="nav-icon"><img src="../img/mascot/teko-icn.png" alt="TEKO.IA" class="nav-icon-img"></span>TEKO.IA</a></li>
-                <li class="nav_item"><a href="/responsavel"><span class="nav-icon"><i class="fa-solid fa-people-roof"></i></span>Responsável</a></li>
-                <li class="nav_item"><a href="/configuracoes" class="active"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span>Config.</a></li>
-            </ul>
-            <div class="nav-avatar" id="user-avatar" title="Meu perfil">T</div>
-            <button id="mobile_btn" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+        <nav class="sidebar-nav">
+            <a href="/home" class="snav-item active" aria-current="page">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-house"></i>
+                </span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-shapes"></i>
+                </span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item">
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/responsavel" class="snav-item">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-people-roof"></i>
+                </span>
+                <span class="snav-label">Responsável</span>
+            </a>
         </nav>
+
+        <div class="sidebar-bottom">
+            <a href="/configuracoes" class="snav-item snav-config">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </span>
+                <span class="snav-label">Config.</span>
+            </a>
+            <div class="sidebar-avatar" id="user-avatar" title="Meu perfil" role="button" tabindex="0">T</div>
+        </div>
+    </aside>
+
+    <!-- ── MOBILE HEADER ── -->
+    <header id="mobile-header">
+        <a href="/" class="sidebar-logo">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <div class="mobile-header-right">
+            <div class="sidebar-avatar" id="user-avatar-mobile">T</div>
+            <button id="mobile_btn" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
     </header>
+
+    <!-- ── MOBILE DRAWER ── -->
+    <div id="mobile_overlay"></div>
+    <div id="mobile_drawer">
+        <button id="mobile_close" aria-label="Fechar menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <nav class="drawer-nav">
+            <a href="/home" class="snav-item active">
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item">
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item">
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/responsavel" class="snav-item">
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
+            <a href="/configuracoes" class="snav-item">
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
+        </nav>
+    </div>
 
     <main>
         <div class="cfg-page">

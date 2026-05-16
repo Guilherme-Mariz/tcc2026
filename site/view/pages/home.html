@@ -3,271 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Fraunces:ital,wght@0,700;1,700&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/home.css">
-
-    <title>Teko — Meu Mundo!</title>
+    <title>teko. — Olá!</title>
 </head>
 <body>
 
-    <div class="clouds-bg" aria-hidden="true">
-        <div class="cloud cloud-1"></div>
-        <div class="cloud cloud-2"></div>
-        <div class="cloud cloud-3"></div>
-        <div class="cloud cloud-4"></div>
-    </div>
+    <!-- ── SIDEBAR NAVEGAÇÃO ── -->
+    <aside id="sidebar" role="navigation" aria-label="Menu principal">
+        <a href="/" class="sidebar-logo" aria-label="teko. início">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
 
-    <header id="header">
-        <nav id="navbar">
-
-            <a href="/" id="nav_logo">
-                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        <nav class="sidebar-nav">
+            <a href="/home" class="snav-item active" aria-current="page">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-house"></i>
+                </span>
+                <span class="snav-label">Início</span>
             </a>
+            <a href="/atividades" class="snav-item">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-shapes"></i>
+                </span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item">
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/responsavel" class="snav-item">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-people-roof"></i>
+                </span>
+                <span class="snav-label">Responsável</span>
+            </a>
+        </nav>
 
-            <ul id="nav_list">
-                <li class="nav_item">
-                    <a href="/home" class="active">
-                        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
-                        Home
-                    </a>
-                </li>
-                <li class="nav_item">
-                    <a href="/atividades">
-                        <span class="nav-icon"><i class="fa-solid fa-gamepad"></i></span>
-                        Atividades
-                    </a>
-                </li>
-                <li class="nav_item">
-                    <a href="/tekoia">
-                        <span class="nav-icon">
-                            <img src="../img/mascot/teko-icn.png" alt="TEKO.IA" class="nav-icon-img">
-                        </span>
-                        TEKO.IA
-                    </a>
-                </li>
-                <li class="nav_item">
-                    <a href="/responsavel">
-                        <span class="nav-icon"><i class="fa-solid fa-people-roof"></i></span>
-                        Responsável
-                    </a>
-                </li>
-                <li class="nav_item">
-                    <a href="/configuracoes">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        Config.
-                    </a>
-                </li>
-            </ul>
+        <div class="sidebar-bottom">
+            <a href="/configuracoes" class="snav-item snav-config">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </span>
+                <span class="snav-label">Config.</span>
+            </a>
+            <div class="sidebar-avatar" id="user-avatar" title="Meu perfil" role="button" tabindex="0">T</div>
+        </div>
+    </aside>
 
-            <div class="nav-avatar" id="user-avatar" title="Meu perfil">T</div>
-
+    <!-- ── MOBILE HEADER ── -->
+    <header id="mobile-header">
+        <a href="/" class="sidebar-logo">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <div class="mobile-header-right">
+            <div class="sidebar-avatar" id="user-avatar-mobile">T</div>
             <button id="mobile_btn" aria-label="Abrir menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
-
-        </nav>
+        </div>
     </header>
 
-    <main>
+    <!-- ── MOBILE DRAWER ── -->
+    <div id="mobile_overlay"></div>
+    <div id="mobile_drawer">
+        <button id="mobile_close" aria-label="Fechar menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <nav class="drawer-nav">
+            <a href="/home" class="snav-item active">
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item">
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item">
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/responsavel" class="snav-item">
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
+            <a href="/configuracoes" class="snav-item">
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
+        </nav>
+    </div>
 
-        <section id="hero">
+    <!-- ── CONTEÚDO PRINCIPAL ── -->
+    <main id="main-content">
 
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    Pronto para se<br>
-                    <span class="highlight">divertir brincando</span>?
+        <!-- ── ACOLHIMENTO ── -->
+        <section class="welcome-section" aria-label="Boas-vindas">
+            <div class="welcome-text">
+                <p class="welcome-label">Que bom te ver por aqui</p>
+                <h1 class="welcome-title">
+                    Olá, <em id="child-name">Visitante</em>!
                 </h1>
+                <p class="welcome-sub">Hoje é um bom dia para aprender algo novo.</p>
+            </div>
 
-                <p class="hero-sub">
-                    Explore o seu mundo junto com o TEKO.
-                </p>
-
-                <div class="tekoia-cta">
-                    <div class="tekoia-cta-mascot">
-                        <img src="../img/mascot/teko-apontando.png" alt="TEKO apontando">
-                    </div>
-                    <div class="tekoia-cta-text">
-                        <div class="tekoia-cta-label">Com dúvidas?</div>
-                        <div class="tekoia-cta-title">É só chamar o TEKO!</div>
-                    </div>
-                    <a href="tekoia.html" class="tekoia-cta-btn">
-                        Vamos lá
-                    </a>
+            <div class="streak-badge" title="Dias seguidos">
+                <div class="streak-flame" aria-hidden="true">🔥</div>
+                <div class="streak-info">
+                    <span class="streak-num" id="streak-count">3</span>
+                    <span class="streak-txt">dias<br>seguidos</span>
                 </div>
-            </div>
-
-            <div class="hero-mascot">
-                <img src="../img/mascot/mascote-voador.png" alt="Mascote TEKO voando">
-            </div>
-
-        </section>
-
-        <section id="nav-cards">
-            <h2 class="section-title">O que vamos fazer <span>hoje</span>?</h2>
-
-            <div class="genre-grid">
-
-                <a href="atividades.html" class="genre-card genre-emocional">
-                    <div class="genre-icon">🧠</div>
-                    <div class="genre-title">Minhas Emoções</div>
-                    <div class="genre-subtitle">Reconheça e entenda seus sentimentos</div>
-                    <div class="genre-activities">
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Quebra-Cabeça de Emoções
-                        </div>
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Monstro das Cores
-                        </div>
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Semáforo Emocional
-                        </div>
-                    </div>
-                </a>
-
-                <a href="atividades.html" class="genre-card genre-comportamental">
-                    <div class="genre-icon">🎯</div>
-                    <div class="genre-title">Meu Comportamento</div>
-                    <div class="genre-subtitle">Flexibilidade, espera e rotinas</div>
-                    <div class="genre-activities">
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Jogo da Espera
-                        </div>
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Sequência de Rotina
-                        </div>
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Escolha Flexível
-                        </div>
-                    </div>
-                </a>
-
-                <a href="atividades.html" class="genre-card genre-comunicacao">
-                    <div class="genre-icon">💬</div>
-                    <div class="genre-title">Minha Comunicação</div>
-                    <div class="genre-subtitle">Expresse-se e interaja com o mundo</div>
-                    <div class="genre-activities">
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Cartões de Escolha
-                        </div>
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> Role-Play Social
-                        </div>
-                        <div class="genre-activity-item">
-                            <span class="genre-activity-dot"></span> GuessWhat Social
-                        </div>
-                    </div>
-                </a>
-
             </div>
         </section>
 
-        <section id="daily-section">
-            <h2 class="section-title">Meu <span>progresso</span></h2>
+        <!-- ── ATIVIDADE DO DIA ── -->
+        <section class="section-block" aria-label="Atividade do dia">
+            <h2 class="section-heading">Atividade do dia</h2>
 
-            <div class="daily-grid">
-
-                <div class="streak-card">
-                    <div class="streak-icon">🔥</div>
-                    <div class="streak-info">
-                        <div class="streak-number" id="streak-count">3</div>
-                        <div class="streak-label">Dias seguidos</div>
-                        <div class="streak-sub">Continue assim, você é incrível!</div>
-                    </div>
+            <a href="/atividades" class="featured-card" aria-label="Como você se sentiria se — jogar agora">
+                <div class="featured-visual" aria-hidden="true">
+                    <div class="featured-emoji">🎭</div>
+                    <div class="featured-glow"></div>
                 </div>
-
-                <div class="progress-card">
-                    <div class="progress-card-title">O que aprendemos essa semana</div>
-                    <div class="progress-items">
-
-                        <div class="progress-item">
-                            <div class="progress-item-header">
-                                <span class="progress-item-name">😊 Reconhecer emoções</span>
-                                <span class="progress-item-pct">70%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill fill-green" style="width: 70%"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-item-header">
-                                <span class="progress-item-name">🗣️ Situações sociais</span>
-                                <span class="progress-item-pct">45%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill fill-yellow" style="width: 45%"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-item-header">
-                                <span class="progress-item-name">🧩 Expressões e metáforas</span>
-                                <span class="progress-item-pct">20%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill fill-purple" style="width: 20%"></div>
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="featured-body">
+                    <span class="featured-badge">Em destaque</span>
+                    <h3 class="featured-title">Como você se sentiria se...?</h3>
+                    <p class="featured-desc">5 mini-histórias do dia a dia para descobrir como as emoções funcionam.</p>
                 </div>
+                <div class="featured-action" aria-hidden="true">
+                    <div class="featured-play">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <span>Jogar</span>
+                </div>
+            </a>
+        </section>
+
+        <!-- ── ÁREAS DE APRENDIZADO ── -->
+        <section class="section-block" aria-label="Áreas de aprendizado">
+            <h2 class="section-heading">O que vamos explorar <span>hoje</span>?</h2>
+
+            <div class="areas-grid">
+
+                <a href="/atividades" class="area-card area-emocoes" aria-label="Minhas Emoções">
+                    <div class="area-icon-wrap">
+                        <span class="area-icon">🧠</span>
+                    </div>
+                    <div class="area-body">
+                        <h3 class="area-title">Minhas Emoções</h3>
+                        <p class="area-desc">Reconheça e entenda seus sentimentos</p>
+                        <ul class="area-list" aria-label="Atividades disponíveis">
+                            <li>Quebra-Cabeça de Emoções</li>
+                            <li>Monstro das Cores</li>
+                            <li>Semáforo Emocional</li>
+                        </ul>
+                    </div>
+                    <span class="area-arrow" aria-hidden="true">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                </a>
+
+                <a href="/atividades" class="area-card area-comportamento" aria-label="Meu Comportamento">
+                    <div class="area-icon-wrap">
+                        <span class="area-icon">🎯</span>
+                    </div>
+                    <div class="area-body">
+                        <h3 class="area-title">Meu Comportamento</h3>
+                        <p class="area-desc">Flexibilidade, espera e rotinas</p>
+                        <ul class="area-list" aria-label="Atividades disponíveis">
+                            <li>Jogo da Espera</li>
+                            <li>Sequência de Rotina</li>
+                            <li>Escolha Flexível</li>
+                        </ul>
+                    </div>
+                    <span class="area-arrow" aria-hidden="true">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                </a>
+
+                <a href="/atividades" class="area-card area-comunicacao" aria-label="Minha Comunicação">
+                    <div class="area-icon-wrap">
+                        <span class="area-icon">💬</span>
+                    </div>
+                    <div class="area-body">
+                        <h3 class="area-title">Minha Comunicação</h3>
+                        <p class="area-desc">Expresse-se e interaja com o mundo</p>
+                        <ul class="area-list" aria-label="Atividades disponíveis">
+                            <li>Cartões de Escolha</li>
+                            <li>Role-Play Social</li>
+                            <li>GuessWhat Social</li>
+                        </ul>
+                    </div>
+                    <span class="area-arrow" aria-hidden="true">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                </a>
 
             </div>
         </section>
 
-        <section id="featured-section">
-            <h2 class="section-title">Atividade do <span>dia</span></h2>
+        <!-- ── PROGRESSO + TEKO.IA ── -->
+        <section class="section-block bottom-grid" aria-label="Progresso e assistente">
 
-            <div class="featured-card">
-                <div class="featured-icon">🎭</div>
-                <div class="featured-content">
-                    <span class="featured-tag">⭐ Em destaque</span>
-                    <div class="featured-title">Como você se sentiria se...?</div>
-                    <div class="featured-desc">
-                        Aprenda a reconhecer emoções em diferentes situações do dia a dia.
-                        São 5 mini-histórias divertidas esperando por você!
+            <!-- Progresso semanal -->
+            <div class="progress-card" aria-label="Meu progresso essa semana">
+                <h2 class="section-heading">Meu progresso</h2>
+                <div class="progress-items">
+
+                    <div class="progress-item">
+                        <div class="progress-row">
+                            <span class="progress-name">
+                                <span class="progress-emoji" aria-hidden="true">😊</span>
+                                Reconhecer emoções
+                            </span>
+                            <span class="progress-pct" aria-label="70 por cento">70%</span>
+                        </div>
+                        <div class="progress-track" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-fill fill-green" style="width:70%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-row">
+                            <span class="progress-name">
+                                <span class="progress-emoji" aria-hidden="true">🗣️</span>
+                                Situações sociais
+                            </span>
+                            <span class="progress-pct" aria-label="45 por cento">45%</span>
+                        </div>
+                        <div class="progress-track" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-fill fill-yellow" style="width:45%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-row">
+                            <span class="progress-name">
+                                <span class="progress-emoji" aria-hidden="true">🧩</span>
+                                Expressões e metáforas
+                            </span>
+                            <span class="progress-pct" aria-label="20 por cento">20%</span>
+                        </div>
+                        <div class="progress-track" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-fill fill-teal" style="width:20%"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TEKO.IA bloco -->
+            <a href="/tekoia" class="tekoia-card" aria-label="Falar com o TEKO.IA">
+                <div class="tekoia-card-mascot">
+                    <img src="../img/mascot/teko-apontando.png" alt="Mascote Teko apontando" onerror="this.style.display='none'">
+                </div>
+                <div class="tekoia-card-body">
+                    <span class="tekoia-tag">Assistente</span>
+                    <h3 class="tekoia-card-title">Ficou com alguma dúvida?</h3>
+                    <p class="tekoia-card-desc">O TEKO está aqui para ajudar você a qualquer hora.</p>
+                    <div class="tekoia-card-btn">
+                        Conversar agora
+                        <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </div>
-                <a href="atividades.html" class="btn-play">
-                    <i class="fa-solid fa-play"></i> Jogar agora
-                </a>
-            </div>
+            </a>
+
         </section>
 
     </main>
 
-    <script>
-        function atualizarSaudacao() {
-            const session = JSON.parse(localStorage.getItem('teko_session') || '{}');
-            const nome = session?.crianca?.nome || session?.user?.email?.split('@')[0] || 'T';
-            document.getElementById('user-avatar').textContent = nome.charAt(0).toUpperCase();
-        }
-
-        function carregarStreak() {
-            const streak = localStorage.getItem('teko_streak') || 3;
-            document.getElementById('streak-count').textContent = streak;
-        }
-
-        function animarBarras() {
-            setTimeout(() => {
-                document.querySelectorAll('.progress-bar-fill').forEach(bar => {
-                    const w = bar.style.width;
-                    bar.style.width = '0';
-                    requestAnimationFrame(() => {
-                        setTimeout(() => { bar.style.width = w; }, 50);
-                    });
-                });
-            }, 400);
-        }
-
-        atualizarSaudacao();
-        carregarStreak();
-        animarBarras();
-    </script>
+    <script src="../js/home-session.js"></script>
 
 </body>
 </html>
