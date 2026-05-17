@@ -55,6 +55,8 @@ async function login(req, res) {
       .eq("user_id", userId)
       .single();
 
+      console.log("RESPONSAVEL:", responsavel, errResp);
+
     if (errResp) console.error("Erro ao buscar responsável:", errResp.message);
 
     // 3. busca criança — FK `responsavel_id` conforme seu schema
@@ -63,6 +65,8 @@ async function login(req, res) {
       .select("id, nome, data_nasc, genero")
       .eq("responsavel_id", responsavel?.id)
       .single();
+
+      console.log("CRIANCA:", crianca, errCri);
 
     if (errCri) console.error("Erro ao buscar criança:", errCri.message);
 

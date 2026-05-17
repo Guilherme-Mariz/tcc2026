@@ -88,6 +88,11 @@ app.get('/tekoia', verificarAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'view/pages/tekoia.html'));
 });
 
+// PERFIL
+app.get('/perfil', verificarAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'view/pages/perfil.html'));
+})
+
 // RESPONSAVEL
 app.get('/responsavel', verificarAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'view/pages/responsavel.html'));

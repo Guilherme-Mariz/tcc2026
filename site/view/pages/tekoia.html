@@ -3,219 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <style>body { opacity: 0; }</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="../css/home.css">
     <link rel="stylesheet" href="../css/tekoia.css">
-
-    <title>Teko — TEKO.IA</title>
+    <title>teko. — TEKO.IA</title>
 </head>
 <body>
 
-    <aside id="sidebar" role="navigation" aria-label="Menu principal">
-        <a href="/" class="sidebar-logo" aria-label="teko. início">
-            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
-        </a>
-
-        <nav class="sidebar-nav">
-            <a href="/home" class="snav-item active" aria-current="page">
-                <span class="snav-icon">
-                    <i class="fa-solid fa-house"></i>
-                </span>
-                <span class="snav-label">Início</span>
-            </a>
-            <a href="/atividades" class="snav-item">
-                <span class="snav-icon">
-                    <i class="fa-solid fa-shapes"></i>
-                </span>
-                <span class="snav-label">Atividades</span>
-            </a>
-            <a href="/tekoia" class="snav-item">
-                <span class="snav-icon snav-icon-ia">
-                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
-                </span>
-                <span class="snav-label">TEKO.IA</span>
-            </a>
-            <a href="/responsavel" class="snav-item">
-                <span class="snav-icon">
-                    <i class="fa-solid fa-people-roof"></i>
-                </span>
-                <span class="snav-label">Responsável</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-bottom">
-            <a href="/configuracoes" class="snav-item snav-config">
-                <span class="snav-icon">
-                    <i class="fa-solid fa-gear"></i>
-                </span>
-                <span class="snav-label">Config.</span>
-            </a>
-            <div class="sidebar-avatar" id="user-avatar" title="Meu perfil" role="button" tabindex="0">T</div>
+<!-- ── MODAL LOGOUT ── -->
+<div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+    <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+        <div class="logout-icon" aria-hidden="true">
+            <i class="fa-solid fa-right-from-bracket"></i>
         </div>
-    </aside>
-
-    <!-- ── MOBILE HEADER ── -->
-    <header id="mobile-header">
-        <a href="/" class="sidebar-logo">
-            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
-        </a>
-        <div class="mobile-header-right">
-            <div class="sidebar-avatar" id="user-avatar-mobile">T</div>
-            <button id="mobile_btn" aria-label="Abrir menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+        <h2 class="logout-title" id="logout-title">Sair da conta?</h2>
+        <p class="logout-desc">Você tem certeza que quer sair? Precisará entrar novamente da próxima vez.</p>
+        <div class="logout-actions">
+            <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
+            <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
         </div>
-    </header>
-
-    <!-- ── MOBILE DRAWER ── -->
-    <div id="mobile_overlay"></div>
-    <div id="mobile_drawer">
-        <button id="mobile_close" aria-label="Fechar menu">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-        <nav class="drawer-nav">
-            <a href="/home" class="snav-item active">
-                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
-                <span class="snav-label">Início</span>
-            </a>
-            <a href="/atividades" class="snav-item">
-                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
-                <span class="snav-label">Atividades</span>
-            </a>
-            <a href="/tekoia" class="snav-item">
-                <span class="snav-icon snav-icon-ia">
-                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
-                </span>
-                <span class="snav-label">TEKO.IA</span>
-            </a>
-            <a href="/responsavel" class="snav-item">
-                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
-                <span class="snav-label">Responsável</span>
-            </a>
-            <a href="/configuracoes" class="snav-item">
-                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
-                <span class="snav-label">Config.</span>
-            </a>
-        </nav>
     </div>
+</div>
 
-    <main class="tekoia-main">
+<!-- ── SIDEBAR ── -->
+<aside id="sidebar" role="navigation" aria-label="Menu principal">
+    <a href="/" class="sidebar-logo" aria-label="teko. início">
+        <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+    </a>
 
-        <div class="tekoia-layout">
+    <nav class="sidebar-nav">
+        <a href="/home" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+            <span class="snav-label">Início</span>
+        </a>
+        <a href="/atividades" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+            <span class="snav-label">Atividades</span>
+        </a>
+        <a href="/tekoia" class="snav-item active" aria-current="page" data-nav>
+            <span class="snav-icon snav-icon-ia">
+                <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+            </span>
+            <span class="snav-label">TEKO.IA</span>
+        </a>
+        <a href="/perfil" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+            <span class="snav-label">Perfil</span>
+        </a>
+        <a href="/responsavel" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+            <span class="snav-label">Responsável</span>
+        </a>
+    </nav>
 
-            <!-- ── Esquerda: título + subtítulo + mascote ── -->
-            <div class="tekoia-left">
+    <div class="sidebar-bottom">
+        <a href="/configuracoes" class="snav-item snav-config" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+            <span class="snav-label">Config.</span>
+        </a>
+        <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair da conta" aria-label="Sair da conta">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+    </div>
+</aside>
 
-                <div class="left-text">
-                    <h1 class="hero-title">
-                        <em class="title-gradient">teko.ia</em>
-                    </h1>
-                    <p class="hero-subtitle">
-                        O teko.ia está aqui para conversar com você,
-                        te ajudando nas lições e te apoiando seja no que for!
-                    </p>
-                </div>
+<!-- ── MOBILE HEADER ── -->
+<header id="mobile-header">
+    <a href="/" class="sidebar-logo">
+        <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+    </a>
+    <div class="mobile-header-right">
+        <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair da conta">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+        <button id="mobile_btn" aria-label="Abrir menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</header>
 
-                <div class="left-mascote">
-                    <div class="mascote-glow"></div>
-                    <img src="../img/mascot/teko-sentado.png" alt="Teko sentado" class="mascote-img">
-                </div>
+<!-- ── MOBILE DRAWER ── -->
+<div id="mobile_overlay"></div>
+<div id="mobile_drawer">
+    <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
+    <nav class="drawer-nav">
+        <a href="/home" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+            <span class="snav-label">Início</span>
+        </a>
+        <a href="/atividades" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+            <span class="snav-label">Atividades</span>
+        </a>
+        <a href="/tekoia" class="snav-item active" data-nav>
+            <span class="snav-icon snav-icon-ia">
+                <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+            </span>
+            <span class="snav-label">TEKO.IA</span>
+        </a>
+        <a href="/perfil" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+            <span class="snav-label">Perfil</span>
+        </a>
+        <a href="/responsavel" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+            <span class="snav-label">Responsável</span>
+        </a>
+        <a href="/configuracoes" class="snav-item" data-nav>
+            <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+            <span class="snav-label">Config.</span>
+        </a>
+    </nav>
+</div>
 
-            </div>
-
-            <!-- ── Direita: chat formato celular ── -->
-            <div class="tekoia-right">
-                <div class="phone-shell">
-
-                    <!-- Notch do celular -->
-                    <div class="phone-notch">
-                        <div class="notch-camera"></div>
-                    </div>
-
-                    <!-- Cabeçalho do chat dentro do celular -->
-                    <div class="chat-header">
-                        <div class="chat-header-avatar">
-                            <img src="../img/mascot/teko-comprimento.png" alt="Teko">
-                            <span class="online-dot"></span>
-                        </div>
-                        <div class="chat-header-info">
-                            <span class="chat-name">Teko</span>
-                            <span class="chat-status">
-                                <span class="status-dot"></span>
-                                Online agora
-                            </span>
-                        </div>
-                        <div class="chat-header-actions">
-                            <button class="chat-action-btn" title="Limpar" aria-label="Limpar conversa">
-                                <i class="fa-solid fa-broom"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Mensagens -->
-                    <div class="chat-messages" id="chat-messages">
-
-                        <div class="msg-date-divider"><span>Hoje</span></div>
-
-                        <div class="msg-row msg-teko">
-                            <div class="msg-avatar">
-                                <img src="../img/mascot/teko-comprimento.png" alt="Teko">
-                            </div>
-                            <div class="msg-bubble msg-bubble-teko">
-                                <p>Oi! 👋 Eu sou o <strong>Teko</strong>, seu amigo virtual!</p>
-                                <span class="msg-time">agora</span>
-                            </div>
-                        </div>
-
-                        <div class="msg-row msg-teko">
-                            <div class="msg-avatar msg-avatar-hidden">
-                                <img src="../img/mascot/teko-comprimento.png" alt="Teko">
-                            </div>
-                            <div class="msg-bubble msg-bubble-teko">
-                                <p>Como você está se sentindo hoje? 😊 Pode me contar!</p>
-                                <span class="msg-time">agora</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Input -->
-                    <div class="chat-input-area">
-                        <button class="emoji-btn" aria-label="Emojis">
-                            <i class="fa-regular fa-face-smile"></i>
-                        </button>
-                        <input
-                            type="text"
-                            class="chat-input"
-                            id="chat-input"
-                            placeholder="Escreva uma mensagem..."
-                            autocomplete="off"
-                        >
-                        <button class="send-btn" id="send-btn" aria-label="Enviar">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
-
-                    <!-- Barra home do celular -->
-                    <div class="phone-home-bar"></div>
-
-                </div>
-            </div>
-
+<!-- ── MAIN ── -->
+<main class="tekoia-main">
+    <div class="tekoia-layout">
+        <div class="tekoia-header">
+            <h1 class="hero-title"><em class="title-gradient">teko.ia</em></h1>
+            <p class="hero-subtitle">O teko.ia está aqui para conversar com você, te ajudando nas lições e te apoiando seja no que for!</p>
         </div>
+        <div class="tekoia-right">
+            <div class="chat-card">
 
-    </main>
+                <!-- header do chat -->
+                <div class="chat-header">
+                    <div class="chat-header-avatar">
+                        <img src="../img/mascot/teko-comprimento.png" alt="Teko">
+                        <span class="online-dot"></span>
+                    </div>
+                    <div class="chat-header-info">
+                        <span class="chat-name">Teko</span>
+                        <span class="chat-status">
+                            <span class="status-dot"></span>
+                            Online agora
+                        </span>
+                    </div>
+                    <button class="chat-action-btn" id="btn-limpar" title="Limpar conversa" aria-label="Limpar conversa">
+                        <i class="fa-solid fa-broom"></i>
+                    </button>
+                </div>
 
-    <script>
-        const session = JSON.parse(localStorage.getItem('teko_session') || '{}');
-        const nome = session?.crianca?.nome || session?.user?.email?.split('@')[0] || 'T';
-        document.getElementById('user-avatar').textContent = nome.charAt(0).toUpperCase();
-    </script>
+                <!-- mensagens -->
+                <div class="chat-messages" id="chat-messages">
+                    <div class="msg-date-divider"><span>Hoje</span></div>
+
+                    <div class="msg-row msg-teko">
+                        <div class="msg-avatar">
+                            <img src="../img/mascot/teko-comprimento.png" alt="Teko">
+                        </div>
+                        <div class="msg-bubble msg-bubble-teko">
+                            <p>Oi! 👋 Eu sou o <strong>Teko</strong>, seu amigo virtual!</p>
+                            <span class="msg-time">agora</span>
+                        </div>
+                    </div>
+
+                    <div class="msg-row msg-teko">
+                        <div class="msg-avatar msg-avatar-hidden">
+                            <img src="../img/mascot/teko-comprimento.png" alt="Teko">
+                        </div>
+                        <div class="msg-bubble msg-bubble-teko">
+                            <p>Como você está se sentindo hoje? 😊 Pode me contar!</p>
+                            <span class="msg-time">agora</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- input -->
+                <div class="chat-input-area">
+                    <input
+                        type="text"
+                        class="chat-input"
+                        id="chat-input"
+                        placeholder="Escreva uma mensagem..."
+                        autocomplete="off"
+                        aria-label="Mensagem"
+                    >
+                    <button class="send-btn" id="send-btn" aria-label="Enviar">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+/* ── sessão ── */
+function carregarAvatar() {
+    try {
+        const s = JSON.parse(localStorage.getItem('teko_session') || '{}');
+        const nome = s?.crianca?.nome || s?.responsavel?.nome_completo || s?.user?.email?.split('@')[0] || 'T';
+        document.querySelectorAll('#user-avatar, #user-avatar-mobile').forEach(el => {
+            if (el) el.textContent = nome.charAt(0).toUpperCase();
+        });
+    } catch(e) {}
+}
+
+/* ── mobile drawer ── */
+const overlay  = document.getElementById('mobile_overlay');
+const drawer   = document.getElementById('mobile_drawer');
+document.getElementById('mobile_btn').addEventListener('click', () => {
+    drawer.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden';
+});
+document.getElementById('mobile_close').addEventListener('click', fecharDrawer);
+overlay.addEventListener('click', fecharDrawer);
+function fecharDrawer() {
+    drawer.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = '';
+}
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', fecharDrawer));
+
+/* ── transição entre páginas ── */
+document.querySelectorAll('[data-nav]').forEach(link => {
+    link.addEventListener('click', e => {
+        const href = link.getAttribute('href');
+        if (!href || href === '#') return;
+        e.preventDefault();
+        document.body.classList.add('page-leaving');
+        setTimeout(() => { window.location.href = href; }, 180);
+    });
+});
+
+/* ── logout ── */
+function abrirLogout() {
+    const modal = document.getElementById('logout-overlay');
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+function fecharLogout() {
+    const modal = document.getElementById('logout-overlay');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+function confirmarLogout() {
+    localStorage.removeItem('teko_session');
+    localStorage.removeItem('teko_streak');
+    document.body.classList.add('page-leaving');
+    setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
+}
+document.getElementById('logout-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) fecharLogout();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharLogout();
+});
+
+/* ── chat ── */
+const chatMessages = document.getElementById('chat-messages');
+const chatInput    = document.getElementById('chat-input');
+const sendBtn      = document.getElementById('send-btn');
+
+function horaAtual() {
+    return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function adicionarMsg(texto, tipo) {
+    const row = document.createElement('div');
+    row.className = 'msg-row msg-' + tipo;
+
+    if (tipo === 'teko') {
+        row.innerHTML = `
+            <div class="msg-avatar"><img src="../img/mascot/teko-comprimento.png" alt="Teko"></div>
+            <div class="msg-bubble msg-bubble-teko">
+                <p>${texto}</p>
+                <span class="msg-time">${horaAtual()}</span>
+            </div>`;
+    } else {
+        row.innerHTML = `
+            <div class="msg-bubble msg-bubble-user">
+                <p>${texto}</p>
+                <span class="msg-time">${horaAtual()}</span>
+            </div>`;
+    }
+
+    chatMessages.appendChild(row);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function mostrarTyping() {
+    const row = document.createElement('div');
+    row.className = 'msg-row msg-teko typing-row';
+    row.id = 'typing-indicator';
+    row.innerHTML = `
+        <div class="msg-avatar"><img src="../img/mascot/teko-comprimento.png" alt="Teko"></div>
+        <div class="msg-bubble msg-bubble-teko typing-bubble">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>`;
+    chatMessages.appendChild(row);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removerTyping() {
+    const t = document.getElementById('typing-indicator');
+    if (t) t.remove();
+}
+
+async function enviarMensagem() {
+    const texto = chatInput.value.trim();
+    if (!texto) return;
+
+    adicionarMsg(texto, 'user');
+    chatInput.value = '';
+    sendBtn.disabled = true;
+
+    mostrarTyping();
+
+    try {
+        const resposta = await fetch('http://localhost:3000/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ mensagem: texto })
+        });
+        const dados = await resposta.json();
+        removerTyping();
+        adicionarMsg(dados.resposta || 'Hmm, não entendi. Pode repetir? 😊', 'teko');
+    } catch(e) {
+        removerTyping();
+        adicionarMsg('Ops, tive um problema aqui. Tenta de novo! 😅', 'teko');
+    }
+
+    sendBtn.disabled = false;
+    chatInput.focus();
+}
+
+sendBtn.addEventListener('click', enviarMensagem);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensagem(); } });
+
+document.getElementById('btn-limpar').addEventListener('click', () => {
+    chatMessages.innerHTML = `
+        <div class="msg-date-divider"><span>Hoje</span></div>
+        <div class="msg-row msg-teko">
+            <div class="msg-avatar"><img src="../img/mascot/teko-comprimento.png" alt="Teko"></div>
+            <div class="msg-bubble msg-bubble-teko">
+                <p>Oi! 👋 Conversa reiniciada. Como posso te ajudar?</p>
+                <span class="msg-time">${horaAtual()}</span>
+            </div>
+        </div>`;
+});
+
+/* ── init ── */
+carregarAvatar();
+</script>
 
 </body>
 </html>
