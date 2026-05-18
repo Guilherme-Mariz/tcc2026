@@ -12,6 +12,21 @@
 </head>
 <body>
 
+    <!-- ── MODAL LOGOUT ── -->
+    <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+            <div class="logout-icon" aria-hidden="true">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h2 class="logout-title" id="logout-title">Sair da conta?</h2>
+            <p class="logout-desc">Você tem certeza que quer sair? Precisará entrar novamente da próxima vez.</p>
+            <div class="logout-actions">
+                <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
+                <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ── SIDEBAR NAVEGAÇÃO ── -->
     <aside id="sidebar" role="navigation" aria-label="Menu principal">
         <a href="/" class="sidebar-logo" aria-label="teko. início">
@@ -37,6 +52,10 @@
                 </span>
                 <span class="snav-label">TEKO.IA</span>
             </a>
+            <a href="/perfil" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                <span class="snav-label">Perfil</span>
+            </a>
             <a href="/responsavel" class="snav-item" data-nav>
                 <span class="snav-icon">
                     <i class="fa-solid fa-people-roof"></i>
@@ -46,13 +65,13 @@
         </nav>
 
         <div class="sidebar-bottom">
-            <a href="/configuracoes" class="snav-item snav-config">
-                <span class="snav-icon">
-                    <i class="fa-solid fa-gear"></i>
-                </span>
+            <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
                 <span class="snav-label">Config.</span>
             </a>
-            <div class="sidebar-avatar" id="user-avatar" title="Meu perfil" role="button" tabindex="0">T</div>
+            <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair da conta" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
         </div>
     </aside>
 
@@ -62,7 +81,9 @@
             <span class="logo-teko">teko</span><span class="logo-dot">.</span>
         </a>
         <div class="mobile-header-right">
-            <div class="sidebar-avatar" id="user-avatar-mobile">T</div>
+            <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
             <button id="mobile_btn" aria-label="Abrir menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -89,6 +110,10 @@
                     <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
                 </span>
                 <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/perfil" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                <span class="snav-label">Perfil</span>
             </a>
             <a href="/responsavel" class="snav-item" data-nav>
                 <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
@@ -278,6 +303,27 @@
         </section>
 
     </main>
+
+    <script>
+        function abrirLogout() {
+            document.getElementById('logout-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function fecharLogout() {
+            document.getElementById('logout-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function confirmarLogout() {
+            localStorage.removeItem('teko_session');
+            localStorage.removeItem('teko_streak');
+            document.body.classList.add('page-leaving');
+            setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
+        }
+        document.getElementById('logout-overlay').addEventListener('click', e => {
+            if (e.target === e.currentTarget) fecharLogout();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
+    </script>
 
 </body>
 </html>

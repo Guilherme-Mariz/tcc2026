@@ -1,6 +1,6 @@
 precisa corrigir o botao voltar do register, n ta funcionando
 
-corrigir perfil e botao de saida (so ta no tekoia)
+teko.ia se desconecta
 
 IMPLEMENTAÇÕES FUTURAS:
 esqueci a senha?
