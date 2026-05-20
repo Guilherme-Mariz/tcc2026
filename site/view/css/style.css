@@ -413,22 +413,37 @@ body { font-family:'Poppins',sans-serif; background:var(--cream); color:var(--te
     cursor:default;
 }
 .destaque-card:hover { transform:translateY(-8px); box-shadow:var(--shadow-md); }
+
 .destaque-icon { width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+
 .destaque-green .destaque-icon { background:#D4F1E2; color:var(--green-deep); }
+
 .destaque-yellow .destaque-icon { background:#FFF3CC; color:#C98000; }
+
 .destaque-blue .destaque-icon { background:#DBF0FF; color:#1A7ABF; }
+
 .destaque-card h3 { font-family:'Fraunces',serif; font-size:1.18rem; font-weight:700; color:var(--text); }
+
 .destaque-card p { font-size:0.88rem; line-height:1.72; color:var(--text-soft); }
+
 .destaque-img-placeholder {
-    margin-top:8px; border-radius:12px;
-    border:2px dashed rgba(168,213,186,0.5); background:rgba(168,213,186,0.05);
-    min-height:110px; display:flex; align-items:center; justify-content:center;
-    font-size:0.75rem; color:#bbb; text-align:center; padding:12px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.destaque-img-placeholder img {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 2px solid rgba(168,213,186,0.4);
 }
 
 /* ══ NUMBERS (nova seção) ══ */
 #numeros {
-    padding:90px 10%;
+    padding:90px 5%;
     background:var(--white);
     display:flex; align-items:center; justify-content:center;
 }
@@ -453,60 +468,263 @@ body { font-family:'Poppins',sans-serif; background:var(--cream); color:var(--te
 
 /* ══ TEKOIA BANNER ══ */
 
-#tekoia-banner {
-    padding: 120px 10% 80px;
-    background: var(--beige);
-}
-
-.tekoia-banner-inner {
-    background:linear-gradient(135deg,#1a6b48 0%,#2d9e72 55%,#3ab07e 100%);
-    border-radius:28px; padding:64px 72px;
-    display:flex; align-items:center; justify-content:space-between; gap:40px;
-    overflow:hidden; position:relative;
-    box-shadow:0 16px 56px rgba(26,107,72,0.26);
-}
-
-.tekoia-banner-inner::before {
-    content:''; position:absolute;
-    width:320px; height:320px; border-radius:50%;
-    border:2px solid rgba(255,255,255,0.09);
-    top:-90px; right:270px; pointer-events:none;
-}
-.tekoia-banner-inner::after {
-    content:''; position:absolute;
-    width:190px; height:190px; border-radius:50%;
-    background:rgba(255,255,255,0.04);
-    bottom:-55px; left:40px; pointer-events:none;
-}
-.tekoia-banner-text { display:flex; flex-direction:column; gap:18px; max-width:480px; position:relative; z-index:1; }
-.tekoia-banner-text .section-label { color:rgba(255,255,255,0.7); background:rgba(255,255,255,0.12); }
-.tekoia-banner-text .section-label::before { background:rgba(255,255,255,0.7); }
-
-.tekoia-banner-text h2 {
+#tekoia h1 {
     font-family:'Fraunces',serif;
-    font-size:clamp(1.9rem,3vw,2.7rem);
-    font-weight:700; color:#fff; line-height:1.18;
+    font-size:clamp(2rem,3.5vw,3rem);
+    font-weight:700; color:var(--text); line-height:1.12;
 }
+#tekoia h1 em { font-style:italic; color:var(--green-deep); }
 
-.tekoia-banner-text h2 em { font-style:italic; color:var(--yellow); }
-.tekoia-banner-text p { font-size:0.97rem; line-height:1.74; color:rgba(255,255,255,0.8); }
+#tekoia {
+    position: relative;
+    z-index: 2;
 
-.btn-banner {
-    display:inline-flex; align-items:center; gap:9px;
-    background:var(--yellow); color:var(--text);
-    text-decoration:none; padding:13px 28px; border-radius:50px;
-    font-weight:700; font-size:0.92rem; width:fit-content;
-    box-shadow:0 4px 20px rgba(248,212,119,0.42);
-    transition:background 0.2s, transform 0.15s;
-    cursor:pointer; border:none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    gap: 32px;
+    max-width: 100%; 
+
+    background:var(--white); 
+    
+    padding: 70px 0; 
+    margin: 0 auto;
 }
-
-.btn-banner:hover { background:var(--yellow-dark); transform:translateY(-2px); }
-.btn-banner i { transition:transform 0.2s; }
-.btn-banner:hover i { transform:translateX(4px); }
-.tekoia-banner-img { flex-shrink:0; width:220px; position:relative; z-index:1; animation:bannerFloat 5s ease-in-out infinite; }
-.tekoia-banner-img img { width:100%; display:block; filter:drop-shadow(0 14px 30px rgba(0,0,0,0.2)); }
-@keyframes bannerFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+ 
+/* ── bloco arredondado ── */
+.tia-block {
+    position: relative;
+    width: 95%;
+    height: 320px;
+    border-radius: 28px;
+    overflow: hidden;
+    cursor: none;
+    /* fundo verde-amarelado forte */
+    background: #b5c94a;
+}
+ 
+/* ── canvas WebGL (ondas pretas) ── */
+#tia-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+ 
+/* ── logo preta gigante ── */
+.tia-bg-logo {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    user-select: none;
+}
+.tia-bg-logo span {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(5rem, 14vw, 11rem);
+    font-weight: 900;
+    color: #000;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+        filter 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: filter, opacity;
+}
+.tia-logo-dot { color: #2d6a3f; }
+ 
+.tia-block.hovered .tia-bg-logo span {
+    filter: blur(20px);
+    opacity: 0.28;
+}
+ 
+/* ── conteúdo revelado ── */
+.tia-content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 32px 48px;
+    text-align: center;
+    pointer-events: none;
+    /* escondido por padrão */
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(5px);
+    transition:
+        opacity  0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        filter   0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform, filter;
+}
+.tia-block.hovered .tia-content {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    pointer-events: auto;
+}
+ 
+/* pílula de categoria */
+.tia-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.38);
+    border-radius: 50px;
+    padding: 5px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    backdrop-filter: blur(6px);
+}
+.tia-tag::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    animation: tia-tag-pulse 2s ease-in-out infinite;
+}
+@keyframes tia-tag-pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+}
+ 
+/* headline */
+.tia-headline {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.2);
+}
+.tia-headline em {
+    font-style: italic;
+    color: rgba(255,255,255,0.88);
+}
+ 
+/* descrição */
+.tia-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.75;
+    max-width: 420px;
+}
+ 
+/* botão CTA */
+.tia-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.84rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tia-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.32);
+}
+.tia-cta svg { transition: transform 0.2s; }
+.tia-cta:hover svg { transform: translateX(4px); }
+ 
+/* cursor personalizado */
+.tia-cursor {
+    position: absolute;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.4);
+    pointer-events: none;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    left: -100px; top: -100px;
+    transition:
+        width 0.35s cubic-bezier(0.22,1,0.36,1),
+        height 0.35s cubic-bezier(0.22,1,0.36,1),
+        border-color 0.35s;
+    mix-blend-mode: multiply;
+}
+.tia-block.hovered .tia-cursor {
+    width: 54px; height: 54px;
+    border-color: rgba(255,255,255,0.65);
+    mix-blend-mode: normal;
+}
+ 
+/* hint */
+.tia-hint {
+    position: absolute;
+    bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.61rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(0,0,0,0.32);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 4;
+    transition: opacity 0.4s;
+}
+.tia-block.hovered .tia-hint { opacity: 0; }
+ 
+/* ── Responsivo ── */
+@media (max-width: 900px) {
+    #tekoia { padding: 0 6% 70px; }
+    .tia-block { height: 380px; border-radius: 22px; }
+    .tia-content { padding: 28px 32px; }
+    .tia-hint { display: none; }
+}
+ 
+@media (max-width: 600px) {
+    .tia-block { height: 340px; border-radius: 18px; cursor: default; }
+    .tia-cursor { display: none; }
+    .tia-content { padding: 24px 20px; gap: 12px; }
+    .tia-headline { font-size: clamp(1.4rem, 6vw, 2rem); }
+    .tia-desc { font-size: 0.82rem; }
+}
+ 
+/* mobile: estado revelado automático */
+@media (hover: none) {
+    .tia-content {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+        pointer-events: auto;
+        transition-delay: 0.3s;
+    }
+    .tia-bg-logo span {
+        filter: blur(18px);
+        opacity: 0.28;
+    }
+    #tia-canvas { filter: none; }
+    .tia-cursor { display: none; }
+}
 
 /* ══ METODOLOGIA ══ */
 #metodologia { padding:130px 10%; display:flex; align-items:center; justify-content:center; background:var(--cream); }

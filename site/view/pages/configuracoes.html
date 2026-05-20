@@ -5,197 +5,550 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,wght@0,700;1,700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="../css/home.css">
     <link rel="stylesheet" href="../css/configuracoes.css">
-    <title>Teko — Configurações</title>
+    <title>teko. — Configurações</title>
 </head>
 <body>
 
-    <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="colorblind-filter">
-                <feColorMatrix type="matrix" values="0.567 0.433 0 0 0 0.558 0.442 0 0 0 0 0.242 0.758 0 0 0 0 0 1 0"/>
-            </filter>
-        </defs>
-    </svg>
-
-    <div class="clouds-bg" aria-hidden="true">
-        <div class="cloud cloud-1"></div><div class="cloud cloud-2"></div>
-        <div class="cloud cloud-3"></div><div class="cloud cloud-4"></div>
+    <!-- ── MODAL LOGOUT ── -->
+    <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+            <div class="logout-icon" aria-hidden="true">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h2 class="logout-title" id="logout-title">Sair da conta?</h2>
+            <p class="logout-desc">Você tem certeza que quer sair? Precisará entrar novamente da próxima vez.</p>
+            <div class="logout-actions">
+                <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
+                <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
+            </div>
+        </div>
     </div>
 
-    <header id="header">
-        <nav id="navbar">
-            <a href="/" id="nav_logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
-            <ul id="nav_list">
-                <li class="nav_item"><a href="/home"><span class="nav-icon"><i class="fa-solid fa-house"></i></span>Home</a></li>
-                <li class="nav_item"><a href="/atividades"><span class="nav-icon"><i class="fa-solid fa-gamepad"></i></span>Atividades</a></li>
-                <li class="nav_item"><a href="/tekoia"><span class="nav-icon"><img src="../img/mascot/teko-icn.png" alt="TEKO.IA" class="nav-icon-img"></span>TEKO.IA</a></li>
-                <li class="nav_item"><a href="/responsavel"><span class="nav-icon"><i class="fa-solid fa-people-roof"></i></span>Responsável</a></li>
-                <li class="nav_item"><a href="/configuracoes" class="active"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span>Config.</a></li>
-            </ul>
-            <div class="nav-avatar" id="user-avatar" title="Meu perfil">T</div>
-            <button id="mobile_btn" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+    <!-- ── SIDEBAR ── -->
+    <aside id="sidebar" role="navigation" aria-label="Menu principal">
+        <a href="/" class="sidebar-logo" aria-label="teko. início">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="/home" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item" data-nav>
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/perfil" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                <span class="snav-label">Perfil</span>
+            </a>
+            <a href="/responsavel" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
         </nav>
+        <div class="sidebar-bottom">
+            <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
+            <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair da conta" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ── MOBILE HEADER ── -->
+    <header id="mobile-header">
+        <a href="/" class="sidebar-logo">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <div class="mobile-header-right">
+            <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+            <button id="mobile_btn" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
     </header>
 
-    <main>
-        <div class="cfg-page">
+    <!-- ── MOBILE DRAWER ── -->
+    <div id="mobile_overlay"></div>
+    <div id="mobile_drawer">
+        <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
+        <nav class="drawer-nav">
+            <a href="/home" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item" data-nav>
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/perfil" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                <span class="snav-label">Perfil</span>
+            </a>
+            <a href="/responsavel" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
+            <a href="/configuracoes" class="snav-item active" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
+        </nav>
+    </div>
 
-            <div class="cfg-page-header">
-                <div class="cfg-header-icon" aria-hidden="true">⚙️</div>
-                <div class="cfg-header-text">
-                    <h1>Configurações</h1>
-                    <p>Ajuste o TEKO do seu jeito!</p>
-                </div>
+    <!-- ── MAIN ── -->
+    <main id="main-content">
+    <div class="cfg-page">
+
+        <!-- cabeçalho -->
+        <div class="cfg-page-header">
+            <div class="cfg-header-icon" aria-hidden="true">
+                <i class="fa-solid fa-gear"></i>
             </div>
-
-            <!-- 1. VISUAL -->
-            <div class="cfg-section-card sec-visual open" id="sec-visual">
-                <div class="cfg-section-header" onclick="toggleSection('sec-visual')" role="button" aria-expanded="true" tabindex="0">
-                    <div class="cfg-section-icon"><i class="fa-solid fa-eye" style="color:#1A7ABF"></i></div>
-                    <div>
-                        <div class="cfg-section-title">Visual</div>
-                        <div class="cfg-section-subtitle">Letras, cores e como as coisas aparecem na tela</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-down cfg-section-chevron"></i>
-                </div>
-                <div class="cfg-section-body">
-
-                    <div class="cfg-option" style="flex-direction:column;align-items:flex-start;gap:10px">
-                        <div style="display:flex;align-items:center;gap:14px;width:100%">
-                            <span class="cfg-option-icon"><i class="fa-solid fa-text-height"></i></span>
-                            <div class="cfg-option-text">
-                                <span class="cfg-option-label">Tamanho das letras</span>
-                                <span class="cfg-option-desc">Ajuste para o mais agradável</span>
-                            </div>
-                        </div>
-                        <div class="font-size-control">
-                            <span class="font-size-label-sm">A</span>
-                            <input type="range" class="font-slider" id="font-slider" min="0.9" max="1.5" step="0.1" value="1">
-                            <span class="font-size-label-lg">A</span>
-                        </div>
-                        <div class="font-preview" id="font-preview">Normal — Olá! Estou aprendendo com o Teko!</div>
-                    </div>
-
-                    <div class="cfg-option">
-                        <span class="cfg-option-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-                        <div class="cfg-option-text">
-                            <span class="cfg-option-label">Efeitos e animações</span>
-                            <span class="cfg-option-desc">Ativa ou desativa os movimentos e efeitos visuais da tela</span>
-                        </div>
-                        <label class="toggle-wrap"><input type="checkbox" class="toggle-input" id="toggle-reduced-motion" checked><span class="toggle-track"></span></label>
-                    </div>
-
-                    <div class="cfg-option">
-                        <span class="cfg-option-icon"><i class="fa-solid fa-mouse-pointer"></i></span>
-                        <div class="cfg-option-text">
-                            <span class="cfg-option-label">Cursor maior</span>
-                            <span class="cfg-option-desc">Aumente o tamanho do cursor para ficar mais fácil de clicar</span>
-                        </div>
-                        <label class="toggle-wrap"><input type="checkbox" class="toggle-input" id="toggle-cursor"><span class="toggle-track"></span></label>
-                    </div>
-
-                </div>
+            <div class="cfg-header-text">
+                <h1>Configurações</h1>
+                <p>Ajuste o TEKO do seu jeito</p>
             </div>
-
-            <!-- 2. ÁUDIO -->
-            <div class="cfg-section-card sec-audio" id="sec-audio">
-                <div class="cfg-section-header" onclick="toggleSection('sec-audio')" role="button" aria-expanded="false" tabindex="0">
-                    <div class="cfg-section-icon"><i class="fa-solid fa-volume-high" style="color:#7C3AED"></i></div>
-                    <div>
-                        <div class="cfg-section-title">Sons</div>
-                        <div class="cfg-section-subtitle">Volume, narração e efeitos sonoros</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-down cfg-section-chevron"></i>
-                </div>
-                <div class="cfg-section-body">
-
-                    <div class="cfg-option">
-                        <span class="cfg-option-icon"><i class="fa-solid fa-music"></i></span>
-                        <div class="cfg-option-text">
-                            <span class="cfg-option-label">Efeitos sonoros</span>
-                            <span class="cfg-option-desc">Sons nas atividades e conquistas</span>
-                        </div>
-                        <label class="toggle-wrap"><input type="checkbox" class="toggle-input" id="toggle-efeitos" checked><span class="toggle-track"></span></label>
-                    </div>
-
-                    <div class="cfg-option">
-                        <span class="cfg-option-icon"><i class="fa-solid fa-microphone"></i></span>
-                        <div class="cfg-option-text">
-                            <span class="cfg-option-label">Narração</span>
-                            <span class="cfg-option-desc">Nas atividades o TEKO lê os textos para você</span>
-                        </div>
-                        <label class="toggle-wrap"><input type="checkbox" class="toggle-input" id="toggle-narracao" checked><span class="toggle-track"></span></label>
-                    </div>
-
-                    <div class="cfg-option" style="flex-direction:column;align-items:flex-start;gap:8px">
-                        <div style="display:flex;align-items:center;gap:14px;width:100%">
-                            <span class="cfg-option-icon"><i class="fa-solid fa-volume-high"></i></span>
-                            <div class="cfg-option-text">
-                                <span class="cfg-option-label">Volume</span>
-                            </div>
-                            <span class="volume-pct" id="vol-narracao-pct" style="margin-left:auto">80%</span>
-                        </div>
-                        <div style="width:100%;padding:0 4px">
-                            <input type="range" class="volume-slider" id="vol-narracao" min="0" max="100" value="80" style="width:100%">
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
         </div>
+
+        <!-- ── VISUAL ── -->
+        <div class="cfg-card" id="sec-visual">
+            <button class="cfg-card-header" onclick="toggleSection('sec-visual')" aria-expanded="true">
+                <div class="cfg-card-icon cfg-icon-blue"><i class="fa-solid fa-eye"></i></div>
+                <div class="cfg-card-info">
+                    <span class="cfg-card-title">Visual</span>
+                    <span class="cfg-card-sub">Letras, cores e aparência da tela</span>
+                </div>
+                <i class="fa-solid fa-chevron-down cfg-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="cfg-card-body">
+
+                <!-- tamanho de fonte -->
+                <div class="cfg-row cfg-row-col">
+                    <div class="cfg-row-top">
+                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-text-height"></i></div>
+                        <div class="cfg-row-text">
+                            <span class="cfg-row-label">Tamanho das letras</span>
+                            <span class="cfg-row-desc">Ajuste para ficar mais confortável</span>
+                        </div>
+                    </div>
+                    <div class="font-size-control">
+                        <span class="font-sz-sm" aria-hidden="true">A</span>
+                        <input type="range" class="teko-slider" id="font-slider" min="0.9" max="1.5" step="0.1" value="1" aria-label="Tamanho da fonte">
+                        <span class="font-sz-lg" aria-hidden="true">A</span>
+                    </div>
+                    <div class="font-preview" id="font-preview">Normal — Olá! Estou aprendendo com o TEKO!</div>
+                </div>
+
+                <!-- animações -->
+                <div class="cfg-row">
+                    <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="cfg-row-text">
+                        <span class="cfg-row-label">Animações e efeitos</span>
+                        <span class="cfg-row-desc">Ativa ou desativa movimentos na tela</span>
+                    </div>
+                    <label class="teko-toggle">
+                        <input type="checkbox" id="toggle-reduced-motion" checked aria-label="Animações e efeitos">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+
+                <!-- cursor maior -->
+                <div class="cfg-row">
+                    <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-mouse-pointer"></i></div>
+                    <div class="cfg-row-text">
+                        <span class="cfg-row-label">Cursor maior</span>
+                        <span class="cfg-row-desc">Facilita clicar nos botões</span>
+                    </div>
+                    <label class="teko-toggle">
+                        <input type="checkbox" id="toggle-cursor" aria-label="Cursor maior">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── SONS ── -->
+        <div class="cfg-card" id="sec-audio">
+            <button class="cfg-card-header" onclick="toggleSection('sec-audio')" aria-expanded="false">
+                <div class="cfg-card-icon cfg-icon-purple"><i class="fa-solid fa-volume-high"></i></div>
+                <div class="cfg-card-info">
+                    <span class="cfg-card-title">Sons</span>
+                    <span class="cfg-card-sub">Volume, narração e efeitos sonoros</span>
+                </div>
+                <i class="fa-solid fa-chevron-down cfg-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="cfg-card-body">
+
+                <div class="cfg-row">
+                    <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-music"></i></div>
+                    <div class="cfg-row-text">
+                        <span class="cfg-row-label">Efeitos sonoros</span>
+                        <span class="cfg-row-desc">Sons nas atividades e conquistas</span>
+                    </div>
+                    <label class="teko-toggle">
+                        <input type="checkbox" id="toggle-efeitos" checked aria-label="Efeitos sonoros">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+
+                <div class="cfg-row">
+                    <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-microphone"></i></div>
+                    <div class="cfg-row-text">
+                        <span class="cfg-row-label">Narração</span>
+                        <span class="cfg-row-desc">O TEKO lê os textos para você</span>
+                    </div>
+                    <label class="teko-toggle">
+                        <input type="checkbox" id="toggle-narracao" checked aria-label="Narração">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+
+                <div class="cfg-row cfg-row-col">
+                    <div class="cfg-row-top">
+                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-volume-high"></i></div>
+                        <div class="cfg-row-text">
+                            <span class="cfg-row-label">Volume</span>
+                        </div>
+                        <span class="vol-pct" id="vol-narracao-pct">80%</span>
+                    </div>
+                    <input type="range" class="teko-slider teko-slider-blue" id="vol-narracao" min="0" max="100" value="80" aria-label="Volume da narração">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── RITMO ── -->
+        <div class="cfg-card" id="sec-movement">
+            <button class="cfg-card-header" onclick="toggleSection('sec-movement')" aria-expanded="false">
+                <div class="cfg-card-icon cfg-icon-yellow"><i class="fa-solid fa-gauge-simple"></i></div>
+                <div class="cfg-card-info">
+                    <span class="cfg-card-title">Ritmo</span>
+                    <span class="cfg-card-sub">Velocidade das atividades e dificuldade</span>
+                </div>
+                <i class="fa-solid fa-chevron-down cfg-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="cfg-card-body">
+
+                <div class="cfg-row cfg-row-col">
+                    <div class="cfg-row-top">
+                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-forward"></i></div>
+                        <div class="cfg-row-text">
+                            <span class="cfg-row-label">Velocidade das atividades</span>
+                            <span class="cfg-row-desc">Escolha o ritmo mais confortável</span>
+                        </div>
+                    </div>
+                    <div class="speed-btns">
+                        <button class="speed-btn" data-speed="devagar" onclick="setSpeed(this)">
+                            <span aria-hidden="true">🐢</span> Devagar
+                        </button>
+                        <button class="speed-btn active" data-speed="normal" onclick="setSpeed(this)">
+                            <span aria-hidden="true">🚶</span> Normal
+                        </button>
+                        <button class="speed-btn" data-speed="rapido" onclick="setSpeed(this)">
+                            <span aria-hidden="true">🚀</span> Rápido
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── PERFIL ── -->
+        <div class="cfg-card" id="sec-profile">
+            <button class="cfg-card-header" onclick="toggleSection('sec-profile')" aria-expanded="false">
+                <div class="cfg-card-icon cfg-icon-green"><i class="fa-solid fa-child"></i></div>
+                <div class="cfg-card-info">
+                    <span class="cfg-card-title">Perfil</span>
+                    <span class="cfg-card-sub">Avatar e apelido da criança</span>
+                </div>
+                <i class="fa-solid fa-chevron-down cfg-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="cfg-card-body">
+
+                <div class="cfg-row cfg-row-col">
+                    <div class="cfg-row-top">
+                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-face-smile"></i></div>
+                        <div class="cfg-row-text">
+                            <span class="cfg-row-label">Escolha seu avatar</span>
+                        </div>
+                    </div>
+                    <div class="avatar-grid">
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🦊" checked>
+                            <span class="avatar-emoji">🦊</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🐸">
+                            <span class="avatar-emoji">🐸</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🐼">
+                            <span class="avatar-emoji">🐼</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🦋">
+                            <span class="avatar-emoji">🦋</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🐬">
+                            <span class="avatar-emoji">🐬</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🦁">
+                            <span class="avatar-emoji">🦁</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🐙">
+                            <span class="avatar-emoji">🐙</span>
+                        </label>
+                        <label class="avatar-opt">
+                            <input type="radio" name="avatar" value="🌟">
+                            <span class="avatar-emoji">🌟</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="cfg-row cfg-row-col">
+                    <div class="cfg-row-top">
+                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-tag"></i></div>
+                        <div class="cfg-row-text">
+                            <span class="cfg-row-label">Apelido</span>
+                            <span class="cfg-row-desc">Como o TEKO vai te chamar</span>
+                        </div>
+                    </div>
+                    <input type="text" class="teko-input" id="apelido-input" placeholder="Digite seu apelido..." maxlength="20" aria-label="Apelido">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- barra de salvar -->
+        <div class="cfg-save-bar">
+            <div>
+                <div class="cfg-save-title">Tudo certo?</div>
+                <div class="cfg-save-desc">Suas preferências ficam salvas no dispositivo.</div>
+            </div>
+            <div class="cfg-save-actions">
+                <button class="btn-reset" onclick="resetarConfiguracoes()">
+                    <i class="fa-solid fa-rotate-left"></i> Resetar
+                </button>
+                <button class="btn-save" onclick="salvarConfiguracoes()">
+                    <i class="fa-solid fa-check"></i> Salvar
+                </button>
+            </div>
+        </div>
+
+    </div>
     </main>
 
+    <!-- toast -->
+    <div id="toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Configurações salvas!</span>
+    </div>
 
     <script>
+        function abrirLogout() {
+            document.getElementById('logout-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function fecharLogout() {
+            document.getElementById('logout-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function confirmarLogout() {
+            localStorage.removeItem('teko_session');
+            localStorage.removeItem('teko_streak');
+            document.body.classList.add('page-leaving');
+            setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
+        }
+        document.getElementById('logout-overlay').addEventListener('click', e => {
+            if (e.target === e.currentTarget) fecharLogout();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
+
+        /* ── mobile drawer ── */
+        const overlay  = document.getElementById('mobile_overlay');
+        const drawer   = document.getElementById('mobile_drawer');
+        const openBtn  = document.getElementById('mobile_btn');
+        const closeBtn = document.getElementById('mobile_close');
+        function abrirMenu()  { drawer.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow='hidden'; }
+        function fecharMenu() { drawer.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow=''; }
+        openBtn.addEventListener('click', abrirMenu);
+        closeBtn.addEventListener('click', fecharMenu);
+        overlay.addEventListener('click', fecharMenu);
+
+        /* abre sec-visual por padrão */
+        document.getElementById('sec-visual').classList.add('open');
+
+        function toggleSection(id) {
+            const card = document.getElementById(id);
+            const isOpen = card.classList.contains('open');
+            const btn = card.querySelector('.cfg-card-header');
+
+            /* fecha todos */
+            document.querySelectorAll('.cfg-card').forEach(c => {
+                c.classList.remove('open');
+                c.querySelector('.cfg-card-header').setAttribute('aria-expanded','false');
+                const body = c.querySelector('.cfg-card-body');
+                body.style.maxHeight = '0';
+            });
+
+            /* abre o clicado se estava fechado */
+            if (!isOpen) {
+                card.classList.add('open');
+                btn.setAttribute('aria-expanded','true');
+                const body = card.querySelector('.cfg-card-body');
+                body.style.maxHeight = body.scrollHeight + 40 + 'px';
+            }
+        }
+
+        /* inicializa altura do aberto */
+        function initAccordions() {
+            document.querySelectorAll('.cfg-card').forEach(card => {
+                const body = card.querySelector('.cfg-card-body');
+                if (card.classList.contains('open')) {
+                    body.style.maxHeight = body.scrollHeight + 40 + 'px';
+                } else {
+                    body.style.maxHeight = '0';
+                }
+            });
+        }
+
+        /* ── font slider ── */
+        document.getElementById('font-slider').addEventListener('input', function () {
+            aplicarFonte(this.value);
+            salvarConfiguracoes();
+        });
+
+        function aplicarFonte(scale) {
+            document.documentElement.style.setProperty('--font-scale', scale);
+            const labels = { 0.9:'Pequeno', 1:'Normal', 1.1:'Um pouco maior', 1.2:'Maior', 1.3:'Grande', 1.4:'Bem grande', 1.5:'Gigante' };
+            const preview = document.getElementById('font-preview');
+            preview.style.fontSize = parseFloat(scale) + 'rem';
+            preview.textContent = (labels[parseFloat(scale)] || 'Personalizado') + ' — Olá! Estou aprendendo com o TEKO!';
+        }
+
+        /* ── volume slider ── */
+        document.getElementById('vol-narracao').addEventListener('input', function () {
+            document.getElementById('vol-narracao-pct').textContent = this.value + '%';
+            salvarConfiguracoes();
+        });
+
+        /* ── toggles ── */
+        document.querySelectorAll('.teko-toggle input').forEach(t =>
+            t.addEventListener('change', salvarConfiguracoes)
+        );
+
+        /* ── speed ── */
+        function setSpeed(btn) {
+            document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            salvarConfiguracoes();
+        }
+
+        /* ── salvar ── */
         function salvarConfiguracoes() {
-            const cfg = {};
-            cfg.fontScale = document.getElementById('font-slider').value;
-            const volEl = document.getElementById('vol-narracao');
-            if (volEl) cfg.volNarracao = volEl.value;
+            const cfg = {
+                fontScale:  document.getElementById('font-slider').value,
+                volNarracao: document.getElementById('vol-narracao').value,
+                speed: document.querySelector('.speed-btn.active')?.dataset.speed || 'normal',
+                avatar: document.querySelector('input[name="avatar"]:checked')?.value || '🦊',
+                apelido: document.getElementById('apelido-input').value,
+            };
             ['reduced-motion','cursor','narracao','efeitos'].forEach(id => {
                 const el = document.getElementById('toggle-' + id);
                 if (el) cfg['toggle_' + id] = el.checked;
             });
             localStorage.setItem('teko_config', JSON.stringify(cfg));
-            aplicarFonte(cfg.fontScale);
         }
+
+        function salvarEToast() {
+            salvarConfiguracoes();
+            mostrarToast('Configurações salvas!');
+        }
+
+        function resetarConfiguracoes() {
+            localStorage.removeItem('teko_config');
+            location.reload();
+        }
+
+        /* ── carregar ── */
         function carregarConfiguracoes() {
-            const cfg = JSON.parse(localStorage.getItem('teko_config') || '{}');
-            if (cfg.fontScale) { document.getElementById('font-slider').value = cfg.fontScale; aplicarFonte(cfg.fontScale); }
-            ['reduced-motion','cursor','narracao','efeitos'].forEach(id => {
-                const el = document.getElementById('toggle-' + id);
-                if (el && cfg['toggle_' + id] !== undefined) el.checked = cfg['toggle_' + id];
-            });
-            const volEl = document.getElementById('vol-narracao');
-            const pctEl = document.getElementById('vol-narracao-pct');
-            if (volEl && cfg.volNarracao !== undefined) { volEl.value = cfg.volNarracao; if(pctEl) pctEl.textContent = cfg.volNarracao + '%'; }
+            try {
+                const cfg = JSON.parse(localStorage.getItem('teko_config') || '{}');
+                if (cfg.fontScale)   { document.getElementById('font-slider').value = cfg.fontScale; aplicarFonte(cfg.fontScale); }
+                if (cfg.volNarracao) {
+                    document.getElementById('vol-narracao').value = cfg.volNarracao;
+                    document.getElementById('vol-narracao-pct').textContent = cfg.volNarracao + '%';
+                }
+                ['reduced-motion','cursor','narracao','efeitos'].forEach(id => {
+                    const el = document.getElementById('toggle-' + id);
+                    if (el && cfg['toggle_' + id] !== undefined) el.checked = cfg['toggle_' + id];
+                });
+                if (cfg.speed) {
+                    document.querySelectorAll('.speed-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.speed === cfg.speed);
+                    });
+                }
+                if (cfg.avatar) {
+                    const radio = document.querySelector(`input[name="avatar"][value="${cfg.avatar}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (cfg.apelido) document.getElementById('apelido-input').value = cfg.apelido;
+            } catch(e) {}
         }
-        function toggleSection(id) {
-            const c = document.getElementById(id);
-            c.classList.toggle('open');
-            c.querySelector('.cfg-section-header').setAttribute('aria-expanded', c.classList.contains('open'));
+
+        /* ── avatar ── */
+        function carregarAvatar() {
+            try {
+                const sessao = JSON.parse(localStorage.getItem('teko_session') || '{}');
+                const nome = sessao?.crianca?.nome || sessao?.responsavel?.nome_completo || sessao?.user?.email?.split('@')[0] || 'T';
+                const inicial = nome.charAt(0).toUpperCase();
+                document.querySelectorAll('#user-avatar, #user-avatar-mobile').forEach(el => { if(el) el.textContent = inicial; });
+            } catch(e) {}
         }
-        document.getElementById('font-slider').addEventListener('input', function() { aplicarFonte(this.value); salvarConfiguracoes(); });
-        function aplicarFonte(scale) {
-            document.documentElement.style.setProperty('--font-scale', scale);
-            const labels = {0.9:'Pequeno',1:'Normal',1.1:'Um pouco maior',1.2:'Maior',1.3:'Grande',1.4:'Bem grande',1.5:'Gigante'};
-            const p = document.getElementById('font-preview');
-            p.style.fontSize = parseFloat(scale) + 'rem';
-            p.textContent = (labels[parseFloat(scale)] || 'Personalizado') + ' — Olá! Estou aprendendo com o Teko!';
+
+        /* ── toast ── */
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2800);
         }
-        const volEl = document.getElementById('vol-narracao');
-        const pctEl = document.getElementById('vol-narracao-pct');
-        if (volEl) volEl.addEventListener('input', function() { if(pctEl) pctEl.textContent = this.value + '%'; salvarConfiguracoes(); });
-        document.querySelectorAll('.toggle-input').forEach(t => t.addEventListener('change', salvarConfiguracoes));
-        const session = JSON.parse(localStorage.getItem('teko_session') || '{}');
-        const nome = session?.crianca?.nome || session?.user?.email?.split('@')[0] || 'T';
-        document.getElementById('user-avatar').textContent = nome.charAt(0).toUpperCase();
-        carregarConfiguracoes();
+
+        /* ── btn salvar ── */
+        document.querySelector('.btn-save').addEventListener('click', salvarEToast);
+
+        /* ── init ── */
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarConfiguracoes();
+            carregarAvatar();
+            initAccordions();
+        });
     </script>
 </body>
 </html>

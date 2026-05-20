@@ -1,0 +1,11 @@
+precisa corrigir o botao voltar do register, n ta funcionando
+
+teko.ia se desconecta
+
+IMPLEMENTAÇÕES FUTURAS:
+esqueci a senha?
+acessibilidade - sons e cores
+perfil comportamental - interesses (personalização)
+
+
+testando

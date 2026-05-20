@@ -1,5 +1,5 @@
 /* ============================================
-   Teko — Cadastro (layout novo)
+   Teko — Login (layout novo)
    ============================================ */
 
 /* ── página ── */
@@ -8,6 +8,10 @@
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #d4f0e2 0%, #a8d5ba 35%, #6bb08a 70%, #3a8c60 100%);
+}
+
+.cad-logo, .cad-voltar {
+    cursor: pointer;
 }
 
 /* ── header transparente ── */
