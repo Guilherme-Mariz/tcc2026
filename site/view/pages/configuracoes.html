@@ -276,75 +276,6 @@
             </div>
         </div>
 
-        <!-- ── PERFIL ── -->
-        <div class="cfg-card" id="sec-profile">
-            <button class="cfg-card-header" onclick="toggleSection('sec-profile')" aria-expanded="false">
-                <div class="cfg-card-icon cfg-icon-green"><i class="fa-solid fa-child"></i></div>
-                <div class="cfg-card-info">
-                    <span class="cfg-card-title">Perfil</span>
-                    <span class="cfg-card-sub">Avatar e apelido da criança</span>
-                </div>
-                <i class="fa-solid fa-chevron-down cfg-chevron" aria-hidden="true"></i>
-            </button>
-            <div class="cfg-card-body">
-
-                <div class="cfg-row cfg-row-col">
-                    <div class="cfg-row-top">
-                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-face-smile"></i></div>
-                        <div class="cfg-row-text">
-                            <span class="cfg-row-label">Escolha seu avatar</span>
-                        </div>
-                    </div>
-                    <div class="avatar-grid">
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🦊" checked>
-                            <span class="avatar-emoji">🦊</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🐸">
-                            <span class="avatar-emoji">🐸</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🐼">
-                            <span class="avatar-emoji">🐼</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🦋">
-                            <span class="avatar-emoji">🦋</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🐬">
-                            <span class="avatar-emoji">🐬</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🦁">
-                            <span class="avatar-emoji">🦁</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🐙">
-                            <span class="avatar-emoji">🐙</span>
-                        </label>
-                        <label class="avatar-opt">
-                            <input type="radio" name="avatar" value="🌟">
-                            <span class="avatar-emoji">🌟</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="cfg-row cfg-row-col">
-                    <div class="cfg-row-top">
-                        <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-tag"></i></div>
-                        <div class="cfg-row-text">
-                            <span class="cfg-row-label">Apelido</span>
-                            <span class="cfg-row-desc">Como o TEKO vai te chamar</span>
-                        </div>
-                    </div>
-                    <input type="text" class="teko-input" id="apelido-input" placeholder="Digite seu apelido..." maxlength="20" aria-label="Apelido">
-                </div>
-
-            </div>
-        </div>
-
         <!-- barra de salvar -->
         <div class="cfg-save-bar">
             <div>
@@ -476,8 +407,6 @@
                 fontScale:  document.getElementById('font-slider').value,
                 volNarracao: document.getElementById('vol-narracao').value,
                 speed: document.querySelector('.speed-btn.active')?.dataset.speed || 'normal',
-                avatar: document.querySelector('input[name="avatar"]:checked')?.value || '🦊',
-                apelido: document.getElementById('apelido-input').value,
             };
             ['reduced-motion','cursor','narracao','efeitos'].forEach(id => {
                 const el = document.getElementById('toggle-' + id);
@@ -514,21 +443,6 @@
                         b.classList.toggle('active', b.dataset.speed === cfg.speed);
                     });
                 }
-                if (cfg.avatar) {
-                    const radio = document.querySelector(`input[name="avatar"][value="${cfg.avatar}"]`);
-                    if (radio) radio.checked = true;
-                }
-                if (cfg.apelido) document.getElementById('apelido-input').value = cfg.apelido;
-            } catch(e) {}
-        }
-
-        /* ── avatar ── */
-        function carregarAvatar() {
-            try {
-                const sessao = JSON.parse(localStorage.getItem('teko_session') || '{}');
-                const nome = sessao?.crianca?.nome || sessao?.responsavel?.nome_completo || sessao?.user?.email?.split('@')[0] || 'T';
-                const inicial = nome.charAt(0).toUpperCase();
-                document.querySelectorAll('#user-avatar, #user-avatar-mobile').forEach(el => { if(el) el.textContent = inicial; });
             } catch(e) {}
         }
 
@@ -546,7 +460,6 @@
         /* ── init ── */
         document.addEventListener('DOMContentLoaded', () => {
             carregarConfiguracoes();
-            carregarAvatar();
             initAccordions();
         });
     </script>

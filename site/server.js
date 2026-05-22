@@ -62,6 +62,9 @@ app.get('/', (req, res) => {
 });
 
 // LOGIN
+app.get('/login',  (req, res) => {
+  res.sendFile(path.join(__dirname, 'view/pages/login.html'));
+});
 
 // REGISTER
 app.get('/register',  (req, res) => {

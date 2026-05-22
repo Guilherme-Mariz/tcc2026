@@ -303,27 +303,5 @@
         </section>
 
     </main>
-
-    <script>
-        function abrirLogout() {
-            document.getElementById('logout-overlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function fecharLogout() {
-            document.getElementById('logout-overlay').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        function confirmarLogout() {
-            localStorage.removeItem('teko_session');
-            localStorage.removeItem('teko_streak');
-            document.body.classList.add('page-leaving');
-            setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
-        }
-        document.getElementById('logout-overlay').addEventListener('click', e => {
-            if (e.target === e.currentTarget) fecharLogout();
-        });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
-    </script>
-
 </body>
 </html>

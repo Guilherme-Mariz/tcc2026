@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/responsavel.css">
+    <title>teko. — Responsável</title>
+</head>
+<body>
+
+    <!-- ── MODAL LOGOUT ── -->
+    <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+            <div class="logout-icon" aria-hidden="true">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h2 class="logout-title" id="logout-title">Sair da conta?</h2>
+            <p class="logout-desc">Você tem certeza que quer sair? Precisará entrar novamente da próxima vez.</p>
+            <div class="logout-actions">
+                <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
+                <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SIDEBAR ── -->
+    <aside id="sidebar" role="navigation" aria-label="Menu principal">
+        <a href="/" class="sidebar-logo" aria-label="teko. início">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="/home" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item" data-nav>
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/perfil" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                <span class="snav-label">Perfil</span>
+            </a>
+            <a href="/responsavel" class="snav-item active" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
+            <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair da conta" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ── MOBILE HEADER ── -->
+    <header id="mobile-header">
+        <a href="/" class="sidebar-logo">
+            <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+        </a>
+        <div class="mobile-header-right">
+            <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+            <button id="mobile_btn" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ── MOBILE DRAWER ── -->
+    <div id="mobile_overlay"></div>
+    <div id="mobile_drawer">
+        <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
+        <nav class="drawer-nav">
+            <a href="/home" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item" data-nav>
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/perfil" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                <span class="snav-label">Perfil</span>
+            </a>
+            <a href="/responsavel" class="snav-item active" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
+            <a href="/configuracoes" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- ── MAIN ── -->
+    <main id="main-content">
+
+        <!-- ════════ TELA DE PIN ════════ -->
+        <div id="pin-screen" role="dialog" aria-modal="true" aria-label="Verificação de responsável">
+            <div class="pin-card">
+                <div class="pin-icon" aria-hidden="true">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h1 class="pin-title">Área do Responsável</h1>
+                <p class="pin-sub">Digite o PIN de 4 dígitos<br>para acessar esta área.</p>
+
+                <div class="pin-dots" aria-live="polite" aria-label="Dígitos inseridos">
+                    <div class="pin-dot" id="dot-0"></div>
+                    <div class="pin-dot" id="dot-1"></div>
+                    <div class="pin-dot" id="dot-2"></div>
+                    <div class="pin-dot" id="dot-3"></div>
+                </div>
+
+                <div class="pin-keypad" role="group" aria-label="Teclado numérico">
+                    <button class="pin-key" onclick="pinDigit('1')">1</button>
+                    <button class="pin-key" onclick="pinDigit('2')">2</button>
+                    <button class="pin-key" onclick="pinDigit('3')">3</button>
+                    <button class="pin-key" onclick="pinDigit('4')">4</button>
+                    <button class="pin-key" onclick="pinDigit('5')">5</button>
+                    <button class="pin-key" onclick="pinDigit('6')">6</button>
+                    <button class="pin-key" onclick="pinDigit('7')">7</button>
+                    <button class="pin-key" onclick="pinDigit('8')">8</button>
+                    <button class="pin-key" onclick="pinDigit('9')">9</button>
+                    <button class="pin-key pin-key-empty" aria-hidden="true" tabindex="-1"></button>
+                    <button class="pin-key" onclick="pinDigit('0')">0</button>
+                    <button class="pin-key pin-key-del" onclick="pinDelete()" aria-label="Apagar">
+                        <i class="fa-solid fa-delete-left"></i>
+                    </button>
+                </div>
+
+                <p class="pin-error-msg" id="pin-error" role="alert"></p>
+            </div>
+        </div>
+
+        <!-- ════════ DASHBOARD ════════ -->
+        <div id="resp-dashboard">
+
+            <!-- boas-vindas -->
+            <div class="resp-header">
+                <div class="resp-header-text">
+                    <span class="resp-welcome-tag">Área do Responsável</span>
+                    <h1 class="resp-welcome-name">Olá, <span id="resp-nome">Responsável</span>!</h1>
+                    <p class="resp-welcome-sub">Acompanhe o progresso e os dados de <span id="resp-crianca-nome-sub">sua criança</span>.</p>
+                </div>
+                <button class="resp-header-lock" onclick="bloquearDashboard()" aria-label="Bloquear área do responsável">
+                    <i class="fa-solid fa-lock"></i> Bloquear
+                </button>
+            </div>
+
+            <div class="resp-grid">
+
+                <!-- dados da criança -->
+                <div class="resp-card">
+                    <div class="resp-card-title">
+                        <i class="fa-solid fa-child icon-blue"></i>
+                        Dados da Criança
+                    </div>
+                    <div class="crianca-row">
+                        <div class="crianca-field">
+                            <div class="crianca-field-icon"><i class="fa-solid fa-user"></i></div>
+                            <div class="crianca-field-text">
+                                <span class="crianca-field-label">Nome</span>
+                                <span class="crianca-field-value" id="dado-nome">—</span>
+                            </div>
+                        </div>
+                        <div class="crianca-field">
+                            <div class="crianca-field-icon"><i class="fa-solid fa-cake-candles"></i></div>
+                            <div class="crianca-field-text">
+                                <span class="crianca-field-label">Data de Nascimento</span>
+                                <span class="crianca-field-value" id="dado-nasc">—</span>
+                            </div>
+                        </div>
+                        <div class="crianca-field">
+                            <div class="crianca-field-icon"><i class="fa-solid fa-calendar"></i></div>
+                            <div class="crianca-field-text">
+                                <span class="crianca-field-label">Idade</span>
+                                <span class="crianca-field-value" id="dado-idade">—</span>
+                            </div>
+                        </div>
+                        <div class="crianca-field">
+                            <div class="crianca-field-icon"><i class="fa-solid fa-venus-mars"></i></div>
+                            <div class="crianca-field-text">
+                                <span class="crianca-field-label">Gênero</span>
+                                <span class="crianca-field-value" id="dado-genero">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- números rápidos -->
+                <div class="resp-card">
+                    <div class="resp-card-title">
+                        <i class="fa-solid fa-chart-simple icon-green"></i>
+                        Resumo Geral
+                    </div>
+                    <div class="stats-quick">
+                        <div class="stat-quick-item">
+                            <span class="stat-quick-num" id="stat-atividades">0</span>
+                            <span class="stat-quick-label">Atividades feitas</span>
+                        </div>
+                        <div class="stat-quick-item">
+                            <span class="stat-quick-num" id="stat-sequencia">0</span>
+                            <span class="stat-quick-label">Dias seguidos</span>
+                        </div>
+                        <div class="stat-quick-item">
+                            <span class="stat-quick-num" id="stat-acertos">0%</span>
+                            <span class="stat-quick-label">Taxa de acerto</span>
+                        </div>
+                    </div>
+
+                    <!-- última atividade -->
+                    <div class="last-activity" id="last-activity-block">
+                        <div class="last-activity-icon icon-yellow">😊</div>
+                        <div class="last-activity-text">
+                            <span class="last-activity-name" id="last-atv-nome">Nenhuma atividade ainda</span>
+                            <span class="last-activity-meta" id="last-atv-meta">—</span>
+                        </div>
+                        <span class="last-activity-badge badge-ok" id="last-atv-badge">—</span>
+                    </div>
+                </div>
+
+                <!-- progresso por área -->
+                <div class="resp-card resp-grid-full">
+                    <div class="resp-card-title">
+                        <i class="fa-solid fa-brain icon-purple"></i>
+                        Progresso por Área
+                    </div>
+                    <div class="stat-items">
+                        <div class="stat-item">
+                            <div class="stat-row">
+                                <span class="stat-label"><span>😊</span> Emoções</span>
+                                <span class="stat-pct" id="pct-emocoes">0%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill fill-green" id="bar-emocoes" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-row">
+                                <span class="stat-label"><span>💬</span> Comunicação</span>
+                                <span class="stat-pct" id="pct-comunicacao">0%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill fill-yellow" id="bar-comunicacao" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-row">
+                                <span class="stat-label"><span>🤝</span> Comportamento</span>
+                                <span class="stat-pct" id="pct-comportamento">0%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill fill-teal" id="bar-comportamento" style="width:0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /resp-dashboard -->
+
+    </main>
+
+    <!-- ── TOAST ── -->
+    <div id="toast" role="status">
+        <i class="fa-solid fa-check"></i>
+        <span id="toast-msg">Área desbloqueada!</span>
+    </div>
+
+    <script>
+        /* ════════════════════════════════════════
+           PIN
+        ════════════════════════════════════════ */
+        const PIN_CORRETO = '1111';
+        let pinAtual = '';
+
+        function pinDigit(d) {
+            if (pinAtual.length >= 4) return;
+            pinAtual += d;
+            atualizarDots();
+            if (pinAtual.length === 4) verificarPin();
+        }
+
+        function pinDelete() {
+            pinAtual = pinAtual.slice(0, -1);
+            atualizarDots();
+            limparErro();
+        }
+
+        function atualizarDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById('dot-' + i);
+                dot.classList.toggle('filled', i < pinAtual.length);
+                dot.classList.remove('error');
+            }
+        }
+
+        function verificarPin() {
+            if (pinAtual === PIN_CORRETO) {
+                abrirDashboard();
+            } else {
+                erroPin();
+            }
+        }
+
+        function erroPin() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById('dot-' + i);
+                dot.classList.remove('filled');
+                dot.classList.add('error');
+            }
+            document.getElementById('pin-error').textContent = 'PIN incorreto. Tente novamente.';
+            setTimeout(() => {
+                for (let i = 0; i < 4; i++) {
+                    document.getElementById('dot-' + i).classList.remove('error');
+                }
+                pinAtual = '';
+                limparErro();
+            }, 900);
+        }
+
+        function limparErro() {
+            document.getElementById('pin-error').textContent = '';
+        }
+
+        function abrirDashboard() {
+            const pin = document.getElementById('pin-screen');
+            pin.classList.add('hide');
+            setTimeout(() => {
+                pin.style.display = 'none';
+                const dash = document.getElementById('resp-dashboard');
+                dash.style.display = 'flex';
+                requestAnimationFrame(() => dash.classList.add('visible'));
+                mostrarToast('Área desbloqueada!');
+                carregarDados();
+            }, 420);
+        }
+
+        function bloquearDashboard() {
+            const dash = document.getElementById('resp-dashboard');
+            dash.classList.remove('visible');
+            setTimeout(() => {
+                dash.style.display = 'none';
+                const pin = document.getElementById('pin-screen');
+                pin.style.display = 'flex';
+                pin.classList.remove('hide');
+                pinAtual = '';
+                atualizarDots();
+                limparErro();
+            }, 400);
+        }
+
+        /* ════════════════════════════════════════
+           DADOS DA SESSÃO
+        ════════════════════════════════════════ */
+        function carregarDados() {
+            try {
+                const sessao = JSON.parse(localStorage.getItem('teko_session') || '{}');
+
+                // responsável
+                const resp = sessao?.responsavel;
+                if (resp?.nome_completo) {
+                    const primeiroNome = resp.nome_completo.split(' ')[0];
+                    document.getElementById('resp-nome').textContent = primeiroNome;
+                }
+
+                // criança
+                const cri = sessao?.crianca;
+                if (cri) {
+                    document.getElementById('dado-nome').textContent    = cri.nome      || '—';
+                    document.getElementById('resp-crianca-nome-sub').textContent = cri.nome || 'sua criança';
+
+                    if (cri.data_nasc) {
+                        const nasc = new Date(cri.data_nasc);
+                        document.getElementById('dado-nasc').textContent = nasc.toLocaleDateString('pt-BR');
+                        const hoje = new Date();
+                        let idade = hoje.getFullYear() - nasc.getFullYear();
+                        const m = hoje.getMonth() - nasc.getMonth();
+                        if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+                        document.getElementById('dado-idade').textContent = idade + ' anos';
+                    }
+
+                    const generoMap = { M: 'Masculino', F: 'Feminino', O: 'Outro' };
+                    document.getElementById('dado-genero').textContent = generoMap[cri.genero] || cri.genero || '—';
+                }
+
+                // estatísticas — por ora zeradas até progressModel estar implementado
+                document.getElementById('stat-atividades').textContent = '0';
+                document.getElementById('stat-sequencia').textContent  = '0';
+                document.getElementById('stat-acertos').textContent    = '0%';
+
+                // barras zeradas por enquanto
+                animarBarra('bar-emocoes',       'pct-emocoes',       0);
+                animarBarra('bar-comunicacao',   'pct-comunicacao',   0);
+                animarBarra('bar-comportamento', 'pct-comportamento', 0);
+
+                // última atividade placeholder
+                document.getElementById('last-atv-nome').textContent  = 'Nenhuma atividade ainda';
+                document.getElementById('last-atv-meta').textContent  = 'Continue explorando o TEKO!';
+                document.getElementById('last-atv-badge').textContent = '—';
+
+            } catch(e) {
+                console.error('Erro ao carregar dados:', e);
+            }
+        }
+
+        function animarBarra(barId, pctId, valor) {
+            const bar = document.getElementById(barId);
+            const pct = document.getElementById(pctId);
+            if (!bar || !pct) return;
+            requestAnimationFrame(() => {
+                bar.style.width = valor + '%';
+                pct.textContent = valor + '%';
+            });
+        }
+
+        /* ════════════════════════════════════════
+           TOAST
+        ════════════════════════════════════════ */
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+
+        /* ════════════════════════════════════════
+           LOGOUT
+        ════════════════════════════════════════ */
+        function abrirLogout()   { document.getElementById('logout-overlay').classList.add('active'); }
+        function fecharLogout()  { document.getElementById('logout-overlay').classList.remove('active'); }
+        function confirmarLogout() {
+            localStorage.removeItem('teko_session');
+            document.cookie = 'token=; Max-Age=0; path=/';
+            window.location.href = '/';
+        }
+
+        document.getElementById('logout-overlay').addEventListener('click', function(e) {
+            if (e.target === e.currentTarget) fecharLogout();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
+
+        /* ════════════════════════════════════════
+           MOBILE DRAWER
+        ════════════════════════════════════════ */
+        const overlay  = document.getElementById('mobile_overlay');
+        const drawer   = document.getElementById('mobile_drawer');
+        const openBtn  = document.getElementById('mobile_btn');
+        const closeBtn = document.getElementById('mobile_close');
+        function abrirMenu()  { drawer.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow='hidden'; }
+        function fecharMenu() { drawer.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow=''; }
+        openBtn.addEventListener('click', abrirMenu);
+        closeBtn.addEventListener('click', fecharMenu);
+        overlay.addEventListener('click', fecharMenu);
+
+        /* ── teclado físico no PIN ── */
+        document.addEventListener('keydown', function(e) {
+            const pinScreen = document.getElementById('pin-screen');
+            if (pinScreen.style.display === 'none') return;
+            if (e.key >= '0' && e.key <= '9') pinDigit(e.key);
+            if (e.key === 'Backspace') pinDelete();
+        });
+    </script>
+</body>
+</html>

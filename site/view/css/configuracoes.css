@@ -126,7 +126,7 @@ body  {
 }
 .cfg-row:last-child { border-bottom: none; }
 
-/* variação: layout coluna (slider, avatar, etc.) */
+/* variação: layout coluna (slider, etc.) */
 .cfg-row-col {
     flex-direction: column;
     align-items: stretch;
@@ -293,7 +293,6 @@ body  {
 
 /* ── responsivo ── */
 @media (max-width: 820px) {
-    .avatar-grid { grid-template-columns: repeat(4, 1fr); }
     .speed-btns  { flex-wrap: wrap; }
     .cfg-save-bar { flex-direction: column; align-items: flex-start; }
     .cfg-save-actions { align-self: flex-end; }
@@ -302,7 +301,6 @@ body  {
     .cfg-page-header { padding: 18px 18px; }
     .cfg-card-header  { padding: 14px 16px; }
     .cfg-card-body    { padding: 0 16px; }
-    .avatar-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ── alto contraste ── */
