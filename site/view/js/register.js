@@ -95,25 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //_______________________________________________________________________
 const TOTAL_ETAPAS = 2;
 let etapaAtual = 1;
@@ -152,8 +133,6 @@ function voltar(etapa) {
 document.getElementById('etapa1').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    
-
     // Aqui você fará a requisição ao backend (ex: fetch POST /cadastro/responsavel)
     // Por enquanto avança para a etapa 2
     // mostrarEtapa(2, 'avancar');
@@ -163,14 +142,13 @@ document.getElementById('etapa1').addEventListener('submit', function(e) {
 document.getElementById('etapa2').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    
-
-    
 });
+
 
 // ─── VALIDAÇÕES ───────────────────────────────────────
 function validarEtapa1() {
     let valido = true;
+    let primeiro = true;
 
     const nome      = document.getElementById('nome');
     const cpfResp   = document.getElementById('cpf-responsavel');
@@ -183,28 +161,28 @@ function validarEtapa1() {
     limparErros();
 
     if (!nome.value.trim()) {
-        marcarErro(nome, 'Informe o nome completo.');
-        valido = false;
+        marcarErro(nome, 'Informe o nome completo.', primeiro);
+        valido = false; primeiro = false;
     }
 
     if (cpfResp.value.replace(/\D/g, '').length !== 11) {
-        marcarErro(cpfResp, 'Informe um CPF válido (11 dígitos).');
-        valido = false;
+        marcarErro(cpfResp, 'Informe um CPF válido (11 dígitos).', primeiro);
+        valido = false; primeiro = false;
     }
 
     if (!email.value.trim() || !email.value.includes('@')) {
-        marcarErro(email, 'Informe um e-mail válido.');
-        valido = false;
+        marcarErro(email, 'Informe um e-mail válido.', primeiro);
+        valido = false; primeiro = false;
     }
 
     if (senha.value.length < 8) {
-        marcarErro(senha, 'A senha deve ter no mínimo 8 caracteres.');
-        valido = false;
+        marcarErro(senha, 'A senha deve ter no mínimo 8 caracteres.', primeiro);
+        valido = false; primeiro = false;
     }
 
     if (confirmar.value !== senha.value) {
-        marcarErro(confirmar, 'As senhas não coincidem.');
-        valido = false;
+        marcarErro(confirmar, 'As senhas não coincidem.', primeiro);
+        valido = false; primeiro = false;
     }
 
     if (!relacao) {
@@ -217,24 +195,12 @@ function validarEtapa1() {
         valido = false;
     }
 
-    if (
-            !nome ||
-            !cpfResp ||
-            !email ||
-            !confirmar ||
-            !senha ||
-            !relacao ||
-            !termos
-        ) {
-            console.log("Preencha todos os campos!");
-            return;
-        }
-
     return valido;
 }
 
 function validarEtapa2() {
     let valido = true;
+    let primeiro = true;
 
     const nomeCrianca = document.getElementById('nome-crianca');
     const datanasc    = document.getElementById('data-nascimento');
@@ -244,50 +210,40 @@ function validarEtapa2() {
     limparErros();
 
     if (!nomeCrianca.value.trim()) {
-        marcarErro(nomeCrianca, 'Informe o nome da criança.');
-        valido = false;
-    }
-    
-    if (!genero.value.trim()) {
-        marcarErro(genero, 'Informe o genero da criança.');
-        valido = false;
+        marcarErro(nomeCrianca, 'Informe o nome da criança.', primeiro);
+        valido = false; primeiro = false;
     }
 
     if (!datanasc.value) {
-        marcarErro(datanasc, 'Informe a data de nascimento.');
-        valido = false;
+        marcarErro(datanasc, 'Informe a data de nascimento.', primeiro);
+        valido = false; primeiro = false;
     } else {
         const nascimento = new Date(datanasc.value);
         const hoje = new Date();
         const idade = hoje.getFullYear() - nascimento.getFullYear();
         if (nascimento > hoje || idade > 18) {
-            marcarErro(datanasc, 'Informe uma data de nascimento válida.');
-            valido = false;
+            marcarErro(datanasc, 'Informe uma data de nascimento válida.', primeiro);
+            valido = false; primeiro = false;
         }
     }
 
     if (cpf.value.replace(/\D/g, '').length !== 11) {
-        marcarErro(cpf, 'Informe um CPF válido (11 dígitos).');
+        marcarErro(cpf, 'Informe um CPF válido (11 dígitos).', primeiro);
+        valido = false; primeiro = false;
+    }
+
+    if (!genero.value) {
+        marcarErro(genero, 'Selecione o gênero da criança.', primeiro);
         valido = false;
     }
 
-    if (
-            !nomeCrianca ||
-            !cpf ||
-            !datanasc ||
-            !genero
-        ) {
-            console.log("Preencha todos os campos!");
-            return;
-        }
-
     return valido;
-
 }
 
+
 // ─── UTILITÁRIOS DE ERRO ──────────────────────────────
-function marcarErro(input, msg) {
-    const grupo = input.closest('.input-group');
+function marcarErro(input, msg, primeiroErro) {
+    const grupo = input.closest('.field') || input.closest('.input-group');
     grupo.classList.add('campo-erro');
     if (!grupo.querySelector('.msg-erro')) {
         const err = document.createElement('span');
@@ -295,13 +251,13 @@ function marcarErro(input, msg) {
         err.textContent = msg;
         grupo.appendChild(err);
     }
-    input.focus();
+    if (primeiroErro) input.focus();
 }
 
 function mostrarErroGrupo(name, msg) {
     const input = document.querySelector('input[name="' + name + '"]');
     if (!input) return;
-    const grupo = input.closest('.input-group');
+    const grupo = input.closest('.field') || input.closest('.input-group');
     if (grupo.querySelector('.msg-erro')) return;
     const err = document.createElement('span');
     err.className = 'msg-erro';
@@ -310,7 +266,7 @@ function mostrarErroGrupo(name, msg) {
 }
 
 function mostrarErroCheck(input, msg) {
-    const grupo = input.closest('.input-group');
+    const grupo = input.closest('.field') || input.closest('.input-group');
     if (grupo.querySelector('.msg-erro')) return;
     const err = document.createElement('span');
     err.className = 'msg-erro';
