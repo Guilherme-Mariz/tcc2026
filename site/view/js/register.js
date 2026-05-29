@@ -1,18 +1,17 @@
-//Back-End______________
+// ─── BACK-END ────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    let dadosEtapa1 = {}; // 🔥 guarda dados da etapa 1
+    let dadosEtapa1 = {};
 
+    // ── SUBMIT ETAPA 1 ────────────────────────────────
     const form1 = document.getElementById('etapa1');
 
     form1.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const botao = document.querySelector("button");
+        const botao = form1.querySelector('button[type="submit"]');
         botao.disabled = true;
-
-        const formData = new FormData(form1);
 
         if (!validarEtapa1()) {
             sacudir('etapa1');
@@ -20,30 +19,30 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 🔥 SALVA (NÃO ENVIA)
+        const formData = new FormData(form1);
+
         dadosEtapa1 = {
-            nome: formData.get("nome"),
-            cpf: formData.get("cpf_responsavel"),
-            email: formData.get("email"),
-            senha: formData.get("senha"),
+            nome:     formData.get("nome"),
+            cpf:      formData.get("cpf_responsavel"),
+            email:    formData.get("email"),
+            senha:    formData.get("senha"),
             telefone: formData.get("telefone"),
-            relacao: formData.get("relacao")
+            relacao:  formData.get("relacao")
         };
 
-        mostrarEtapa(2, 'avancar');
+        // Usa a função de transição GSAP definida no HTML
+        irParaEtapa2();
         botao.disabled = false;
     });
 
-
+    // ── SUBMIT ETAPA 2 ────────────────────────────────
     const form2 = document.getElementById('etapa2');
 
     form2.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const botao = document.querySelector("button");
+        const botao = form2.querySelector('button[type="submit"]');
         botao.disabled = true;
-
-        const formData = new FormData(form2);
 
         if (!validarEtapa2()) {
             sacudir('etapa2');
@@ -51,25 +50,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const formData = new FormData(form2);
+
         const dadosEtapa2 = {
             nomeCrianca: formData.get("nome_crianca"),
-            datanasc: formData.get("data_nascimento"),
-            cpfcri: formData.get("cpf_crianca"),
-            genero: formData.get("genero")
+            datanasc:    formData.get("data_nascimento"),
+            cpfcri:      formData.get("cpf_crianca"),
+            genero:      formData.get("genero")
         };
 
-        // 🔥 JUNTA TUDO
-        const dadosCompletos = {
-            ...dadosEtapa1,
-            ...dadosEtapa2
-        };
+        const dadosCompletos = { ...dadosEtapa1, ...dadosEtapa2 };
 
         try {
             const resposta = await fetch('http://localhost:3000/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dadosCompletos)
             });
 
@@ -81,13 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-
-            document.getElementById('sucessoOverlay').classList.add('aberto');
-            document.body.style.overflow = 'hidden';
+            // Usa a função de sucesso GSAP definida no HTML
+            mostrarSucesso();
 
         } catch (erro) {
             console.error("Erro: ", erro);
-            alert("Erro ao cadastrar");
+            alert("Erro ao conectar com o servidor. Verifique se o servidor está rodando.");
         }
 
         botao.disabled = false;
@@ -95,59 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-//_______________________________________________________________________
-const TOTAL_ETAPAS = 2;
-let etapaAtual = 1;
+// ─── VALIDAÇÕES ──────────────────────────────────────────────────────────────
 
-// ─── TRANSIÇÃO ENTRE ETAPAS ───────────────────────────
-function mostrarEtapa(nova, direcao) {
-    const atual   = document.getElementById('etapa' + etapaAtual);
-    const proxima = document.getElementById('etapa' + nova);
-
-    atual.classList.add('saindo');
-
-    atual.addEventListener('animationend', () => {
-        atual.classList.remove('active', 'saindo');
-        proxima.classList.add('active');
-
-        if (direcao === 'voltar') {
-            proxima.classList.add('voltando');
-            proxima.addEventListener('animationend', () => {
-                proxima.classList.remove('voltando');
-            }, { once: true });
-        }
-
-        etapaAtual = nova;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, { once: true });
-}
-
-function voltar(etapa) {
-    if (etapa > 1) {
-        limparErros();
-        mostrarEtapa(etapa - 1, 'voltar');
-    }
-}
-
-// ─── SUBMIT DA ETAPA 1 ────────────────────────────────
-document.getElementById('etapa1').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    // Aqui você fará a requisição ao backend (ex: fetch POST /cadastro/responsavel)
-    // Por enquanto avança para a etapa 2
-    // mostrarEtapa(2, 'avancar');
-});
-
-// ─── SUBMIT DA ETAPA 2 ────────────────────────────────
-document.getElementById('etapa2').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-});
-
-
-// ─── VALIDAÇÕES ───────────────────────────────────────
 function validarEtapa1() {
-    let valido = true;
+    let valido   = true;
     let primeiro = true;
 
     const nome      = document.getElementById('nome');
@@ -199,7 +144,7 @@ function validarEtapa1() {
 }
 
 function validarEtapa2() {
-    let valido = true;
+    let valido   = true;
     let primeiro = true;
 
     const nomeCrianca = document.getElementById('nome-crianca');
@@ -219,8 +164,8 @@ function validarEtapa2() {
         valido = false; primeiro = false;
     } else {
         const nascimento = new Date(datanasc.value);
-        const hoje = new Date();
-        const idade = hoje.getFullYear() - nascimento.getFullYear();
+        const hoje       = new Date();
+        const idade      = hoje.getFullYear() - nascimento.getFullYear();
         if (nascimento > hoje || idade > 18) {
             marcarErro(datanasc, 'Informe uma data de nascimento válida.', primeiro);
             valido = false; primeiro = false;
@@ -240,14 +185,14 @@ function validarEtapa2() {
     return valido;
 }
 
+// ─── UTILITÁRIOS DE ERRO ─────────────────────────────────────────────────────
 
-// ─── UTILITÁRIOS DE ERRO ──────────────────────────────
 function marcarErro(input, msg, primeiroErro) {
     const grupo = input.closest('.field') || input.closest('.input-group');
     grupo.classList.add('campo-erro');
     if (!grupo.querySelector('.msg-erro')) {
         const err = document.createElement('span');
-        err.className = 'msg-erro';
+        err.className   = 'msg-erro';
         err.textContent = msg;
         grupo.appendChild(err);
     }
@@ -260,7 +205,7 @@ function mostrarErroGrupo(name, msg) {
     const grupo = input.closest('.field') || input.closest('.input-group');
     if (grupo.querySelector('.msg-erro')) return;
     const err = document.createElement('span');
-    err.className = 'msg-erro';
+    err.className   = 'msg-erro';
     err.textContent = msg;
     grupo.appendChild(err);
 }
@@ -269,7 +214,7 @@ function mostrarErroCheck(input, msg) {
     const grupo = input.closest('.field') || input.closest('.input-group');
     if (grupo.querySelector('.msg-erro')) return;
     const err = document.createElement('span');
-    err.className = 'msg-erro';
+    err.className   = 'msg-erro';
     err.textContent = msg;
     grupo.appendChild(err);
 }
@@ -286,20 +231,8 @@ function sacudir(id) {
     el.addEventListener('animationend', () => el.classList.remove('sacudir'), { once: true });
 }
 
-// ─── TOGGLE SENHA ─────────────────────────────────────
-function togglePass(inputId, iconeId) {
-    const input = document.getElementById(inputId);
-    const icone = document.getElementById(iconeId);
-    if (input.type === 'password') {
-        input.type = 'text';
-        icone.classList.replace('fa-eye', 'fa-eye-slash');
-    } else {
-        input.type = 'password';
-        icone.classList.replace('fa-eye-slash', 'fa-eye');
-    }
-}
+// ─── MÁSCARAS CPF ────────────────────────────────────────────────────────────
 
-// ─── MÁSCARAS CPF ─────────────────────────────────────
 function aplicarMascaraCPF(inputId) {
     const el = document.getElementById(inputId);
     if (!el) return;
