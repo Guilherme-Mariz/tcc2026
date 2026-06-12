@@ -1,16 +1,24 @@
+const path = require("path");
 const express = require('express');
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+const authController = require("../controller/userController");
+const userController = require("../controller/userController")
 
-    // código login
+const loginLimiter = require("../middleware/loginLimiter")
 
+router.post("/login", loginLimiter, authController.login);
+
+router.post("/register", userController.registerCompleto);
+
+
+router.get("/register", (req, res) => {
+    res.sendFile(path.join(__dirname, "../view/pages/register.html"));
 });
 
-router.post('/register', async (req, res) => {
-
-    // código register
-
+router.get("/login", (req, res) => {
+    res.sendFile(path.join(__dirname, "../view/pages/login.html"));
 });
 
-module.exports = router;
+
+module.exports = router; 

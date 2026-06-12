@@ -48,6 +48,10 @@ module.exports = {
 // LOGIN__________________________________________________________________________
 
 async function login(req, res) {
+
+  console.log("LOGIN RECEBIDO");
+  console.log(req.body);
+  
   const { email, senha } = req.body;
 
   if (!email || !email.includes("@")) {
