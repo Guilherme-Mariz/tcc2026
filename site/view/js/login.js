@@ -13,7 +13,7 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
       }
 
     try {
-        const resposta = await fetch("http://localhost:3000/auth/login", {
+        const resposta = await fetch("http://localhost:3000/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -1,13 +1,13 @@
+const userController = require("../controller/userController");
+
+const loginLimiter = require("../middleware/loginLimiter");
+
 const path = require("path");
 const express = require('express');
 const router = express.Router();
 
-const authController = require("../controller/userController");
-const userController = require("../controller/userController")
 
-const loginLimiter = require("../middleware/loginLimiter")
-
-router.post("/login", loginLimiter, authController.login);
+router.post("/login", loginLimiter, userController.login);
 
 router.post("/register", userController.registerCompleto);
 

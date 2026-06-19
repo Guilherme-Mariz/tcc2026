@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "install-deps": "npm install",
-    "start": "npm run install-deps && node server.js",
-    "dev": "npm run install-deps && nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",

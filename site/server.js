@@ -19,8 +19,8 @@ const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
-const criancaRoutes = require("./routes/criancaRoutes");
-
+// const criancaRoutes = require("./routes/criancaRoutes");
+console.log(authRoutes);
 
 const app = express();
 
@@ -36,9 +36,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'view')));
 
 
-app.use("/auth", authRoutes);
+app.use(authRoutes);
 
-app.use("/user", userRoutes);
+app.use(userRoutes);
 
 /*app.use("/crianca", criancaRoutes);*/
 
