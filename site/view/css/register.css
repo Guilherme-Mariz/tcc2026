@@ -480,9 +480,10 @@ html, body {
    LADO DIREITO
 ══════════════════════════════════════ */
 .reg-right {
-  position: relative; overflow: hidden;
-  background: var(--green-dark);
-  display: flex; align-items: center; justify-content: center;
+  background-image: url("../img/fundo-cadastro.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
 
 .right-bg { position: absolute; inset: 0; pointer-events: none; }
