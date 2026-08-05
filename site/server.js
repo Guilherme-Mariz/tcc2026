@@ -5,12 +5,13 @@ set PATH=%PATH%;C:\Users\Gui\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-
 set PATH=%PATH%;C:\Users\194412024\Downloads\node
 set PATH=%PATH%;C:\Users\dleva\source\LOCAL\node
 set PATH=%PATH%;C:\Users\195182024\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
-
+set PATH=%PATH%;C:\Users\194412024\node
 set PATH=%PATH%;C:\Users\195182024\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
 
 set PATH=%PATH%;C:\Users\195172024\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
 npm start
 */
+console.log(process.env.GROQ_API_KEY);
 
 const express = require("express");
 const cors = require("cors");
@@ -20,7 +21,7 @@ const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 // const criancaRoutes = require("./routes/criancaRoutes");
-console.log(authRoutes);
+//console.log(authRoutes);
 
 const app = express();
 

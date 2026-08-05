@@ -263,3 +263,16 @@ As informações retornadas serão utilizadas pelo backend para:
 * selecionar automaticamente uma atividade compatível com a necessidade identificada.
 
 Todas as respostas devem seguir rigorosamente este padrão para garantir a integração correta entre a IA e o sistema.
+
+Caso algum campo não possa ser determinado com segurança:
+
+- Nunca remova o campo.
+- Utilize os valores padrão definidos.
+- O JSON deve permanecer sempre válido.
+
+Valores padrão:
+
+emotionGroup: "intermediaria"
+confidence: 0.50
+shouldSuggestActivity: false
+activityCategory: null
