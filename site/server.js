@@ -2,7 +2,7 @@ require('dotenv').config();
 
 /* 
 set PATH=%PATH%;C:\Users\Gui\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
-set PATH=%PATH%;C:\Users\194412024\node
+set PATH=%PATH%;C:\Users\194412024\Downloads\node
 set PATH=%PATH%;C:\Users\dleva\source\LOCAL\node
 set PATH=%PATH%;C:\Users\195182024\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
 
