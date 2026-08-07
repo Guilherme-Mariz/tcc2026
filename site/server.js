@@ -11,7 +11,6 @@ set PATH=%PATH%;C:\Users\195182024\Documents\PROJETOTCC\node\nodejs\node-v24.14.
 set PATH=%PATH%;C:\Users\195172024\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
 npm start
 */
-console.log(process.env.GROQ_API_KEY);
 
 const express = require("express");
 const cors = require("cors");
@@ -23,9 +22,13 @@ const userRoutes = require("./routes/userRoutes");
 // const criancaRoutes = require("./routes/criancaRoutes");
 //console.log(authRoutes);
 
+const aiRoutes = require("./routes/aiRoutes");
+
 const app = express();
 
 app.use(express.json());
+
+app.use("/api", aiRoutes);
 
 app.use(cors({
   origin: 'http://localhost:3000',
