@@ -45,22 +45,28 @@ body {
     color: var(--text);
     min-height: 100vh;
     display: flex;
+    flex-direction: column; 
 }
+
+#main-content { margin: 0 auto; }
 
 /* ═══════════════════════════════════════════════════
    SIDEBAR
    ═══════════════════════════════════════════════════ */
 #sidebar {
-    width: var(--sidebar-w);
+    width: 100%;
+    height: auto;
     flex-shrink: 0;
     background: var(--bg-card);
-    border-right: 1.5px solid var(--border);
+    border-right: none;
+    border-bottom: 1.5px solid var(--border);
     position: sticky;
     top: 0;
-    height: 100vh;
     display: flex;
-    flex-direction: column;
-    padding: 28px 16px 24px;
+    flex-direction: row;
+    flex-wrap: nowrap;          /* impede quebra de linha */
+    align-items: center;
+    padding: 14px 28px;
     gap: 0;
     z-index: 50;
 }
@@ -71,17 +77,30 @@ body {
     font-size: 1.65rem;
     font-weight: 700;
     line-height: 1;
-    display: block;
-    padding: 4px 8px 20px;
-    border-bottom: 1.5px solid var(--border);
-    margin-bottom: 18px;
+    display: flex;               /* era block — causava a quebra */
+    align-items: center;
+    flex-shrink: 0;               /* nunca encolhe/quebra */
+    white-space: nowrap;
+    padding: 0;
+    border-bottom: none;
+    margin: 0;
 }
+
+/* barrinha separando a logo do menu */
+.sidebar-logo {
+    padding-right: 24px;
+    margin-right: 24px;
+    border-right: 1.5px solid var(--border);
+}
+
 .logo-teko { color: var(--text); }
 .logo-dot  { color: var(--green-mid); }
 
 .sidebar-nav {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: 4px;
     flex: 1;
 }
@@ -110,12 +129,9 @@ body {
     font-weight: 600;
 }
 .snav-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 20%; bottom: 20%;
-    width: 3px;
-    background: var(--green-deep);
-    border-radius: 0 3px 3px 0;
+    left: 20%; right: 20%; top: auto; bottom: 0;
+    width: auto; height: 3px;
+    border-radius: 3px 3px 0 0;
 }
 
 .snav-icon {
@@ -137,12 +153,16 @@ body {
 .sidebar-bottom {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
-    border-top: 1.5px solid var(--border);
-    margin-top: 8px;
+    gap: 8px;
+    padding-top: 0;
+    border-top: none;
+    margin-top: 0;
+    padding-left: 24px;
+    margin-left: 24px;
+    border-left: 1.5px solid var(--border);  /* segunda barrinha, separando do botão de sair */
+    flex-shrink: 0;
 }
-.snav-config { padding: 8px 10px; flex: 1; }
+.snav-config { flex: none; }
 
 /* ── mobile header ── */
 #mobile-header {
