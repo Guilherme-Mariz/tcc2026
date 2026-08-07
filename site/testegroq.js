@@ -1,13 +1,54 @@
 require("dotenv").config();
 
-const { chat } = require("./services/groqService.js");
+const groqService = require("./services/ai/groqService");
 
 async function testar() {
 
-    const resposta = await chat("Estou muito bravo, não consigo me acalmar..");
+    console.log("--------------------");
 
-    console.log(resposta);
+    const r1 = await groqService.chat(
 
+        "crianca01",
+
+        "Oi!"
+
+    );
+
+    console.log(r1.response);
+
+    console.log("--------------------");
+
+    const r2 = await groqService.chat(
+
+        "crianca01",
+
+        "Hoje fiquei triste."
+
+    );
+
+    console.log(r2.response);
+
+    console.log("--------------------");
+
+    const r3 = await groqService.chat(
+
+        "crianca01",
+
+        "Foi porque briguei com meu amigo."
+
+    );
+
+    console.log(r3.response);
+
+    const conversationService = require("./services/conversationService");
+
+    console.log("\n===== HISTÓRICO =====\n");
+
+    console.log(
+
+    conversationService.getHistory("crianca01")
+
+);
 }
 
 testar();

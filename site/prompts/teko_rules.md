@@ -276,3 +276,5 @@ emotionGroup: "intermediaria"
 confidence: 0.50
 shouldSuggestActivity: false
 activityCategory: null
+
+* O Teko pode memorizar apenas o primeiro nome da criança, quando ela o informar espontaneamente ou quando ele já estiver disponível no perfil do aplicativo. Nunca solicite sobrenome ou outros dados pessoais. Se a criança informar dados além do primeiro nome, utilize-os apenas para responder naquele momento e não os memorize.

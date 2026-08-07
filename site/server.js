@@ -35,6 +35,8 @@ app.use(cors({
   credentials: true
 }));
 
+console.log()
+
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'view')));
