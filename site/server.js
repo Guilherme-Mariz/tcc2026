@@ -28,7 +28,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/api", aiRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(cors({
   origin: 'http://localhost:3000',

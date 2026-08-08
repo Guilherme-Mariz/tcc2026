@@ -1,4 +1,7 @@
-const groqService = require("../services/ai/groqService");
+const childRepository = require("../services/childRepository");
+const conversationService = require("../services/conversationService");
+const sessionManager = require("../services/sessionManager");
+const groqService = require("../services/groqService");
 
 class AIController {
 
@@ -6,52 +9,69 @@ class AIController {
 
         try {
 
-            const {
+            const { childId, message } = req.body;
 
-                childId,
-                firstName,
-                message,
-                context
+            if (!childId || !message) {
 
-            } = req.body;
-
-            if (!childId) {
                 return res.status(400).json({
                     success: false,
-                    error: "childId é obrigatório."
+                    error: "childId e message são obrigatórios."
                 });
+
             }
 
-            if (!firstName) {
-                return res.status(400).json({
+            // Busca a criança
+            const child = await childRepository.findById(childId);
+
+            if (!child) {
+
+                return res.status(404).json({
                     success: false,
-                    error: "firstName é obrigatório."
+                    error: "Criança não encontrada."
                 });
+
             }
 
-            if (!message) {
-                return res.status(400).json({
-                    success: false,
-                    error: "message é obrigatório."
-                });
-            }
+            // Busca (ou cria) a conversa
+            const conversation =
+                await conversationService.getConversation(
+                    child.id,
+                    child.firstName
+                );
 
-            const response = await groqService.chat({
+            // Obtém a sessão temporária
+            const session =
+                sessionManager.getSession(child.id);
 
-                childId,
-                firstName,
-                message,
-                context
+            // Conversa com a IA
+            const result =
+                await groqService.chat(
+                    conversation,
+                    session,
+                    message
+                );
+
+            // Salva memória permanente
+            await conversationService.saveConversation(
+                result.conversation
+            );
+
+            // Resposta ao frontend
+            return res.status(200).json({
+
+                success: true,
+
+                response: result.response,
+
+                emotion: result.conversation.getLastEmotion(),
+
+                emotionTrend:
+                    result.conversation.getEmotionTrend(),
+
+                activity:
+                    result.conversation.getLastActivity()
 
             });
-
-            if (!response.success) {
-
-                return res.status(500).json(response);
-
-            }
-
-            return res.json(response);
 
         } catch (error) {
 
@@ -61,7 +81,7 @@ class AIController {
 
                 success: false,
 
-                error: "Erro interno."
+                error: "Erro interno do servidor."
 
             });
 

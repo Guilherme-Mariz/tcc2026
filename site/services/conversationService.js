@@ -1,17 +1,11 @@
-const Conversation = require("../model/conversation.js");
+const Conversation = require("../model/conversation");
+const conversationRepository = require("./conversationRepository");
 
 class ConversationService {
 
-    constructor() {
-        this.conversations = new Map();
-    }
+    async getConversation(childId, firstName) {
 
-    /**
-     * Retorna uma conversa existente ou cria uma nova.
-     */
-    getConversation(childId, firstName) {
-
-        let conversation = this.conversations.get(childId);
+        let conversation = await conversationRepository.findByChildId(childId);
 
         if (!conversation) {
 
@@ -20,82 +14,23 @@ class ConversationService {
                 firstName
             });
 
-            this.conversations.set(childId, conversation);
+            await conversationRepository.create(conversation);
 
-        } else if (firstName && conversation.firstName !== firstName) {
+        } else {
 
-            conversation.updateFirstName(firstName);
+            // O primeiro nome vem da tabela "criancas",
+            // não é persistido na tabela "conversations".
+            conversation.setFirstName(firstName);
 
         }
 
         return conversation;
-    }
-
-    /**
-     * Retorna somente o histórico.
-     */
-    getHistory(childId, firstName) {
-
-        return this
-            .getConversation(childId, firstName)
-            .getHistory();
 
     }
 
-    /**
-     * Adiciona uma mensagem.
-     */
-    addMessage(childId, firstName, role, content) {
+    async saveConversation(conversation) {
 
-        const conversation = this.getConversation(
-            childId,
-            firstName
-        );
-
-        conversation.addMessage(role, content);
-
-        return conversation;
-
-    }
-
-    /**
-     * Limpa o histórico.
-     */
-    clearConversation(childId) {
-
-        const conversation = this.conversations.get(childId);
-
-        if (!conversation) return;
-
-        conversation.clearHistory();
-
-    }
-
-    /**
-     * Remove completamente uma conversa da memória.
-     */
-    removeConversation(childId) {
-
-        this.conversations.delete(childId);
-
-    }
-
-    /**
-     * Retorna todas as conversas ativas.
-     * Muito útil para debug.
-     */
-    getAllConversations() {
-
-        return Array.from(this.conversations.values());
-
-    }
-
-    /**
-     * Quantidade de conversas ativas.
-     */
-    count() {
-
-        return this.conversations.size;
+        await conversationRepository.save(conversation);
 
     }
 

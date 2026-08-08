@@ -1,54 +1,125 @@
 require("dotenv").config();
 
-const groqService = require("./services/ai/groqService");
+const childRepository = require("./services/childRepository");
+const conversationService = require("./services/conversationService");
+const sessionManager = require("./services/sessionManager");
+const groqService = require("./services/groqService");
 
-async function testar() {
+async function testEmotion() {
 
-    console.log("--------------------");
+    try {
 
-    const r1 = await groqService.chat(
+        const childId = "3c283e7a-f6dd-41ec-9a9d-5f784e788fb5";
 
-        "crianca01",
+        // Buscar criança
+        const child = await childRepository.findById(childId);
 
-        "Oi!"
+        if (!child) {
+            throw new Error("Criança não encontrada.");
+        }
 
-    );
+        // Buscar conversa
+        const conversation =
+            await conversationService.getConversation(
+                child.id,
+                child.firstName
+            );
 
-    console.log(r1.response);
+        // Criar sessão
+        const session =
+            sessionManager.getSession(child.id);
 
-    console.log("--------------------");
+        // Mensagens para testar as três categorias
+        const tests = [
 
-    const r2 = await groqService.chat(
+            {
+                category: "POSITIVA",
+                message: "Estou muito feliz hoje! Ganhei um desenho que eu queria muito e estou adorando!"
+            },
 
-        "crianca01",
+            {
+                category: "INTERMEDIÁRIA",
+                message: "Hoje foi um dia normal. Não aconteceu nada muito legal, mas também não aconteceu nada ruim."
+            },
 
-        "Hoje fiquei triste."
+            {
+                category: "NEGATIVA",
+                message: "Hoje eu fiquei muito triste porque meus amigos não quiseram brincar comigo."
+            }
 
-    );
+        ];
 
-    console.log(r2.response);
+        console.log("\n====================================");
+        console.log("TESTE DE DETECÇÃO DE EMOÇÃO");
+        console.log("====================================\n");
 
-    console.log("--------------------");
+        for (const test of tests) {
 
-    const r3 = await groqService.chat(
+            console.log("------------------------------------");
+            console.log(`CATEGORIA ESPERADA: ${test.category}`);
+            console.log("------------------------------------");
 
-        "crianca01",
+            console.log("\nCriança:");
+            console.log(test.message);
 
-        "Foi porque briguei com meu amigo."
+            const result =
+                await groqService.chat(
+                    conversation,
+                    session,
+                    test.message
+                );
 
-    );
+            const detectedEmotion =
+                result.conversation.getLastEmotion();
 
-    console.log(r3.response);
+            const detectedTrend =
+                result.conversation.getEmotionTrend();
 
-    const conversationService = require("./services/conversationService");
+            console.log("\nTEKO:");
+            console.log(result.response);
 
-    console.log("\n===== HISTÓRICO =====\n");
+            console.log("\nRESULTADO:");
 
-    console.log(
+            console.log(
+                "Emoção detectada:",
+                detectedEmotion
+            );
 
-    conversationService.getHistory("crianca01")
+            console.log(
+                "Tendência detectada:",
+                detectedTrend
+            );
 
-);
+            console.log(
+                "Esperado:",
+                test.category.toLowerCase()
+            );
+
+            console.log(
+                "✓ CORRETO:",
+                detectedTrend === test.category.toLowerCase()
+            );
+
+            console.log("\n");
+
+        }
+
+        // Salvar memória
+        await conversationService.saveConversation(
+            conversation
+        );
+
+        console.log("====================================");
+        console.log("TESTE FINALIZADO");
+        console.log("====================================");
+
+    } catch (error) {
+
+        console.error("\nERRO:");
+        console.error(error);
+
+    }
+
 }
 
-testar();
+testEmotion();
