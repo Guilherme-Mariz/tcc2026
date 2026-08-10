@@ -123,61 +123,31 @@
     <!-- ── MAIN ── -->
     <main class="tekoia-main">
         <div class="tekoia-layout">
-            <section class="welcome-section" aria-label="TEKO.IA">
-                <div class="welcome-text">
-                    <p class="welcome-label">Assistente inteligente</p>
-                    <h1 class="welcome-title">Olá! Eu sou o <em>teko.ia</em></h1>
-                    <p class="welcome-sub">Estou aqui para conversar com você, te ajudar nas lições e te apoiar seja no que for!</p>
-                </div>
-            </section>
             <div class="tekoia-right">
                 <div class="chat-card">
-
-                    <!-- header do chat -->
-                    <div class="chat-header">
-                        <div class="chat-header-avatar">
-                            <img src="../img/mascot/teko-comprimento.png" alt="Teko">
-                            <span class="online-dot"></span>
-                        </div>
-                        <div class="chat-header-info">
-                            <span class="chat-name">Teko</span>
-                            <span class="chat-status">
-                                <span class="status-dot"></span>
-                                Online agora
-                            </span>
-                        </div>
-                        <button class="chat-action-btn" id="btn-limpar" title="Limpar conversa" aria-label="Limpar conversa">
-                            <i class="fa-solid fa-broom"></i>
-                        </button>
+                    <div class="chat-mascot">
+                        <img src="../img/mascot/teko-comprimento.png" alt="Teko">
                     </div>
-
-                    <!-- mensagens -->
-                    <div class="chat-messages" id="chat-messages">
-                        <div class="msg-date-divider"><span>Hoje</span></div>
-
-                        <div class="msg-row msg-teko">
-                            <div class="msg-avatar">
-                                <img src="../img/mascot/teko-comprimento.png" alt="Teko">
-                            </div>
-                            <div class="msg-bubble msg-bubble-teko">
-                                <p>Oi! 👋 Eu sou o <strong>Teko</strong>, seu amigo virtual!</p>
-                                <span class="msg-time">agora</span>
-                            </div>
+                
+                    <div class="chat-display">
+                        <div class="chat-session-wrap">
+                            <button class="chat-session-btn" id="btn-sessao" aria-haspopup="listbox" aria-expanded="false">
+                                <i class="fa-solid fa-users"></i>
+                                <span>Sessão</span>
+                                <i class="fa-solid fa-chevron-down chat-session-arrow"></i>
+                            </button>
+                            <ul class="chat-session-list" id="chat-session-list" role="listbox" hidden>
+                                <!-- TODO backend: popular dinamicamente -->
+                                <li class="chat-session-empty">Nenhuma criança cadastrada</li>
+                            </ul>
                         </div>
-
-                        <div class="msg-row msg-teko">
-                            <div class="msg-avatar msg-avatar-hidden">
-                                <img src="../img/mascot/teko-comprimento.png" alt="Teko">
-                            </div>
-                            <div class="msg-bubble msg-bubble-teko">
-                                <p>Como você está se sentindo hoje? 😊 Pode me contar!</p>
-                                <span class="msg-time">agora</span>
-                            </div>
-                        </div>
+                        <p class="chat-display-text" id="chat-display-text"></p>
                     </div>
-
-                    <!-- input -->
                     <div class="chat-input-area">
+                        <button class="mic-btn" id="mic-btn" type="button" title="Falar mensagem" aria-pressed="false">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+
                         <input
                             type="text"
                             class="chat-input"
@@ -186,11 +156,11 @@
                             autocomplete="off"
                             aria-label="Mensagem"
                         >
+
                         <button class="send-btn" id="send-btn" aria-label="Enviar">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -259,7 +229,6 @@
         });
 
         /* ── chat ── */
-        const chatMessages = document.getElementById('chat-messages');
         const chatInput    = document.getElementById('chat-input');
         const sendBtn      = document.getElementById('send-btn');
 
@@ -267,58 +236,55 @@
             return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         }
 
-        function adicionarMsg(texto, tipo) {
-            const row = document.createElement('div');
-            row.className = 'msg-row msg-' + tipo;
+        const btnSessao = document.getElementById('btn-sessao');
+        const listaSessao = document.getElementById('chat-session-list');
+        btnSessao.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const aberto = !listaSessao.hidden;
+            listaSessao.hidden = aberto;
+            btnSessao.setAttribute('aria-expanded', String(!aberto));
+        });
+        document.addEventListener('click', () => { listaSessao.hidden = true; btnSessao.setAttribute('aria-expanded','false'); });
 
-            if (tipo === 'teko') {
-                row.innerHTML = `
-                    <div class="msg-avatar"><img src="../img/mascot/teko-comprimento.png" alt="Teko"></div>
-                    <div class="msg-bubble msg-bubble-teko">
-                        <p>${texto}</p>
-                        <span class="msg-time">${horaAtual()}</span>
-                    </div>`;
-            } else {
-                row.innerHTML = `
-                    <div class="msg-bubble msg-bubble-user">
-                        <p>${texto}</p>
-                        <span class="msg-time">${horaAtual()}</span>
-                    </div>`;
-            }
+        const chatDisplay = document.getElementById('chat-display-text');
+        let typingTimer = null;
 
-            chatMessages.appendChild(row);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        function digitarMensagem(texto) {
+            clearTimeout(typingTimer);
+            chatDisplay.classList.remove('is-loading');
+            chatDisplay.textContent = '';
+            let i = 0;
+            (function passo() {
+                if (i < texto.length) {
+                    chatDisplay.textContent += texto.charAt(i);
+                    i++;
+                    typingTimer = setTimeout(passo, 22);
+                }
+            })();
         }
 
-        function mostrarTyping() {
-            const row = document.createElement('div');
-            row.className = 'msg-row msg-teko typing-row';
-            row.id = 'typing-indicator';
-            row.innerHTML = `
-                <div class="msg-avatar"><img src="../img/mascot/teko-comprimento.png" alt="Teko"></div>
-                <div class="msg-bubble msg-bubble-teko typing-bubble">
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                </div>`;
-            chatMessages.appendChild(row);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        function mostrarCarregando() {
+            clearTimeout(typingTimer);
+            chatDisplay.innerHTML = `<span class="loading-dots"><span></span><span></span><span></span></span>`;
         }
 
-        function removerTyping() {
-            const t = document.getElementById('typing-indicator');
-            if (t) t.remove();
-        }
+        const micBtn = document.getElementById('mic-btn');
+        let gravando = false;
+        micBtn.addEventListener('click', () => {
+            gravando = !gravando;
+            micBtn.classList.toggle('recording', gravando);
+            micBtn.setAttribute('aria-pressed', String(gravando));
+            // TODO: integrar com SpeechRecognition (Web Speech API) aqui,
+            // preenchendo chatInput.value com o texto reconhecido
+        });
 
         async function enviarMensagem() {
             const texto = chatInput.value.trim();
             if (!texto) return;
 
-            adicionarMsg(texto, 'user');
             chatInput.value = '';
             sendBtn.disabled = true;
-
-            mostrarTyping();
+            mostrarCarregando();
 
             try {
                 const resposta = await fetch('http://localhost:3000/ai/chat', {
@@ -328,11 +294,9 @@
                     body: JSON.stringify({ mensagem: texto })
                 });
                 const dados = await resposta.json();
-                removerTyping();
-                adicionarMsg(dados.resposta || 'Hmm, não entendi. Pode repetir? 😊', 'teko');
+                digitarMensagem(dados.resposta || 'Hmm, não entendi. Pode repetir? 😊');
             } catch(e) {
-                removerTyping();
-                adicionarMsg('Ops, tive um problema aqui. Tenta de novo! 😅', 'teko');
+                digitarMensagem('Ops, tive um problema aqui. Tenta de novo! 😅');
             }
 
             sendBtn.disabled = false;
@@ -342,20 +306,9 @@
         sendBtn.addEventListener('click', enviarMensagem);
         chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensagem(); } });
 
-        document.getElementById('btn-limpar').addEventListener('click', () => {
-            chatMessages.innerHTML = `
-                <div class="msg-date-divider"><span>Hoje</span></div>
-                <div class="msg-row msg-teko">
-                    <div class="msg-avatar"><img src="../img/mascot/teko-comprimento.png" alt="Teko"></div>
-                    <div class="msg-bubble msg-bubble-teko">
-                        <p>Oi! 👋 Conversa reiniciada. Como posso te ajudar?</p>
-                        <span class="msg-time">${horaAtual()}</span>
-                    </div>
-                </div>`;
-        });
-
         /* ── init ── */
         carregarAvatar();
+        digitarMensagem('Oi! 👋 Eu sou o Teko, seu amigo virtual! Como você está se sentindo hoje? 😊');
     </script>
 
 </body>
