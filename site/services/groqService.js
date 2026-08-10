@@ -53,7 +53,10 @@ class GroqService {
 
     // Guarda a resposta na sessão temporária
     session.addAssistantMessage(parsed.response);
-
+    
+    console.log("\n===== RESPOSTA BRUTA DA IA =====");
+    console.dir(aiResponse, { depth: null });
+    console.log("================================\n");
     return {
       response: parsed.response,
 
@@ -61,5 +64,6 @@ class GroqService {
     };
   }
 }
+
 
 module.exports = new GroqService();

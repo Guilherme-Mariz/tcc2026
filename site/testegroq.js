@@ -1,125 +1,206 @@
 require("dotenv").config();
 
+const supabase = require("./config/supabase");
 const childRepository = require("./services/childRepository");
-const conversationService = require("./services/conversationService");
-const sessionManager = require("./services/sessionManager");
-const groqService = require("./services/groqService");
 
-async function testEmotion() {
+async function testSecurity() {
 
     try {
 
-        const childId = "3c283e7a-f6dd-41ec-9a9d-5f784e788fb5";
-
-        // Buscar criança
-        const child = await childRepository.findById(childId);
-
-        if (!child) {
-            throw new Error("Criança não encontrada.");
-        }
-
-        // Buscar conversa
-        const conversation =
-            await conversationService.getConversation(
-                child.id,
-                child.firstName
-            );
-
-        // Criar sessão
-        const session =
-            sessionManager.getSession(child.id);
-
-        // Mensagens para testar as três categorias
-        const tests = [
-
-            {
-                category: "POSITIVA",
-                message: "Estou muito feliz hoje! Ganhei um desenho que eu queria muito e estou adorando!"
-            },
-
-            {
-                category: "INTERMEDIÁRIA",
-                message: "Hoje foi um dia normal. Não aconteceu nada muito legal, mas também não aconteceu nada ruim."
-            },
-
-            {
-                category: "NEGATIVA",
-                message: "Hoje eu fiquei muito triste porque meus amigos não quiseram brincar comigo."
-            }
-
-        ];
-
         console.log("\n====================================");
-        console.log("TESTE DE DETECÇÃO DE EMOÇÃO");
+        console.log("TESTE DE SEGURANÇA");
         console.log("====================================\n");
 
-        for (const test of tests) {
+        // =====================================================
+        // 1. BUSCAR DUAS CRIANÇAS DE RESPONSÁVEIS DIFERENTES
+        // =====================================================
 
-            console.log("------------------------------------");
-            console.log(`CATEGORIA ESPERADA: ${test.category}`);
-            console.log("------------------------------------");
+        const { data: children, error } = await supabase
+            .from("criancas")
+            .select("id, responsavel_id")
+            .limit(20);
 
-            console.log("\nCriança:");
-            console.log(test.message);
+        if (error) {
+            throw error;
+        }
 
-            const result =
-                await groqService.chat(
-                    conversation,
-                    session,
-                    test.message
-                );
-
-            const detectedEmotion =
-                result.conversation.getLastEmotion();
-
-            const detectedTrend =
-                result.conversation.getEmotionTrend();
-
-            console.log("\nTEKO:");
-            console.log(result.response);
-
-            console.log("\nRESULTADO:");
+        if (!children || children.length < 2) {
 
             console.log(
-                "Emoção detectada:",
-                detectedEmotion
+                "É necessário ter pelo menos duas crianças cadastradas."
             );
+
+            return;
+        }
+
+        // Procurar duas crianças com responsáveis diferentes
+        let childA = null;
+        let childB = null;
+
+        for (let i = 0; i < children.length; i++) {
+
+            for (let j = i + 1; j < children.length; j++) {
+
+                if (
+                    children[i].responsavel_id !==
+                    children[j].responsavel_id
+                ) {
+
+                    childA = children[i];
+                    childB = children[j];
+
+                    break;
+                }
+            }
+
+            if (childA && childB) {
+                break;
+            }
+        }
+
+        if (!childA || !childB) {
 
             console.log(
-                "Tendência detectada:",
-                detectedTrend
+                "Não foram encontradas crianças vinculadas a responsáveis diferentes."
             );
+
+            return;
+        }
+
+        console.log("Responsável A:", childA.responsavel_id);
+        console.log("Criança A:", childA.id);
+
+        console.log("\nResponsável B:", childB.responsavel_id);
+        console.log("Criança B:", childB.id);
+
+
+        // =====================================================
+        // 2. SIMULAR RESPONSÁVEL A
+        // =====================================================
+
+        const authenticatedResponsibleId =
+            childA.responsavel_id;
+
+        console.log("\n====================================");
+        console.log("SIMULANDO ACESSO DO RESPONSÁVEL A");
+        console.log("====================================");
+
+
+        // =====================================================
+        // 3. TENTAR ACESSAR A PRÓPRIA CRIANÇA
+        // =====================================================
+
+        console.log("\n[TESTE 1]");
+        console.log("Responsável A tentando acessar Criança A...");
+
+        const ownChild =
+            await childRepository.findById(childA.id,
+                authenticatedResponsibleId
+            );
+
+        if (ownChild) {
 
             console.log(
-                "Esperado:",
-                test.category.toLowerCase()
+                "✓ Acesso à própria criança permitido."
             );
+
+        } else {
 
             console.log(
-                "✓ CORRETO:",
-                detectedTrend === test.category.toLowerCase()
+                "✗ Acesso à própria criança foi bloqueado."
             );
-
-            console.log("\n");
 
         }
 
-        // Salvar memória
-        await conversationService.saveConversation(
-            conversation
+
+        // =====================================================
+        // 4. TENTAR ACESSAR A CRIANÇA DO RESPONSÁVEL B
+        // =====================================================
+
+        console.log("\n[TESTE 2]");
+        console.log(
+            "Responsável A tentando acessar Criança B..."
         );
 
+        const unauthorizedChild =
+            await childRepository.findById(childB.id);
+
+
+        // =====================================================
+        // 5. VERIFICAR RESULTADO
+        // =====================================================
+
+        if (unauthorizedChild) {
+
+            console.log("\n❌ FALHA DE SEGURANÇA");
+
+            console.log(
+                "O sistema conseguiu encontrar uma criança"
+            );
+
+            console.log(
+                "que pertence a outro responsável."
+            );
+
+            console.log(
+                "\nO childRepository atualmente valida apenas:"
+            );
+
+            console.log("childId");
+
+            console.log(
+                "\nPrecisamos validar:"
+            );
+
+            console.log(
+                "responsavel_id + childId"
+            );
+
+        } else {
+
+            console.log(
+                "\n✓ TESTE DE ISOLAMENTO PASSOU."
+            );
+
+            console.log(
+                "O responsável não conseguiu acessar"
+            );
+
+            console.log(
+                "uma criança de outro responsável."
+            );
+
+        }
+
+
+        // =====================================================
+        // 6. RESULTADO
+        // =====================================================
+
+        console.log("\n====================================");
+        console.log("RESULTADO");
         console.log("====================================");
-        console.log("TESTE FINALIZADO");
-        console.log("====================================");
+
+        console.log(
+            "\nResponsável autenticado:",
+            authenticatedResponsibleId
+        );
+
+        console.log(
+            "Tentativa de acesso:",
+            childB.id
+        );
+
+        console.log(
+            "\n====================================");
 
     } catch (error) {
 
-        console.error("\nERRO:");
+        console.error("\nERRO NO TESTE:");
         console.error(error);
 
     }
 
 }
 
-testEmotion();
+testSecurity();

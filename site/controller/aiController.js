@@ -1,7 +1,7 @@
-const childRepository = require("../services/childRepository");
-const conversationService = require("../services/conversationService");
-const sessionManager = require("../services/sessionManager");
-const groqService = require("../services/groqService");
+const childRepository = require("./services/childRepository");
+const conversationService = require("./services/conversationService");
+const sessionManager = require("./services/sessionManager");
+const groqService = require("./services/groqService");
 
 class AIController {
 
@@ -11,35 +11,38 @@ class AIController {
 
             const { childId, message } = req.body;
 
-            if (!childId || !message) {
+            // Usuário autenticado pelo middleware
+            const responsavelId = req.user.id;
 
+            if (!childId || !message) {
                 return res.status(400).json({
                     success: false,
                     error: "childId e message são obrigatórios."
                 });
-
             }
 
-            // Busca a criança
-            const child = await childRepository.findById(childId);
+            // Verifica se a criança pertence ao responsável autenticado
+            const child =
+                await childRepository.findById(
+                    childId,
+                    responsavelId
+                );
 
             if (!child) {
-
-                return res.status(404).json({
+                return res.status(403).json({
                     success: false,
-                    error: "Criança não encontrada."
+                    error: "Criança não pertence ao responsável autenticado."
                 });
-
             }
 
-            // Busca (ou cria) a conversa
+            // Busca ou cria a conversa
             const conversation =
                 await conversationService.getConversation(
                     child.id,
                     child.firstName
                 );
 
-            // Obtém a sessão temporária
+            // Sessão da criança
             const session =
                 sessionManager.getSession(child.id);
 
@@ -56,14 +59,14 @@ class AIController {
                 result.conversation
             );
 
-            // Resposta ao frontend
             return res.status(200).json({
 
                 success: true,
 
                 response: result.response,
 
-                emotion: result.conversation.getLastEmotion(),
+                emotion:
+                    result.conversation.getLastEmotion(),
 
                 emotionTrend:
                     result.conversation.getEmotionTrend(),
@@ -75,14 +78,11 @@ class AIController {
 
         } catch (error) {
 
-            console.error(error);
+            console.error("Erro no AIController:", error);
 
             return res.status(500).json({
-
                 success: false,
-
                 error: "Erro interno do servidor."
-
             });
 
         }
