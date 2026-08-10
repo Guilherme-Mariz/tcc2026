@@ -16,6 +16,12 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const app = express();
+
+
+app.use(express.json());
+app.use(cookieParser());
+
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -24,9 +30,10 @@ const userRoutes = require("./routes/userRoutes");
 
 const aiRoutes = require("./routes/aiRoutes");
 
-const app = express();
+const childRoutes = require("./routes/childRoutes");
 
-app.use(express.json());
+
+
 
 app.use("/api/ai", aiRoutes);
 
@@ -34,10 +41,10 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }));
+app.use("/", childRoutes);
 
 console.log()
 
-app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'view')));
 

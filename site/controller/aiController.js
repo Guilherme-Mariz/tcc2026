@@ -1,7 +1,7 @@
-const childRepository = require("./services/childRepository");
-const conversationService = require("./services/conversationService");
-const sessionManager = require("./services/sessionManager");
-const groqService = require("./services/groqService");
+const childRepository = require("../services/childRepository");
+const conversationService = require("../services/conversationService");
+const sessionManager = require("../services/sessionManager");
+const groqService = require("../services/groqService");
 
 class AIController {
 
@@ -11,8 +11,10 @@ class AIController {
 
             const { childId, message } = req.body;
 
-            // Usuário autenticado pelo middleware
-            const responsavelId = req.user.id;
+            console.log("\n===== DEBUG CHAT =====");
+            console.log("userId:", req.user.id);
+            console.log("childId recebido:", childId);
+            console.log("message:", message);
 
             if (!childId || !message) {
                 return res.status(400).json({
@@ -21,12 +23,42 @@ class AIController {
                 });
             }
 
-            // Verifica se a criança pertence ao responsável autenticado
+            // auth.users.id
+            const userId = req.user.id;
+
+            // Busca o responsaveis.id através do auth.users.id
+            const responsavelId =
+                await childRepository.findResponsibleIdByUserId(
+                    userId
+                );
+
+            console.log(
+                "responsavelId encontrado:",
+                responsavelId
+            );
+
+            if (!responsavelId) {
+                return res.status(403).json({
+                    success: false,
+                    error: "Responsável não encontrado."
+                });
+            }
+
+            console.log("Buscando criança com:");
+            console.log("childId:", childId);
+            console.log("responsavelId:", responsavelId);
+
+            // Verifica se a criança pertence ao responsável
             const child =
                 await childRepository.findById(
                     childId,
                     responsavelId
                 );
+
+            console.log(
+                "Resultado da criança:",
+                child
+            );
 
             if (!child) {
                 return res.status(403).json({
@@ -63,7 +95,8 @@ class AIController {
 
                 success: true,
 
-                response: result.response,
+                response:
+                    result.response,
 
                 emotion:
                     result.conversation.getLastEmotion(),
@@ -73,22 +106,21 @@ class AIController {
 
                 activity:
                     result.conversation.getLastActivity()
-
             });
 
         } catch (error) {
 
-            console.error("Erro no AIController:", error);
+            console.error(
+                "Erro no AIController:",
+                error
+            );
 
             return res.status(500).json({
                 success: false,
                 error: "Erro interno do servidor."
             });
-
         }
-
     }
-
 }
 
 module.exports = new AIController();
