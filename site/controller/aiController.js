@@ -1,7 +1,7 @@
-const childRepository = require("./services/childRepository");
-const conversationService = require("./services/conversationService");
-const sessionManager = require("./services/sessionManager");
-const groqService = require("./services/groqService");
+const childRepository = require("../services/childRepository");
+const conversationService = require("../services/conversationService");
+const sessionManager = require("../services/sessionManager");
+const groqService = require("../services/groqService");
 
 class AIController {
 

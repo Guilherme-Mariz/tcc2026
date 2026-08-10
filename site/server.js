@@ -55,8 +55,5 @@ app.listen(PORT, () => {
   console.log("Servidor rodando na porta 3000");
 });
 
-
-
-
 // Diz ao Express onde estão seus arquivos front-end
 app.use(express.static(path.join(__dirname, "view")));

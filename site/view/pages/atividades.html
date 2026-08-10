@@ -1,348 +1,344 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>body{opacity:0}</style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/atividades.css">
-    <title>teko. — Atividades</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>body{opacity:0}</style>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="../css/home.css">
+        <link rel="stylesheet" href="../css/atividades.css">
+        <title>teko. — Atividades</title>
+    </head>
 
-<!-- MODAL LOGOUT -->
-<div id="logout-overlay" class="logout-overlay" aria-hidden="true">
-    <div class="logout-modal" role="dialog" aria-modal="true">
-        <div class="logout-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
-        <h2 class="logout-title">Sair da conta?</h2>
-        <p class="logout-desc">Você tem certeza que quer sair?</p>
-        <div class="logout-actions">
-            <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
-            <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
+    <body>
+
+        <!-- MODAL LOGOUT -->
+        <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+            <div class="logout-modal" role="dialog" aria-modal="true">
+                <div class="logout-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                <h2 class="logout-title">Sair da conta?</h2>
+                <p class="logout-desc">Você tem certeza que quer sair?</p>
+                <div class="logout-actions">
+                    <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
+                    <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-<!-- SIDEBAR -->
-<aside id="sidebar" role="navigation" aria-label="Menu principal">
-    <a href="/" class="sidebar-logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
-    <nav class="sidebar-nav">
-        <a href="/home" class="snav-item" data-nav>
-            <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
-            <span class="snav-label">Início</span>
-        </a>
-        <a href="/atividades" class="snav-item active" aria-current="page" data-nav>
-            <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
-            <span class="snav-label">Atividades</span>
-        </a>
-        <a href="/tekoia" class="snav-item" data-nav>
-            <span class="snav-icon snav-icon-ia"><img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true"></span>
-            <span class="snav-label">TEKO.IA</span>
-        </a>
-        <a href="/perfil" class="snav-item" data-nav>
-            <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
-            <span class="snav-label">Perfil</span>
-        </a>
-        <a href="/responsavel" class="snav-item" data-nav>
-            <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
-            <span class="snav-label">Responsável</span>
-        </a>
-    </nav>
-    <div class="sidebar-bottom">
-        <a href="/configuracoes" class="snav-item snav-config" data-nav>
-            <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
-            <span class="snav-label">Config.</span>
-        </a>
-        <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair" aria-label="Sair da conta">
-            <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
-    </div>
-</aside>
+        <!-- SIDEBAR -->
+        <aside id="sidebar" role="navigation" aria-label="Menu principal">
+            <a href="/" class="sidebar-logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
+            <nav class="sidebar-nav">
+                <a href="/home" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                    <span class="snav-label">Início</span>
+                </a>
+                <a href="/atividades" class="snav-item active" aria-current="page" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                    <span class="snav-label">Atividades</span>
+                </a>
+                <a href="/tekoia" class="snav-item" data-nav>
+                    <span class="snav-icon snav-icon-ia"><img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true"></span>
+                    <span class="snav-label">TEKO.IA</span>
+                </a>
+                <a href="/perfil" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
+                    <span class="snav-label">Perfil</span>
+                </a>
+                <a href="/responsavel" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                    <span class="snav-label">Responsável</span>
+                </a>
+            </nav>
+            <div class="sidebar-bottom">
+                <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="snav-label">Config.</span>
+                </a>
+                <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair" aria-label="Sair da conta">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
 
-<!-- MOBILE HEADER -->
-<header id="mobile-header">
-    <a href="/" class="sidebar-logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
-    <div class="mobile-header-right">
-        <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair"><i class="fa-solid fa-right-from-bracket"></i></button>
-        <button id="mobile_btn" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-    </div>
-</header>
+        <!-- MOBILE HEADER -->
+        <header id="mobile-header">
+            <a href="/" class="sidebar-logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
+            <div class="mobile-header-right">
+                <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <button id="mobile_btn" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </header>
 
-<!-- MOBILE DRAWER -->
-<div id="mobile_overlay"></div>
-<div id="mobile_drawer">
-    <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
-    <nav class="drawer-nav">
-        <a href="/home" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-house"></i></span><span class="snav-label">Início</span></a>
-        <a href="/atividades" class="snav-item active" data-nav><span class="snav-icon"><i class="fa-solid fa-shapes"></i></span><span class="snav-label">Atividades</span></a>
-        <a href="/tekoia" class="snav-item" data-nav><span class="snav-icon snav-icon-ia"><img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true"></span><span class="snav-label">TEKO.IA</span></a>
-        <a href="/perfil" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-user"></i></span><span class="snav-label">Perfil</span></a>
-        <a href="/responsavel" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span><span class="snav-label">Responsável</span></a>
-        <a href="/configuracoes" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-gear"></i></span><span class="snav-label">Config.</span></a>
-    </nav>
-</div>
-
-<!-- MAIN -->
-<main id="main-content">
-
-    <!-- cabeçalho -->
-    <section class="welcome-section" aria-label="Atividades">
-        <div class="welcome-text">
-            <p class="welcome-label">Escolha uma área</p>
-            <h1 class="welcome-title">O que vamos explorar <em>hoje</em>?</h1>
-            <p class="welcome-sub">Escolha uma categoria e comece uma atividade.</p>
+        <!-- MOBILE DRAWER -->
+        <div id="mobile_overlay"></div>
+        <div id="mobile_drawer">
+            <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
+            <nav class="drawer-nav">
+                <a href="/home" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-house"></i></span><span class="snav-label">Início</span></a>
+                <a href="/atividades" class="snav-item active" data-nav><span class="snav-icon"><i class="fa-solid fa-shapes"></i></span><span class="snav-label">Atividades</span></a>
+                <a href="/tekoia" class="snav-item" data-nav><span class="snav-icon snav-icon-ia"><img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true"></span><span class="snav-label">TEKO.IA</span></a>
+                <a href="/perfil" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-user"></i></span><span class="snav-label">Perfil</span></a>
+                <a href="/responsavel" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span><span class="snav-label">Responsável</span></a>
+                <a href="/configuracoes" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-gear"></i></span><span class="snav-label">Config.</span></a>
+            </nav>
         </div>
-    </section>
 
-    <!-- tabs de categoria -->
-    <div class="atv-tabs" role="tablist" aria-label="Categorias de atividades">
-        <button class="atv-tab active" data-cat="emocoes" role="tab" aria-selected="true" aria-controls="grid-emocoes">
-            <span class="atv-tab-icon">🧠</span>
-            <span class="atv-tab-label">Emoções</span>
-        </button>
-        <button class="atv-tab" data-cat="comportamento" role="tab" aria-selected="false" aria-controls="grid-comportamento">
-            <span class="atv-tab-icon">🤙</span>
-            <span class="atv-tab-label">Comportamento</span>
-        </button>
-        <button class="atv-tab" data-cat="comunicacao" role="tab" aria-selected="false" aria-controls="grid-comunicacao">
-            <span class="atv-tab-icon">🗣️</span>
-            <span class="atv-tab-label">Comunicação</span>
-        </button>
-        <button class="atv-tab" data-cat="rotina" role="tab" aria-selected="false" aria-controls="grid-comunicacao">
-            <span class="atv-tab-icon">📖</span>
-            <span class="atv-tab-label">Rotina</span>
-        </button>
-        <button class="atv-tab" data-cat="situações sociais" role="tab" aria-selected="false" aria-controls="grid-comunicacao">
-            <span class="atv-tab-icon">🚶</span>
-            <span class="atv-tab-label">Situações Sociais</span>
-        </button>
-    </div>
+        <!-- MAIN -->
+        <main id="main-content">
 
-    <!-- grids de atividades -->
+            <!-- módulos -->
+            <section class="module-select" aria-label="Escolha o módulo">
+                <p class="welcome-label">Vamos praticar</p>
+                <h2 class="welcome-title">Escolha um <em>módulo</em></h2>
 
-    <!-- EMOÇÕES -->
-    <div class="atv-grid active" id="grid-emocoes" role="tabpanel">
-        <a href="#" class="atv-card atv-card-lg">
-            <div class="atv-card-icon-wrap"><span>😊</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Emoções</span>
-                <h3 class="atv-card-title">Quebra-Cabeça de Emoções</h3>
-                <p class="atv-card-desc">Monte expressões faciais e descubra como cada sentimento aparece no rosto.</p>
+                <div class="module-grid" role="radiogroup" aria-label="Módulos disponíveis">
+                    <button type="button" class="module-btn active" data-cat="emocoes" role="radio" aria-checked="true">
+                        <span class="module-icon"><i class="fa-solid fa-brain"></i></span>
+                        <span class="module-label">Emoções</span>
+                    </button>
+                    <button type="button" class="module-btn" data-cat="comunicacao" role="radio" aria-checked="false">
+                        <span class="module-icon"><i class="fa-solid fa-comments"></i></span>
+                        <span class="module-label">Comunicação</span>
+                    </button>
+                    <button type="button" class="module-btn" data-cat="situacoes-sociais" role="radio" aria-checked="false">
+                        <span class="module-icon"><i class="fa-solid fa-person-walking"></i></span>
+                        <span class="module-label">Situações Sociais</span>
+                    </button>
+                    <button type="button" class="module-btn" data-cat="rotina" role="radio" aria-checked="false">
+                        <span class="module-icon"><i class="fa-solid fa-calendar-day"></i></span>
+                        <span class="module-label">Rotina</span>
+                    </button>
+                    <button type="button" class="module-btn" data-cat="calma" role="radio" aria-checked="false">
+                        <span class="module-icon"><i class="fa-solid fa-spa"></i></span>
+                        <span class="module-label">Refúgio</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- grids de atividades -->
+
+            <!-- EMOÇÕES -->
+            <div class="atv-grid active" id="grid-emocoes" role="tabpanel">
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap atv-card-slideshow">
+                        <img src="../img/mascot/teko-triste.png" alt="" class="active">
+                        <img src="../img/mascot/teko-raiva.png" alt="">
+                        <img src="../img/mascot/teko-comprimento.png" alt="">
+                    </div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">Qual é a Emoção?</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap">
+                        <img src="../img/mascot/teko-duvida.png" alt="" class="atv-card-img">
+                    </div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">Como Ele Pode Estar?</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
             </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-        <a href="#" class="atv-card">
-            <div class="atv-card-icon-wrap"><span>🎨</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Emoções</span>
-                <h3 class="atv-card-title">Monstro das Cores</h3>
-                <p class="atv-card-desc">Associe emoções às cores e organize seus sentimentos.</p>
+
+            <!-- COMUNICAÇÃO -->
+            <div class="atv-grid" id="grid-comunicacao" role="tabpanel" hidden>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">Monte a Frase</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">O que Posso Dizer?</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
             </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-    </div>
 
-    <!-- COMPORTAMENTO -->
-    <div class="atv-grid" id="grid-comportamento" role="tabpanel" hidden>
-        <a href="#" class="atv-card atv-card-lg">
-            <div class="atv-card-icon-wrap"><span>⏳</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Comportamento</span>
-                <h3 class="atv-card-title">Jogo da Espera</h3>
-                <p class="atv-card-desc">Pratique a paciência e aprenda a esperar a sua vez de forma divertida.</p>
+            <!-- SITUAÇÕES SOCIAIS -->
+            <div class="atv-grid" id="grid-situacoes-sociais" role="tabpanel" hidden>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">O que Fazer Agora?</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">Minha vez, Sua vez</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
             </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-        <a href="#" class="atv-card">
-            <div class="atv-card-icon-wrap"><span>📋</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Comportamento</span>
-                <h3 class="atv-card-title">Sequência de Rotina</h3>
-                <p class="atv-card-desc">Monte e siga rotinas do dia a dia em ordem.</p>
+
+            <!-- ROTINA -->
+            <div class="atv-grid" id="grid-rotina" role="tabpanel" hidden>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">O que Vem Depois?</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">Mudou o Plano!</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
             </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-    </div>
 
-    <!-- COMUNICAÇÃO -->
-    <div class="atv-grid" id="grid-comunicacao" role="tabpanel" hidden>
-        <a href="#" class="atv-card atv-card-lg">
-            <div class="atv-card-icon-wrap"><span>🃏</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Comunicação</span>
-                <h3 class="atv-card-title">Cartões de Escolha</h3>
-                <p class="atv-card-desc">Use cartões para comunicar suas preferências e necessidades.</p>
+            <!-- CALMA -->
+            <div class="atv-grid" id="grid-calma" role="tabpanel" hidden>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">Respire com o Teko</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+                <a href="#" class="atv-card">
+                    <div class="atv-card-icon-wrap"><i class="fa-solid fa-shuffle"></i></div>
+                    <div class="atv-card-body">
+                        <h3 class="atv-card-title">O que pode me ajudar?</h3>
+                    </div>
+                    <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
             </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-        <a href="#" class="atv-card">
-            <div class="atv-card-icon-wrap"><span>🎭</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Comunicação</span>
-                <h3 class="atv-card-title">Role-Play Social</h3>
-                <p class="atv-card-desc">Simule situações do cotidiano e pratique interações sociais.</p>
-            </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-    </div>
 
-    <!-- ROTINA -->
-    <div class="atv-grid" id="grid-comunicacao" role="tabpanel" hidden>
-        <a href="#" class="atv-card atv-card-lg">
-            <div class="atv-card-icon-wrap"><span>🃏</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Rotina</span>
-                <h3 class="atv-card-title">/h3>
-                <p class="atv-card-desc"></p>
-            </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-        <a href="#" class="atv-card">
-            <div class="atv-card-icon-wrap"><span>🎭</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Rotina</span>
-                <h3 class="atv-card-title"></h3>
-                <p class="atv-card-desc"></p>
-            </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-    </div>
+        </main>
 
-    <!-- CALMA -->
-    <div class="atv-grid" id="grid-comunicacao" role="tabpanel" hidden>
-        <a href="#" class="atv-card atv-card-lg">
-            <div class="atv-card-icon-wrap"><span>🃏</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Calma</span>
-                <h3 class="atv-card-title">/h3>
-                <p class="atv-card-desc"></p>
-            </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-        <a href="#" class="atv-card">
-            <div class="atv-card-icon-wrap"><span>🎭</span></div>
-            <div class="atv-card-body">
-                <span class="atv-card-tag">Calma</span>
-                <h3 class="atv-card-title"></h3>
-                <p class="atv-card-desc"></p>
-            </div>
-            <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        </a>
-    </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
-</main>
+        <script>
+            /* ── fade in ── */
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.style.opacity = '1';
+                animarGrid('grid-emocoes');
+            });
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script>
-/* ── fade in ── */
-document.addEventListener('DOMContentLoaded', () => {
-    document.body.style.opacity = '1';
-    animarGrid('grid-emocoes');
-});
+            /* ── módulos ── */
+            const modBtns = document.querySelectorAll('.module-btn');
+            const grids   = document.querySelectorAll('.atv-grid');
 
-/* ── tabs ── */
-const tabs  = document.querySelectorAll('.atv-tab');
-const grids = document.querySelectorAll('.atv-grid');
+            modBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const cat = btn.dataset.cat;
 
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        const cat = tab.dataset.cat;
+                    modBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-checked', 'false');
+                    });
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-checked', 'true');
 
-        tabs.forEach(t => {
-            t.classList.remove('active');
-            t.setAttribute('aria-selected', 'false');
-        });
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected', 'true');
+                    grids.forEach(g => {
+                        g.classList.remove('active');
+                        g.setAttribute('hidden', '');
+                    });
 
-        grids.forEach(g => {
-            g.classList.remove('active');
-            g.setAttribute('hidden', '');
-        });
+                    const target = document.getElementById('grid-' + cat);
+                    target.removeAttribute('hidden');
 
-        const target = document.getElementById('grid-' + cat);
-        target.removeAttribute('hidden');
+                    requestAnimationFrame(() => {
+                        target.classList.add('active');
+                        animarGrid('grid-' + cat);
+                    });
+                });
+            });
 
-        // força reflow antes de animar
-        requestAnimationFrame(() => {
-            target.classList.add('active');
-            animarGrid('grid-' + cat);
-        });
-    });
-});
+            /* ── slideshow de imagens nos cards ── */
+            document.querySelectorAll('.atv-card-slideshow').forEach(wrap => {
+                const imgs = wrap.querySelectorAll('img');
+                if (imgs.length < 2) return;
+                let i = 0;
+                setInterval(() => {
+                    imgs[i].classList.remove('active');
+                    i = (i + 1) % imgs.length;
+                    imgs[i].classList.add('active');
+                }, 5000);
+            });
 
-/* ── animação dos cards com GSAP ── */
-function animarGrid(id) {
-    const cards = document.querySelectorAll('#' + id + ' .atv-card');
-    gsap.fromTo(cards,
-        { opacity: 0, y: 22, scale: 0.97 },
-        {
-            opacity: 1, y: 0, scale: 1,
-            duration: 0.45,
-            ease: 'power2.out',
-            stagger: 0.055,
-            clearProps: 'transform'
-        }
-    );
-}
+            /* ── animação dos cards com GSAP ── */
+            function animarGrid(id) {
+                const cards = document.querySelectorAll('#' + id + ' .atv-card');
+                gsap.fromTo(cards,
+                    { opacity: 0, y: 22, scale: 0.97 },
+                    {
+                        opacity: 1, y: 0, scale: 1,
+                        duration: 0.45,
+                        ease: 'power2.out',
+                        stagger: 0.055,
+                        clearProps: 'transform'
+                    }
+                );
+            }
 
-/* ── mobile drawer ── */
-const overlay  = document.getElementById('mobile_overlay');
-const drawer   = document.getElementById('mobile_drawer');
-document.getElementById('mobile_btn').addEventListener('click', () => {
-    drawer.classList.add('active'); overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-});
-document.getElementById('mobile_close').addEventListener('click', fecharDrawer);
-overlay.addEventListener('click', fecharDrawer);
-function fecharDrawer() {
-    drawer.classList.remove('active'); overlay.classList.remove('active');
-    document.body.style.overflow = '';
-}
+            /* ── mobile drawer ── */
+            const overlay  = document.getElementById('mobile_overlay');
+            const drawer   = document.getElementById('mobile_drawer');
+            document.getElementById('mobile_btn').addEventListener('click', () => {
+                drawer.classList.add('active'); overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            document.getElementById('mobile_close').addEventListener('click', fecharDrawer);
+            overlay.addEventListener('click', fecharDrawer);
+            function fecharDrawer() {
+                drawer.classList.remove('active'); overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
 
-/* ── transição de página ── */
-document.querySelectorAll('[data-nav]').forEach(link => {
-    link.addEventListener('click', e => {
-        const href = link.getAttribute('href');
-        if (!href || href === '#') return;
-        e.preventDefault();
-        document.body.classList.add('page-leaving');
-        setTimeout(() => { window.location.href = href; }, 180);
-    });
-});
+            /* ── transição de página ── */
+            document.querySelectorAll('[data-nav]').forEach(link => {
+                link.addEventListener('click', e => {
+                    const href = link.getAttribute('href');
+                    if (!href || href === '#') return;
+                    e.preventDefault();
+                    document.body.classList.add('page-leaving');
+                    setTimeout(() => { window.location.href = href; }, 180);
+                });
+            });
 
-/* ── logout ── */
-function abrirLogout() {
-    document.getElementById('logout-overlay').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-function fecharLogout() {
-    document.getElementById('logout-overlay').classList.remove('active');
-    document.body.style.overflow = '';
-}
-function confirmarLogout() {
-    localStorage.removeItem('teko_session');
-    localStorage.removeItem('teko_streak');
-    document.body.classList.add('page-leaving');
-    setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
-}
-document.getElementById('logout-overlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) fecharLogout();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
+            /* ── logout ── */
+            function abrirLogout() {
+                document.getElementById('logout-overlay').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            function fecharLogout() {
+                document.getElementById('logout-overlay').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            function confirmarLogout() {
+                localStorage.removeItem('teko_session');
+                localStorage.removeItem('teko_streak');
+                document.body.classList.add('page-leaving');
+                setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
+            }
+            document.getElementById('logout-overlay').addEventListener('click', e => {
+                if (e.target === e.currentTarget) fecharLogout();
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
 
-/* ── avatar ── */
-try {
-    const s = JSON.parse(localStorage.getItem('teko_session') || '{}');
-    const nome = s?.crianca?.nome || s?.responsavel?.nome_completo || 'T';
-    document.querySelectorAll('#user-avatar,#user-avatar-mobile').forEach(el => {
-        if (el) el.textContent = nome.charAt(0).toUpperCase();
-    });
-} catch(e) {}
-</script>
-</body>
+            /* ── avatar ── */
+            try {
+                const s = JSON.parse(localStorage.getItem('teko_session') || '{}');
+                const nome = s?.crianca?.nome || s?.responsavel?.nome_completo || 'T';
+                document.querySelectorAll('#user-avatar,#user-avatar-mobile').forEach(el => {
+                    if (el) el.textContent = nome.charAt(0).toUpperCase();
+                });
+            } catch(e) {}
+
+        </script>
+    </body>
 </html>
