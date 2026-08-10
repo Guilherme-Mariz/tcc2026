@@ -59,7 +59,8 @@ body {
     flex-shrink: 0;
     background: var(--bg-card);
     border-right: none;
-    border-bottom: 1.5px solid var(--border);
+    border-bottom: 2px solid var(--green);
+    box-shadow: 0 2px 12px rgba(30,70,40,0.06);
     position: sticky;
     top: 0;
     display: flex;
