@@ -12,55 +12,65 @@ set PATH=%PATH%;C:\Users\195172024\Documents\PROJETOTCC\node\nodejs\node-v24.14.
 npm start
 */
 
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+
 const app = express();
 
 
+// ==============================
+// MIDDLEWARES GERAIS
+// ==============================
+
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
+
 app.use(express.json());
+
 app.use(cookieParser());
 
 
+// ==============================
+// ROTAS
+// ==============================
+
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
-// const criancaRoutes = require("./routes/criancaRoutes");
-//console.log(authRoutes);
-
 const aiRoutes = require("./routes/aiRoutes");
-
 const childRoutes = require("./routes/childRoutes");
-
-
-
 
 app.use("/api/ai", aiRoutes);
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
 app.use("/", childRoutes);
-
-console.log()
-
-
-app.use(express.static(path.join(__dirname, 'view')));
-
 
 app.use(authRoutes);
 
 app.use(userRoutes);
 
-/*app.use("/crianca", criancaRoutes);*/
 
-const rateLimit = require("express-rate-limit");
+// ==============================
+// FRONT-END
+// ==============================
+
+app.use(
+    express.static(
+        path.join(__dirname, "view")
+    )
+);
+
+
+// ==============================
+// SERVIDOR
+// ==============================
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Servidor rodando na porta 3000");
-});
 
-// Diz ao Express onde estão seus arquivos front-end
-app.use(express.static(path.join(__dirname, "view")));
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});

@@ -25,4 +25,6 @@ async function verificarAuth(req, res, next) {
     }
 }
 
+
+
 module.exports = verificarAuth;
