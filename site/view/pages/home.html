@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="css/home.css">
     <title>teko. — Olá!</title>
 </head>
-<body>
-
+<body class="home-page">
     <!-- ── MODAL LOGOUT ── -->
     <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
         <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
@@ -131,19 +130,120 @@
 
         <!-- ── ACOLHIMENTO ── -->
         <section class="welcome-section" aria-label="Boas-vindas">
-            <div class="welcome-text">
-                <p class="welcome-label">Que bom te ver por aqui</p>
-                <h1 class="welcome-title">
-                    Olá, <em id="child-name">Visitante</em>!
-                </h1>
-                <p class="welcome-sub">Hoje é um bom dia para aprender algo novo.</p>
+            <div class="welcome-panel">
+                <div class="welcome-text">
+                    <p class="welcome-label">Que bom ver você por aqui</p>
+        
+                    <h1 class="welcome-title">
+                        Olá, <em id="child-name">...</em>!
+                    </h1>
+        
+                    <p class="welcome-sub">
+                        Hoje é um bom dia para aprender algo novo.
+                    </p>
+                </div>
             </div>
+        </section>
 
-            <div class="streak-badge" title="Dias seguidos">
-                <div class="streak-flame" aria-hidden="true">🔥</div>
-                <div class="streak-info">
-                    <span class="streak-num" id="streak-count">3</span>
-                    <span class="streak-txt">dias<br>seguidos</span>
+        <section class="home-shortcuts" aria-label="Acessos rápidos">
+            <a href="/perfil" class="profile-home-card">
+                <div class="profile-card-cover"></div>
+        
+                <div class="profile-card-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+        
+                <div class="profile-card-content">
+                    <span class="profile-card-label">Perfil da criança</span>
+                    <h2 id="profile-child-name">Criança</h2>
+        
+                    <span class="profile-card-action">
+                        Editar o perfil
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
+        
+            <a href="/tekoia" class="tekoia-home-card">
+                <div class="tekoia-home-action">
+                    <span>Acessar o TEKO.IA</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+        </section>
+
+        <section class="performance-section" aria-label="Desempenho da criança">
+            <div class="performance-header">
+                <div>
+                    <p class="performance-label">Acompanhamento</p>
+                    <h2>Meu desempenho</h2>
+                </div>
+        
+                <span class="performance-period">Esta semana</span>
+            </div>
+        
+            <div class="progress-items">
+                <div class="progress-item">
+                    <div class="progress-row">
+                        <span class="progress-name">
+                            <span class="progress-emoji" aria-hidden="true">😊</span>
+                            Reconhecer emoções
+                        </span>
+        
+                        <span class="progress-pct">70%</span>
+                    </div>
+        
+                    <div
+                        class="progress-track"
+                        role="progressbar"
+                        aria-valuenow="70"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                    >
+                        <div class="progress-fill fill-green" style="width: 70%"></div>
+                    </div>
+                </div>
+        
+                <div class="progress-item">
+                    <div class="progress-row">
+                        <span class="progress-name">
+                            <span class="progress-emoji" aria-hidden="true">🗣️</span>
+                            Situações sociais
+                        </span>
+        
+                        <span class="progress-pct">45%</span>
+                    </div>
+        
+                    <div
+                        class="progress-track"
+                        role="progressbar"
+                        aria-valuenow="45"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                    >
+                        <div class="progress-fill fill-yellow" style="width: 45%"></div>
+                    </div>
+                </div>
+        
+                <div class="progress-item">
+                    <div class="progress-row">
+                        <span class="progress-name">
+                            <span class="progress-emoji" aria-hidden="true">🧩</span>
+                            Expressões e metáforas
+                        </span>
+        
+                        <span class="progress-pct">20%</span>
+                    </div>
+        
+                    <div
+                        class="progress-track"
+                        role="progressbar"
+                        aria-valuenow="20"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                    >
+                        <div class="progress-fill fill-teal" style="width: 20%"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -233,75 +333,67 @@
 
             </div>
         </section>
-
-        <!-- ── PROGRESSO + TEKO.IA ── -->
-        <section class="section-block bottom-grid" aria-label="Progresso e assistente">
-
-            <!-- Progresso semanal -->
-            <div class="progress-card" aria-label="Meu progresso essa semana">
-                <h2 class="section-heading">Meu progresso</h2>
-                <div class="progress-items">
-
-                    <div class="progress-item">
-                        <div class="progress-row">
-                            <span class="progress-name">
-                                <span class="progress-emoji" aria-hidden="true">😊</span>
-                                Reconhecer emoções
-                            </span>
-                            <span class="progress-pct" aria-label="70 por cento">70%</span>
-                        </div>
-                        <div class="progress-track" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-fill fill-green" style="width:70%"></div>
-                        </div>
-                    </div>
-
-                    <div class="progress-item">
-                        <div class="progress-row">
-                            <span class="progress-name">
-                                <span class="progress-emoji" aria-hidden="true">🗣️</span>
-                                Situações sociais
-                            </span>
-                            <span class="progress-pct" aria-label="45 por cento">45%</span>
-                        </div>
-                        <div class="progress-track" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-fill fill-yellow" style="width:45%"></div>
-                        </div>
-                    </div>
-
-                    <div class="progress-item">
-                        <div class="progress-row">
-                            <span class="progress-name">
-                                <span class="progress-emoji" aria-hidden="true">🧩</span>
-                                Expressões e metáforas
-                            </span>
-                            <span class="progress-pct" aria-label="20 por cento">20%</span>
-                        </div>
-                        <div class="progress-track" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-fill fill-teal" style="width:20%"></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- TEKO.IA bloco -->
-            <a href="/tekoia" class="tekoia-card" aria-label="Falar com o TEKO.IA">
-                <div class="tekoia-card-mascot">
-                    <img src="../img/mascot/teko-apontando.png" alt="Mascote Teko apontando" onerror="this.style.display='none'">
-                </div>
-                <div class="tekoia-card-body">
-                    <span class="tekoia-tag">Assistente</span>
-                    <h3 class="tekoia-card-title">Ficou com alguma dúvida?</h3>
-                    <p class="tekoia-card-desc">O TEKO está aqui para ajudar você a qualquer hora.</p>
-                    <div class="tekoia-card-btn">
-                        Conversar agora
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </div>
-                </div>
-            </a>
-
-        </section>
-
     </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const nomeElemento = document.getElementById("child-name");
+            const nomePerfil = document.getElementById("profile-child-name");
+    
+            try {
+                const resposta = await fetch("/children", {
+                    credentials: "include"
+                });
+    
+                const resultado = await resposta.json();
+    
+                console.log("Resposta de /children:", resultado);
+    
+                if (!resposta.ok) {
+                    throw new Error(
+                        resultado.error ||
+                        resultado.erro ||
+                        "Erro ao buscar criança"
+                    );
+                }
+    
+                const lista =
+                    resultado.children ||
+                    resultado.criancas ||
+                    resultado;
+    
+                const crianca = Array.isArray(lista)
+                    ? lista[0]
+                    : lista;
+    
+                const nomeCompleto =
+                    crianca?.nome ||
+                    crianca?.firstName ||
+                    crianca?.nomeCrianca;
+    
+                if (!nomeCompleto) {
+                    throw new Error(
+                        "Nome da criança não encontrado na resposta"
+                    );
+                }
+    
+                const primeiroNome = nomeCompleto.trim().split(" ")[0];
+    
+                nomeElemento.textContent = primeiroNome;
+    
+                if (nomePerfil) {
+                    nomePerfil.textContent = primeiroNome;
+                }
+            } catch (erro) {
+                console.error("Erro ao carregar o nome:", erro);
+    
+                nomeElemento.textContent = "amigo";
+    
+                if (nomePerfil) {
+                    nomePerfil.textContent = "Criança";
+                }
+            }
+        });
+    </script>
 </body>
 </html>
