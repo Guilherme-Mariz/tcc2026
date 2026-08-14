@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/home.css">
+    <script src="js/home.js" defer></script>
     <title>teko. — Olá!</title>
 </head>
 <body class="home-page">
@@ -50,10 +51,6 @@
                     <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
                 </span>
                 <span class="snav-label">TEKO.IA</span>
-            </a>
-            <a href="/perfil" class="snav-item" data-nav>
-                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
-                <span class="snav-label">Perfil</span>
             </a>
             <a href="/responsavel" class="snav-item" data-nav>
                 <span class="snav-icon">
@@ -110,10 +107,6 @@
                 </span>
                 <span class="snav-label">TEKO.IA</span>
             </a>
-            <a href="/perfil" class="snav-item" data-nav>
-                <span class="snav-icon"><i class="fa-solid fa-user"></i></span>
-                <span class="snav-label">Perfil</span>
-            </a>
             <a href="/responsavel" class="snav-item" data-nav>
                 <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
                 <span class="snav-label">Responsável</span>
@@ -145,31 +138,29 @@
             </div>
         </section>
 
-        <section class="home-shortcuts" aria-label="Acessos rápidos">
-            <a href="/perfil" class="profile-home-card">
-                <div class="profile-card-cover"></div>
+        <section class="profile-summary" aria-label="Perfil da criança">
+            <div class="profile-summary-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
         
-                <div class="profile-card-avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
+            <div class="profile-summary-info">
+                <h2 id="profile-child-name">Criança</h2>
         
-                <div class="profile-card-content">
-                    <span class="profile-card-label">Perfil da criança</span>
-                    <h2 id="profile-child-name">Criança</h2>
+                <button type="button" class="nickname-button">
+                    Escolher apelido
+                </button>
+            </div>
         
-                    <span class="profile-card-action">
-                        Editar o perfil
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </span>
-                </div>
-            </a>
+            <label class="profile-color-control" for="profile-color">
+                <span>Cor do perfil</span>
         
-            <a href="/tekoia" class="tekoia-home-card">
-                <div class="tekoia-home-action">
-                    <span>Acessar o TEKO.IA</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-            </a>
+                <input
+                    type="color"
+                    id="profile-color"
+                    value="#A8D5BA"
+                    aria-label="Escolher cor do perfil"
+                >
+            </label>
         </section>
 
         <section class="performance-section" aria-label="Desempenho da criança">
@@ -248,107 +239,125 @@
             </div>
         </section>
 
-        <!-- ── ATIVIDADE DO DIA ── -->
-        <section class="section-block" aria-label="Atividade do dia">
-            <h2 class="section-heading">Atividade do dia</h2>
-
-            <a href="/atividades" class="featured-card" aria-label="Como você se sentiria se — jogar agora">
-                <div class="featured-visual" aria-hidden="true">
-                    <div class="featured-emoji">🎭</div>
-                    <div class="featured-glow"></div>
-                </div>
-                <div class="featured-body">
-                    <span class="featured-badge">Em destaque</span>
-                    <h3 class="featured-title">Como você se sentiria se...?</h3>
-                    <p class="featured-desc">5 mini-histórias do dia a dia para descobrir como as emoções funcionam.</p>
-                </div>
-                <div class="featured-action" aria-hidden="true">
-                    <div class="featured-play">
-                        <i class="fa-solid fa-play"></i>
-                    </div>
-                    <span>Jogar</span>
+        <section class="home-feature-grid" aria-label="Recursos recomendados">
+            <a href="/tekoia" class="tekoia-home-card">
+                <div class="tekoia-home-action">
+                    <span>Acessar o TEKO.IA</span>
+                    <i class="fa-solid fa-arrow-right"></i>
                 </div>
             </a>
-        </section>
-
-        <!-- ── ÁREAS DE APRENDIZADO ── -->
-        <section class="section-block" aria-label="Áreas de aprendizado">
-            <h2 class="section-heading">O que vamos explorar <span>hoje</span>?</h2>
-
-            <div class="areas-grid">
-
-                <a href="/atividades" class="area-card area-emocoes" aria-label="Minhas Emoções">
-                    <div class="area-icon-wrap">
-                        <span class="area-icon">🧠</span>
-                    </div>
-                    <div class="area-body">
-                        <h3 class="area-title">Minhas Emoções</h3>
-                        <p class="area-desc">Reconheça e entenda seus sentimentos</p>
-                        <ul class="area-list" aria-label="Atividades disponíveis">
-                            <li>Quebra-Cabeça de Emoções</li>
-                            <li>Monstro das Cores</li>
-                            <li>Semáforo Emocional</li>
-                        </ul>
-                    </div>
-                    <span class="area-arrow" aria-hidden="true">
-                        <i class="fa-solid fa-chevron-right"></i>
+        
+            <a href="/atividades" class="suggestion-card">
+                <div class="suggestion-icon" aria-hidden="true">
+                    🎭
+                </div>
+        
+                <div class="suggestion-content">
+                    <span class="suggestion-label">
+                        Sugestão do TEKO.IA
                     </span>
-                </a>
-
-                <a href="/atividades" class="area-card area-comportamento" aria-label="Meu Comportamento">
-                    <div class="area-icon-wrap">
-                        <span class="area-icon">🎯</span>
-                    </div>
-                    <div class="area-body">
-                        <h3 class="area-title">Meu Comportamento</h3>
-                        <p class="area-desc">Flexibilidade, espera e rotinas</p>
-                        <ul class="area-list" aria-label="Atividades disponíveis">
-                            <li>Jogo da Espera</li>
-                            <li>Sequência de Rotina</li>
-                            <li>Escolha Flexível</li>
-                        </ul>
-                    </div>
-                    <span class="area-arrow" aria-hidden="true">
-                        <i class="fa-solid fa-chevron-right"></i>
+        
+                    <h2>Como você se sentiria se...?</h2>
+        
+                    <p>
+                        Descubra como as emoções aparecem em situações do dia a dia.
+                    </p>
+        
+                    <span class="suggestion-action">
+                        Começar atividade
+                        <i class="fa-solid fa-arrow-right"></i>
                     </span>
-                </a>
-
-                <a href="/atividades" class="area-card area-comunicacao" aria-label="Minha Comunicação">
-                    <div class="area-icon-wrap">
-                        <span class="area-icon">💬</span>
-                    </div>
-                    <div class="area-body">
-                        <h3 class="area-title">Minha Comunicação</h3>
-                        <p class="area-desc">Expresse-se e interaja com o mundo</p>
-                        <ul class="area-list" aria-label="Atividades disponíveis">
-                            <li>Cartões de Escolha</li>
-                            <li>Role-Play Social</li>
-                            <li>GuessWhat Social</li>
-                        </ul>
-                    </div>
-                    <span class="area-arrow" aria-hidden="true">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </span>
-                </a>
-
-            </div>
+                </div>
+            </a>
         </section>
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", async () => {
+        document.addEventListener("DOMContentLoaded", () => {
+            // ── Nome da criança e cor do perfil ──
             const nomeElemento = document.getElementById("child-name");
             const nomePerfil = document.getElementById("profile-child-name");
-    
+            const cardPerfil = document.querySelector(".profile-summary");
+            const seletorCor = document.getElementById("profile-color");
+            const corSalva = localStorage.getItem("teko_profile_color");
+
+            if (corSalva && cardPerfil && seletorCor) {
+                cardPerfil.style.setProperty("--profile-color", corSalva);
+                seletorCor.value = corSalva;
+            }
+
+            if (seletorCor && cardPerfil) {
+                seletorCor.addEventListener("input", () => {
+                    const novaCor = seletorCor.value;
+
+                    cardPerfil.style.setProperty("--profile-color", novaCor);
+                    localStorage.setItem("teko_profile_color", novaCor);
+                });
+            }
+
+            carregarCrianca(nomeElemento, nomePerfil);
+
+            // ── Menu mobile (drawer) ──
+            const mobileBtn = document.getElementById("mobile_btn");
+            const mobileClose = document.getElementById("mobile_close");
+            const mobileDrawer = document.getElementById("mobile_drawer");
+            const mobileOverlay = document.getElementById("mobile_overlay");
+
+            function abrirDrawer() {
+                if (!mobileDrawer || !mobileOverlay) return;
+                mobileDrawer.classList.add("active");
+                mobileOverlay.classList.add("active");
+            }
+
+            function fecharDrawer() {
+                if (!mobileDrawer || !mobileOverlay) return;
+                mobileDrawer.classList.remove("active");
+                mobileOverlay.classList.remove("active");
+            }
+
+            if (mobileBtn) mobileBtn.addEventListener("click", abrirDrawer);
+            if (mobileClose) mobileClose.addEventListener("click", fecharDrawer);
+
+            // fecha o drawer ao clicar fora dele (no overlay)
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener("click", (e) => {
+                    if (!mobileDrawer.contains(e.target)) {
+                        fecharDrawer();
+                    }
+                });
+            }
+
+            // ── Modal de logout: fecha ao clicar fora do modal ──
+            const logoutOverlay = document.getElementById("logout-overlay");
+            const logoutModal = document.querySelector(".logout-modal");
+
+            if (logoutOverlay && logoutModal) {
+                logoutOverlay.addEventListener("click", (e) => {
+                    if (!logoutModal.contains(e.target)) {
+                        fecharLogout();
+                    }
+                });
+            }
+
+            // ── Tecla Esc fecha drawer e modal de logout ──
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    fecharDrawer();
+                    fecharLogout();
+                }
+            });
+        });
+
+        async function carregarCrianca(nomeElemento, nomePerfil) {
             try {
                 const resposta = await fetch("/children", {
                     credentials: "include"
                 });
-    
+
                 const resultado = await resposta.json();
-    
+
                 console.log("Resposta de /children:", resultado);
-    
+
                 if (!resposta.ok) {
                     throw new Error(
                         resultado.error ||
@@ -356,44 +365,62 @@
                         "Erro ao buscar criança"
                     );
                 }
-    
+
                 const lista =
                     resultado.children ||
                     resultado.criancas ||
                     resultado;
-    
+
                 const crianca = Array.isArray(lista)
                     ? lista[0]
                     : lista;
-    
+
                 const nomeCompleto =
                     crianca?.nome ||
                     crianca?.firstName ||
                     crianca?.nomeCrianca;
-    
+
                 if (!nomeCompleto) {
                     throw new Error(
                         "Nome da criança não encontrado na resposta"
                     );
                 }
-    
+
                 const primeiroNome = nomeCompleto.trim().split(" ")[0];
-    
-                nomeElemento.textContent = primeiroNome;
-    
-                if (nomePerfil) {
-                    nomePerfil.textContent = primeiroNome;
-                }
+
+                if (nomeElemento) nomeElemento.textContent = primeiroNome;
+                if (nomePerfil) nomePerfil.textContent = primeiroNome;
             } catch (erro) {
                 console.error("Erro ao carregar o nome:", erro);
-    
-                nomeElemento.textContent = "amigo";
-    
-                if (nomePerfil) {
-                    nomePerfil.textContent = "Criança";
-                }
+
+                if (nomeElemento) nomeElemento.textContent = "amigo";
+                if (nomePerfil) nomePerfil.textContent = "Criança";
             }
-        });
+        }
+
+        // ── Modal de logout (chamadas via onclick no HTML) ──
+        function abrirLogout() {
+            const overlay = document.getElementById("logout-overlay");
+            if (overlay) overlay.classList.add("active");
+        }
+
+        function fecharLogout() {
+            const overlay = document.getElementById("logout-overlay");
+            if (overlay) overlay.classList.remove("active");
+        }
+
+        async function confirmarLogout() {
+            try {
+                await fetch("/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } catch (erro) {
+                console.error("Erro ao encerrar sessão:", erro);
+            } finally {
+                window.location.href = "/login";
+            }
+        }
     </script>
 </body>
 </html>

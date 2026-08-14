@@ -29,14 +29,21 @@ router.get('/tekoia', verificarAuth, (req, res) => {
     res.sendFile(path.join(__dirname, '../view/pages/tekoia.html'));
 });
 
-// PERFIL
-router.get('/perfil', verificarAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, '../view/pages/perfil.html'));
-})
-
 // RESPONSAVEL
 router.get('/responsavel', verificarAuth, (req, res) => {
     res.sendFile(path.join(__dirname, '../view/pages/responsavel.html'));
 });
 
 module.exports = router;
+
+//PARTE DE ATIVIDADES
+
+//MODULO 2: MONTE A FRASE
+router.get("/atividades/monte-frase", verificarAuth, (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../view/pages/atividades/monte-frase.html"
+        )
+    );
+});
