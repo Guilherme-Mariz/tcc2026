@@ -3,226 +3,213 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>body{opacity:0}</style>
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/home.css">
         <link rel="stylesheet" href="/css/atividades.css">
         <link rel="stylesheet" href="/css/atividades/monte-frase.css">
+
         <title>teko. — Monte a Frase</title>
     </head>
 
     <body>
-
-        <!-- MODAL LOGOUT -->
         <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
-            <div class="logout-modal" role="dialog" aria-modal="true">
-                <div class="logout-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
-                <h2 class="logout-title">Sair da conta?</h2>
+            <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+                <div class="logout-icon">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+
+                <h2 id="logout-title" class="logout-title">Sair da conta?</h2>
                 <p class="logout-desc">Você tem certeza que quer sair?</p>
+
                 <div class="logout-actions">
-                    <button class="logout-btn-cancel" onclick="fecharLogout()">Cancelar</button>
-                    <button class="logout-btn-confirm" onclick="confirmarLogout()">Sim, sair</button>
+                    <button id="logout-cancel" class="logout-btn-cancel" type="button">Cancelar</button>
+                    <button id="logout-confirm" class="logout-btn-confirm" type="button">Sim, sair</button>
                 </div>
             </div>
         </div>
 
-        <!-- SIDEBAR -->
         <aside id="sidebar" role="navigation" aria-label="Menu principal">
-            <a href="/" class="sidebar-logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
+            <a href="/" class="sidebar-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
             <nav class="sidebar-nav">
                 <a href="/home" class="snav-item" data-nav>
                     <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
                     <span class="snav-label">Início</span>
                 </a>
+
                 <a href="/atividades" class="snav-item active" aria-current="page" data-nav>
                     <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
                     <span class="snav-label">Atividades</span>
                 </a>
+
                 <a href="/tekoia" class="snav-item" data-nav>
-                    <span class="snav-icon snav-icon-ia"><img src="/img/mascot/teko-icn.png" alt="" aria-hidden="true"></span>
+                    <span class="snav-icon snav-icon-ia">
+                        <img src="/img/mascot/teko-icn.png" alt="">
+                    </span>
                     <span class="snav-label">TEKO.IA</span>
                 </a>
+
                 <a href="/responsavel" class="snav-item" data-nav>
                     <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
                     <span class="snav-label">Responsável</span>
                 </a>
             </nav>
+
             <div class="sidebar-bottom">
                 <a href="/configuracoes" class="snav-item snav-config" data-nav>
                     <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
                     <span class="snav-label">Config.</span>
                 </a>
-                <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair" aria-label="Sair da conta">
+
+                <button class="sidebar-logout-btn" type="button" data-logout-open aria-label="Sair da conta">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         </aside>
 
-        <!-- MOBILE HEADER -->
         <header id="mobile-header">
-            <a href="/" class="sidebar-logo"><span class="logo-teko">teko</span><span class="logo-dot">.</span></a>
+            <a href="/" class="sidebar-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
             <div class="mobile-header-right">
-                <button class="mobile-logout-btn" onclick="abrirLogout()" aria-label="Sair"><i class="fa-solid fa-right-from-bracket"></i></button>
-                <button id="mobile_btn" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+                <button class="mobile-logout-btn" type="button" data-logout-open aria-label="Sair da conta">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+
+                <button id="mobile_btn" type="button" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </header>
 
-        <!-- MOBILE DRAWER -->
         <div id="mobile_overlay"></div>
+
         <div id="mobile_drawer">
-            <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
+            <button id="mobile_close" type="button" aria-label="Fechar menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
             <nav class="drawer-nav">
-                <a href="/home" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-house"></i></span><span class="snav-label">Início</span></a>
-                <a href="/atividades" class="snav-item active" data-nav><span class="snav-icon"><i class="fa-solid fa-shapes"></i></span><span class="snav-label">Atividades</span></a>
-                <a href="/tekoia" class="snav-item" data-nav><span class="snav-icon snav-icon-ia"><img src="/img/mascot/teko-icn.png" alt="" aria-hidden="true"></span><span class="snav-label">TEKO.IA</span></a>
-                <a href="/responsavel" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span><span class="snav-label">Responsável</span></a>
-                <a href="/configuracoes" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-gear"></i></span><span class="snav-label">Config.</span></a>
+                <a href="/home" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                    <span class="snav-label">Início</span>
+                </a>
+
+                <a href="/atividades" class="snav-item active" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                    <span class="snav-label">Atividades</span>
+                </a>
+
+                <a href="/tekoia" class="snav-item" data-nav>
+                    <span class="snav-icon snav-icon-ia">
+                        <img src="/img/mascot/teko-icn.png" alt="">
+                    </span>
+                    <span class="snav-label">TEKO.IA</span>
+                </a>
+
+                <a href="/responsavel" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                    <span class="snav-label">Responsável</span>
+                </a>
+
+                <a href="/configuracoes" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="snav-label">Config.</span>
+                </a>
             </nav>
         </div>
 
-        <!-- MAIN -->
         <main id="main-content">
-
             <a href="/atividades" class="mf-back" data-nav>
                 <i class="fa-solid fa-arrow-left"></i>
                 <span>Voltar para atividades</span>
             </a>
 
-            <div class="atv-header mf-header">
-                <div>
-                    <p class="welcome-label">Comunicação</p>
-                    <h1 class="mf-title">Monte a Frase</h1>
-                    <p class="mf-subtitle">Escolha as palavras certas e monte uma frase para mostrar o que você quer dizer.</p>
-                </div>
-            </div>
+            <header class="mf-header">
+                <p class="welcome-label">Comunicação</p>
+                <h1 class="mf-title">Monte a Frase</h1>
+                <p class="mf-subtitle">
+                    Escolha as palavras certas e monte uma frase para mostrar o que você quer dizer.
+                </p>
+            </header>
 
             <section class="mf-stage" aria-label="Atividade Monte a Frase">
-
-                <!-- TELA INICIAL -->
-                <div class="mf-panel mf-intro" id="mf-intro">
-                    <img src="/img/mascot/teko-icn.png" alt="" class="mf-intro-icon">
-                    <h2 class="mf-intro-title">Vamos montar frases?</h2>
-                    <p class="mf-intro-text">Escolha as palavras e mostre o que você quer dizer.</p>
-                    <button type="button" class="mf-btn mf-btn-primary mf-btn-start" id="mf-start-btn">Iniciar</button>
+                <div id="mf-intro" class="mf-panel mf-center-panel">
+                    <img src="/img/mascot/teko-icn.png" alt="Teko" class="mf-panel-image">
+                    <h2 class="mf-panel-title">Vamos montar frases?</h2>
+                    <p class="mf-panel-text">Escolha as palavras e mostre o que você quer dizer.</p>
+                    <button id="mf-start-btn" class="mf-btn mf-btn-primary mf-btn-start" type="button">
+                        Iniciar
+                    </button>
                 </div>
 
-                <!-- TELA DE CARREGAMENTO -->
-                <div class="mf-panel mf-loading" id="mf-loading" hidden>
+                <div id="mf-loading" class="mf-panel mf-loading" aria-live="polite" hidden>
                     <div class="mf-loading-card">
-                        <img src="/img/mascot/teko-andando.gif" alt="" class="mf-loading-gif">
-                        <p class="mf-loading-text">Carregando...</p>
+                        <img src="/img/mascot/teko-andando.gif" alt="Teko andando" class="mf-loading-gif">
+                        <p>Carregando...</p>
                     </div>
                 </div>
 
-                <!-- JOGO -->
-                <div class="mf-panel mf-game" id="mf-game" hidden>
-
+                <div id="mf-game" class="mf-panel mf-game" hidden>
                     <div class="mf-round-top">
-                        <span class="atv-card-tag mf-round-indicator" id="mf-round-indicator">Frase 1 de 5</span>
-                        <p class="mf-instruction" id="mf-instruction"></p>
+                        <span id="mf-round-indicator" class="atv-card-tag mf-round-indicator"></span>
+                        <p id="mf-instruction" class="mf-instruction"></p>
                     </div>
 
-                    <div class="mf-sentence-area" id="mf-sentence-area" aria-label="Frase montada">
-                        <p class="mf-sentence-placeholder" id="mf-sentence-placeholder">Toque nas palavras abaixo para montar sua frase</p>
-                    </div>
+                    <div id="mf-sentence-area" class="mf-sentence-area" aria-label="Frase montada"></div>
 
-                    <div class="mf-options-area" id="mf-options-area" role="group" aria-label="Palavras disponíveis"></div>
+                    <div id="mf-options-area" class="mf-options-area" role="group" aria-label="Palavras disponíveis"></div>
 
-                    <p class="mf-feedback" id="mf-feedback" role="status" aria-live="polite"></p>
+                    <p id="mf-feedback" class="mf-feedback" role="status" aria-live="polite"></p>
 
                     <div class="mf-controls">
-                        <button type="button" class="mf-btn mf-btn-ghost" id="mf-clear-btn">
-                            <i class="fa-solid fa-eraser"></i> Limpar
+                        <button id="mf-clear-btn" class="mf-btn mf-btn-ghost" type="button">
+                            <i class="fa-solid fa-eraser"></i>
+                            Limpar
                         </button>
-                        <button type="button" class="mf-btn mf-btn-ghost" id="mf-listen-btn">
-                            <i class="fa-solid fa-volume-high"></i> Ouvir frase
+
+                        <button id="mf-listen-btn" class="mf-btn mf-btn-ghost" type="button">
+                            <i class="fa-solid fa-volume-high"></i>
+                            Ouvir frase
                         </button>
-                        <button type="button" class="mf-btn mf-btn-primary" id="mf-confirm-btn">
+
+                        <button id="mf-confirm-btn" class="mf-btn mf-btn-primary" type="button">
                             Confirmar
                         </button>
-                        <button type="button" class="mf-btn mf-btn-primary" id="mf-next-btn" hidden>
-                            Próxima frase <i class="fa-solid fa-arrow-right"></i>
+
+                        <button id="mf-next-btn" class="mf-btn mf-btn-primary" type="button" hidden>
+                            Próxima frase
+                            <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- CONCLUSÃO -->
-                <div class="mf-panel mf-done" id="mf-done" hidden>
-                    <img src="/img/mascot/teko-icn.png" alt="" class="mf-intro-icon">
-                    <h2 class="mf-intro-title">Parabéns!</h2>
-                    <p class="mf-intro-text" id="mf-done-text">Você completou 5 de 5 frases.</p>
+                <div id="mf-done" class="mf-panel mf-center-panel" hidden>
+                    <img src="/img/mascot/teko-icn.png" alt="Teko" class="mf-panel-image">
+                    <h2 class="mf-panel-title">Parabéns!</h2>
+                    <p id="mf-done-text" class="mf-panel-text"></p>
+
                     <div class="mf-done-actions">
-                        <button type="button" class="mf-btn mf-btn-ghost" id="mf-replay-btn">
-                            <i class="fa-solid fa-rotate-right"></i> Jogar novamente
+                        <button id="mf-replay-btn" class="mf-btn mf-btn-ghost" type="button">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            Jogar novamente
                         </button>
-                        <a href="/atividades" class="mf-btn mf-btn-primary" data-nav>Voltar para atividades</a>
+
+                        <a href="/atividades" class="mf-btn mf-btn-primary" data-nav>
+                            Voltar para atividades
+                        </a>
                     </div>
                 </div>
-
             </section>
-
         </main>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-        <script src="/js/atividades/monte-frase.js"></script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                document.body.style.opacity = '1';
-            });
-
-            const overlay  = document.getElementById('mobile_overlay');
-            const drawer   = document.getElementById('mobile_drawer');
-            document.getElementById('mobile_btn').addEventListener('click', () => {
-                drawer.classList.add('active'); overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-            document.getElementById('mobile_close').addEventListener('click', fecharDrawer);
-            overlay.addEventListener('click', fecharDrawer);
-            function fecharDrawer() {
-                drawer.classList.remove('active'); overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            document.querySelectorAll('[data-nav]').forEach(link => {
-                link.addEventListener('click', e => {
-                    const href = link.getAttribute('href');
-                    if (!href || href === '#') return;
-                    e.preventDefault();
-                    document.body.classList.add('page-leaving');
-                    setTimeout(() => { window.location.href = href; }, 180);
-                });
-            });
-
-            function abrirLogout() {
-                document.getElementById('logout-overlay').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            function fecharLogout() {
-                document.getElementById('logout-overlay').classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            function confirmarLogout() {
-                localStorage.removeItem('teko_session');
-                localStorage.removeItem('teko_streak');
-                document.body.classList.add('page-leaving');
-                setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
-            }
-            document.getElementById('logout-overlay').addEventListener('click', e => {
-                if (e.target === e.currentTarget) fecharLogout();
-            });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
-
-            try {
-                const s = JSON.parse(localStorage.getItem('teko_session') || '{}');
-                const nome = s?.crianca?.nome || s?.responsavel?.nome_completo || 'T';
-                document.querySelectorAll('#user-avatar,#user-avatar-mobile').forEach(el => {
-                    if (el) el.textContent = nome.charAt(0).toUpperCase();
-                });
-            } catch(e) {}
-        </script>
+        <script src="/js/atividades/monte-frase.js" defer></script>
     </body>
 </html>

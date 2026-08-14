@@ -1,244 +1,453 @@
-(function () {
-    "use strict";
-
-    const ROUNDS = [
+document.addEventListener("DOMContentLoaded", () => {
+    const frases = [
         {
-            instruction: "Monte uma frase para pedir água.",
-            correct: ["Eu quero", "água"],
-            options: ["água", "brincar", "Eu quero", "não"]
+            instrucao: "Monte uma frase para pedir água.",
+            resposta: ["Eu quero", "água"],
+            opcoes: ["água", "brincar", "Eu quero", "não"]
         },
         {
-            instruction: "Monte uma frase para pedir ajuda.",
-            correct: ["Eu preciso", "de ajuda"],
-            options: ["de ajuda", "Eu preciso", "brincar", "água"]
+            instrucao: "Monte uma frase para pedir ajuda.",
+            resposta: ["Eu preciso", "de ajuda"],
+            opcoes: ["de ajuda", "Eu preciso", "brincar", "água"]
         },
         {
-            instruction: "Monte uma frase para dizer que quer brincar.",
-            correct: ["Eu quero", "brincar"],
-            options: ["parar", "brincar", "Eu quero", "de ajuda"]
+            instrucao: "Monte uma frase para dizer que quer brincar.",
+            resposta: ["Eu quero", "brincar"],
+            opcoes: ["parar", "brincar", "Eu quero", "de ajuda"]
         },
         {
-            instruction: "Monte uma frase para pedir que algo pare.",
-            correct: ["Eu quero", "parar"],
-            options: ["Eu quero", "ler", "parar", "água"]
+            instrucao: "Monte uma frase para pedir que algo pare.",
+            resposta: ["Eu quero", "parar"],
+            opcoes: ["Eu quero", "ler", "parar", "água"]
         },
         {
-            instruction: "Monte uma frase sobre algo que você gosta.",
-            correct: ["Eu gosto", "de ler"],
-            options: ["de ler", "Eu gosto", "parar", "brincar"]
+            instrucao: "Monte uma frase sobre algo que você gosta.",
+            resposta: ["Eu gosto", "de ler"],
+            opcoes: ["de ler", "Eu gosto", "parar", "brincar"]
         }
     ];
 
-    const introPanel   = document.getElementById("mf-intro");
-    const loadingPanel = document.getElementById("mf-loading");
-    const gamePanel    = document.getElementById("mf-game");
-    const donePanel     = document.getElementById("mf-done");
+    const telas = {
+        inicio: document.getElementById("mf-intro"),
+        carregamento: document.getElementById("mf-loading"),
+        jogo: document.getElementById("mf-game"),
+        conclusao: document.getElementById("mf-done")
+    };
 
-    const startBtn      = document.getElementById("mf-start-btn");
-    const roundIndicator = document.getElementById("mf-round-indicator");
-    const instructionEl = document.getElementById("mf-instruction");
-    const sentenceArea  = document.getElementById("mf-sentence-area");
-    const sentencePlaceholder = document.getElementById("mf-sentence-placeholder");
-    const optionsArea   = document.getElementById("mf-options-area");
-    const feedbackEl    = document.getElementById("mf-feedback");
-    const clearBtn       = document.getElementById("mf-clear-btn");
-    const listenBtn       = document.getElementById("mf-listen-btn");
-    const confirmBtn     = document.getElementById("mf-confirm-btn");
-    const nextBtn         = document.getElementById("mf-next-btn");
-    const doneText        = document.getElementById("mf-done-text");
-    const replayBtn       = document.getElementById("mf-replay-btn");
+    const elementos = {
+        iniciar: document.getElementById("mf-start-btn"),
+        indicador: document.getElementById("mf-round-indicator"),
+        instrucao: document.getElementById("mf-instruction"),
+        frase: document.getElementById("mf-sentence-area"),
+        opcoes: document.getElementById("mf-options-area"),
+        feedback: document.getElementById("mf-feedback"),
+        limpar: document.getElementById("mf-clear-btn"),
+        ouvir: document.getElementById("mf-listen-btn"),
+        confirmar: document.getElementById("mf-confirm-btn"),
+        proxima: document.getElementById("mf-next-btn"),
+        resultado: document.getElementById("mf-done-text"),
+        recomecar: document.getElementById("mf-replay-btn")
+    };
 
-    let currentRoundIndex = 0;
-    let shuffledOptions = [];
-    let selectedWords = [];
-    let roundSolved = false;
+    let rodadaAtual = 0;
+    let palavrasEscolhidas = [];
+    let opcoesEmbaralhadas = [];
+    let rodadaConcluida = false;
+    let carregamentoId;
 
-    function shuffle(array) {
-        const copy = array.slice();
-        for (let i = copy.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [copy[i], copy[j]] = [copy[j], copy[i]];
-        }
-        return copy;
-    }
-
-    function showPanel(panel) {
-        [introPanel, loadingPanel, gamePanel, donePanel].forEach(p => {
-            if (!p) return;
-            p.hidden = p !== panel;
+    function mostrarTela(nome) {
+        Object.entries(telas).forEach(([chave, tela]) => {
+            tela.hidden = chave !== nome;
         });
     }
 
-    function startActivity() {
-        showPanel(loadingPanel);
-        setTimeout(() => {
-            currentRoundIndex = 0;
-            loadRound(currentRoundIndex);
-            showPanel(gamePanel);
+    function embaralhar(lista) {
+        const copia = [...lista];
+
+        for (let i = copia.length - 1; i > 0; i--) {
+            const indice = Math.floor(Math.random() * (i + 1));
+
+            [copia[i], copia[indice]] = [
+                copia[indice],
+                copia[i]
+            ];
+        }
+
+        return copia;
+    }
+
+    function criarCartao(palavra, selecionado) {
+        const botao = document.createElement("button");
+
+        botao.type = "button";
+        botao.className = selecionado
+            ? "word-card mf-selected"
+            : "word-card";
+
+        botao.textContent = palavra;
+        botao.setAttribute("aria-label", palavra);
+
+        botao.addEventListener("click", () => {
+            if (rodadaConcluida) {
+                return;
+            }
+
+            if (selecionado) {
+                removerPalavra(botao);
+            } else {
+                palavrasEscolhidas.push(palavra);
+            }
+
+            limparFeedback();
+            renderizarJogo();
+        });
+
+        return botao;
+    }
+
+    function removerPalavra(botao) {
+        const cartoes = [
+            ...elementos.frase.querySelectorAll(".word-card")
+        ];
+
+        const indice = cartoes.indexOf(botao);
+
+        if (indice >= 0) {
+            palavrasEscolhidas.splice(indice, 1);
+        }
+    }
+
+    function palavraFoiUsada(palavra) {
+        const quantidadeDisponivel = opcoesEmbaralhadas.filter(
+            item => item === palavra
+        ).length;
+
+        const quantidadeUsada = palavrasEscolhidas.filter(
+            item => item === palavra
+        ).length;
+
+        return quantidadeUsada >= quantidadeDisponivel;
+    }
+
+    function renderizarFrase() {
+        elementos.frase.replaceChildren();
+
+        if (palavrasEscolhidas.length === 0) {
+            elementos.frase.classList.remove("mf-has-words");
+
+            const aviso = document.createElement("p");
+
+            aviso.className = "mf-sentence-placeholder";
+            aviso.textContent =
+                "Toque nas palavras abaixo para montar sua frase";
+
+            elementos.frase.appendChild(aviso);
+            return;
+        }
+
+        elementos.frase.classList.add("mf-has-words");
+
+        palavrasEscolhidas.forEach(palavra => {
+            const cartao = criarCartao(palavra, true);
+            elementos.frase.appendChild(cartao);
+        });
+    }
+
+    function renderizarOpcoes() {
+        elementos.opcoes.replaceChildren();
+
+        opcoesEmbaralhadas.forEach(palavra => {
+            if (!palavraFoiUsada(palavra)) {
+                const cartao = criarCartao(palavra, false);
+                elementos.opcoes.appendChild(cartao);
+            }
+        });
+    }
+
+    function renderizarJogo() {
+        renderizarFrase();
+        renderizarOpcoes();
+    }
+
+    function limparFeedback() {
+        elementos.feedback.textContent = "";
+        elementos.feedback.className = "mf-feedback";
+    }
+
+    function carregarRodada() {
+        const rodada = frases[rodadaAtual];
+
+        palavrasEscolhidas = [];
+        opcoesEmbaralhadas = embaralhar(rodada.opcoes);
+        rodadaConcluida = false;
+
+        elementos.indicador.textContent =
+            `Frase ${rodadaAtual + 1} de ${frases.length}`;
+
+        elementos.instrucao.textContent = rodada.instrucao;
+
+        elementos.confirmar.hidden = false;
+        elementos.confirmar.disabled = false;
+        elementos.proxima.hidden = true;
+
+        limparFeedback();
+        renderizarJogo();
+    }
+
+    function iniciarAtividade() {
+        mostrarTela("carregamento");
+        clearTimeout(carregamentoId);
+
+        carregamentoId = setTimeout(() => {
+            rodadaAtual = 0;
+
+            carregarRodada();
+            mostrarTela("jogo");
         }, 1500);
     }
 
-    function loadRound(index) {
-        const round = ROUNDS[index];
-        selectedWords = [];
-        roundSolved = false;
-        shuffledOptions = shuffle(round.options);
-
-        roundIndicator.textContent = `Frase ${index + 1} de ${ROUNDS.length}`;
-        instructionEl.textContent = round.instruction;
-
-        feedbackEl.textContent = "";
-        feedbackEl.className = "mf-feedback";
-
-        confirmBtn.hidden = false;
-        confirmBtn.disabled = false;
-        nextBtn.hidden = true;
-
-        renderOptions();
-        renderSentence();
-    }
-
-    function renderOptions() {
-        optionsArea.innerHTML = "";
-        shuffledOptions.forEach(word => {
-            const isUsed = isWordFullyConsumed(word);
-            if (isUsed) return;
-            optionsArea.appendChild(createWordCard(word, false));
-        });
-    }
-
-    function isWordFullyConsumed(word) {
-        const totalInOptions = shuffledOptions.filter(w => w === word).length;
-        const usedCount = selectedWords.filter(w => w === word).length;
-        return usedCount >= totalInOptions;
-    }
-
-    function createWordCard(word, isSelected) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "word-card";
-        if (isSelected) btn.classList.add("mf-selected");
-        btn.setAttribute("aria-label", word);
-
-        const span = document.createElement("span");
-        span.textContent = word;
-        btn.appendChild(span);
-
-        btn.addEventListener("click", () => {
-            if (roundSolved) return;
-            if (isSelected) {
-                removeWordAt(word, btn);
-            } else {
-                addWord(word);
-            }
-        });
-
-        return btn;
-    }
-
-    function addWord(word) {
-        selectedWords.push(word);
-        renderOptions();
-        renderSentence();
-        feedbackEl.textContent = "";
-        feedbackEl.className = "mf-feedback";
-    }
-
-    function removeWordAt(word, btnEl) {
-        const cards = Array.from(sentenceArea.querySelectorAll(".word-card"));
-        const idx = cards.indexOf(btnEl);
-        if (idx === -1) return;
-        selectedWords.splice(idx, 1);
-        renderOptions();
-        renderSentence();
-    }
-
-    function renderSentence() {
-        sentenceArea.innerHTML = "";
-        if (selectedWords.length === 0) {
-            sentenceArea.classList.remove("mf-has-words");
-            const p = document.createElement("p");
-            p.className = "mf-sentence-placeholder";
-            p.textContent = "Toque nas palavras abaixo para montar sua frase";
-            sentenceArea.appendChild(p);
+    function limparFrase() {
+        if (rodadaConcluida) {
             return;
         }
-        sentenceArea.classList.add("mf-has-words");
-        selectedWords.forEach(word => {
-            sentenceArea.appendChild(createWordCard(word, true));
-        });
+
+        palavrasEscolhidas = [];
+
+        limparFeedback();
+        renderizarJogo();
     }
 
-    function clearSentence() {
-        if (roundSolved) return;
-        selectedWords = [];
-        renderOptions();
-        renderSentence();
-        feedbackEl.textContent = "";
-        feedbackEl.className = "mf-feedback";
-    }
+    function confirmarFrase() {
+        const resposta = frases[rodadaAtual].resposta;
 
-    function confirmSentence() {
-        const round = ROUNDS[currentRoundIndex];
-        const isCorrect =
-            selectedWords.length === round.correct.length &&
-            selectedWords.every((word, i) => word === round.correct[i]);
+        const estaCorreta =
+            palavrasEscolhidas.length === resposta.length &&
+            palavrasEscolhidas.every(
+                (palavra, indice) => palavra === resposta[indice]
+            );
 
-        if (isCorrect) {
-            roundSolved = true;
-            feedbackEl.textContent = "Muito bem! Você mostrou o que queria dizer.";
-            feedbackEl.className = "mf-feedback mf-feedback-correct";
-            confirmBtn.hidden = true;
-            nextBtn.hidden = false;
-            nextBtn.focus();
-        } else {
-            feedbackEl.textContent = "Quase! Vamos tentar organizar as palavras de outro jeito?";
-            feedbackEl.className = "mf-feedback mf-feedback-retry";
-        }
-    }
+        if (!estaCorreta) {
+            elementos.feedback.textContent =
+                "Quase! Tente organizar as palavras de outro jeito.";
 
-    function goToNextRound() {
-        currentRoundIndex += 1;
-        if (currentRoundIndex >= ROUNDS.length) {
-            finishActivity();
+            elementos.feedback.className =
+                "mf-feedback mf-feedback-retry";
+
             return;
         }
-        loadRound(currentRoundIndex);
+
+        rodadaConcluida = true;
+
+        elementos.feedback.textContent =
+            "Muito bem! Você mostrou o que queria dizer.";
+
+        elementos.feedback.className =
+            "mf-feedback mf-feedback-correct";
+
+        elementos.confirmar.hidden = true;
+        elementos.proxima.hidden = false;
+        elementos.proxima.focus();
     }
 
-    function finishActivity() {
-        doneText.textContent = `Você completou ${ROUNDS.length} de ${ROUNDS.length} frases.`;
-        showPanel(donePanel);
+    function avancarRodada() {
+        rodadaAtual += 1;
+
+        if (rodadaAtual < frases.length) {
+            carregarRodada();
+            return;
+        }
+
+        elementos.resultado.textContent =
+            `Você completou ${frases.length} de ${frases.length} frases.`;
+
+        mostrarTela("conclusao");
     }
 
-    function restartActivity() {
-        showPanel(introPanel);
-    }
+    function ouvirFrase() {
+        if (palavrasEscolhidas.length === 0) {
+            elementos.ouvir.classList.remove("mf-listen-shake");
 
-    function speakSentence() {
-        if (!("speechSynthesis" in window)) return;
+            void elementos.ouvir.offsetWidth;
 
-        if (selectedWords.length === 0) {
-            listenBtn.classList.remove("mf-listen-shake");
-            void listenBtn.offsetWidth;
-            listenBtn.classList.add("mf-listen-shake");
-            feedbackEl.textContent = "Escolha as palavras primeiro para ouvir a frase.";
-            feedbackEl.className = "mf-feedback mf-feedback-warn";
+            elementos.ouvir.classList.add("mf-listen-shake");
+
+            elementos.feedback.textContent =
+                "Escolha as palavras primeiro para ouvir a frase.";
+
+            elementos.feedback.className =
+                "mf-feedback mf-feedback-warn";
+
+            return;
+        }
+
+        if (!("speechSynthesis" in window)) {
+            elementos.feedback.textContent =
+                "Seu navegador não conseguiu reproduzir a frase.";
+
+            elementos.feedback.className =
+                "mf-feedback mf-feedback-warn";
+
             return;
         }
 
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(selectedWords.join(" "));
-        utterance.lang = "pt-BR";
-        window.speechSynthesis.speak(utterance);
+
+        const fala = new SpeechSynthesisUtterance(
+            palavrasEscolhidas.join(" ")
+        );
+
+        fala.lang = "pt-BR";
+
+        window.speechSynthesis.speak(fala);
     }
 
-    startBtn.addEventListener("click", startActivity);
-    clearBtn.addEventListener("click", clearSentence);
-    listenBtn.addEventListener("click", speakSentence);
-    confirmBtn.addEventListener("click", confirmSentence);
-    nextBtn.addEventListener("click", goToNextRound);
-    replayBtn.addEventListener("click", restartActivity);
+    function recomecarAtividade() {
+        if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+        }
 
-    showPanel(introPanel);
-})();
+        rodadaAtual = 0;
+        palavrasEscolhidas = [];
+
+        mostrarTela("inicio");
+    }
+
+    function configurarNavegacao() {
+        const links = document.querySelectorAll("[data-nav]");
+
+        links.forEach(link => {
+            link.addEventListener("click", evento => {
+                const destino = link.getAttribute("href");
+
+                if (!destino || destino === "#") {
+                    return;
+                }
+
+                evento.preventDefault();
+
+                document.body.classList.add("page-leaving");
+
+                setTimeout(() => {
+                    window.location.href = destino;
+                }, 180);
+            });
+        });
+    }
+
+    function configurarMenuMobile() {
+        const abrir = document.getElementById("mobile_btn");
+        const fechar = document.getElementById("mobile_close");
+        const menu = document.getElementById("mobile_drawer");
+        const fundo = document.getElementById("mobile_overlay");
+
+        function fecharMenu() {
+            menu.classList.remove("active");
+            fundo.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        if (abrir) {
+            abrir.addEventListener("click", () => {
+                menu.classList.add("active");
+                fundo.classList.add("active");
+                document.body.style.overflow = "hidden";
+            });
+        }
+
+        if (fechar) {
+            fechar.addEventListener("click", fecharMenu);
+        }
+
+        if (fundo) {
+            fundo.addEventListener("click", fecharMenu);
+        }
+    }
+
+    function configurarLogout() {
+        const fundo = document.getElementById("logout-overlay");
+        const cancelar = document.getElementById("logout-cancel");
+        const confirmar = document.getElementById("logout-confirm");
+
+        function abrirLogout() {
+            fundo.classList.add("active");
+            fundo.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        }
+
+        function fecharLogout() {
+            fundo.classList.remove("active");
+            fundo.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        }
+
+        const botoesAbrir = document.querySelectorAll(
+            "[data-logout-open]"
+        );
+
+        botoesAbrir.forEach(botao => {
+            botao.addEventListener("click", abrirLogout);
+        });
+
+        if (cancelar) {
+            cancelar.addEventListener("click", fecharLogout);
+        }
+
+        if (confirmar) {
+            confirmar.addEventListener("click", () => {
+                localStorage.removeItem("teko_session");
+                localStorage.removeItem("teko_streak");
+
+                window.location.href = "/pages/login.html";
+            });
+        }
+
+        if (fundo) {
+            fundo.addEventListener("click", evento => {
+                if (evento.target === fundo) {
+                    fecharLogout();
+                }
+            });
+        }
+
+        document.addEventListener("keydown", evento => {
+            if (evento.key === "Escape") {
+                fecharLogout();
+            }
+        });
+    }
+
+    elementos.iniciar.addEventListener(
+        "click",
+        iniciarAtividade
+    );
+
+    elementos.limpar.addEventListener(
+        "click",
+        limparFrase
+    );
+
+    elementos.ouvir.addEventListener(
+        "click",
+        ouvirFrase
+    );
+
+    elementos.confirmar.addEventListener(
+        "click",
+        confirmarFrase
+    );
+
+    elementos.proxima.addEventListener(
+        "click",
+        avancarRodada
+    );
+
+    elementos.recomecar.addEventListener(
+        "click",
+        recomecarAtividade
+    );
+
+    configurarNavegacao();
+    configurarMenuMobile();
+    configurarLogout();
+    mostrarTela("inicio");
+});

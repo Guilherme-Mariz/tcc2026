@@ -19,11 +19,6 @@ router.get('/configuracoes', verificarAuth, (req, res) => {
     res.sendFile(path.join(__dirname, '../view/pages/configuracoes.html'));
 });
 
-// ATIVIDADES
-router.get('/atividades', verificarAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, '../view/pages/atividades.html'));
-});
-
 // TEKO.IA
 router.get('/tekoia', verificarAuth, (req, res) => {
     res.sendFile(path.join(__dirname, '../view/pages/tekoia.html'));
@@ -34,9 +29,12 @@ router.get('/responsavel', verificarAuth, (req, res) => {
     res.sendFile(path.join(__dirname, '../view/pages/responsavel.html'));
 });
 
-module.exports = router;
-
 //PARTE DE ATIVIDADES
+
+// ATIVIDADES
+router.get('/atividades', verificarAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, '../view/pages/atividades.html'));
+});
 
 //MODULO 2: MONTE A FRASE
 router.get("/atividades/monte-frase", verificarAuth, (req, res) => {
@@ -47,3 +45,5 @@ router.get("/atividades/monte-frase", verificarAuth, (req, res) => {
         )
     );
 });
+
+module.exports = router;
