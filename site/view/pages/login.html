@@ -32,6 +32,14 @@
       <div class="cad-lado cad-login">
         <h2 class="cad-titulo">Olá! Bem-vindo<br>ao <em>teko</em>.</h2>
 
+        <div id="login-alert" class="login-alert" role="alert" aria-live="polite" aria-hidden="true">
+          <i
+            id="login-alert-icon"
+            class="fa-solid fa-circle-exclamation"
+          ></i>
+          <span id="login-alert-text"></span>
+        </div>
+
         <form class="login-form" method="POST" action="/" id="form-login" novalidate>
           <div class="input-group">
             <label for="email">E-mail</label>
@@ -57,6 +65,15 @@
           <button type="submit" class="btn-entrar">
             <i class="fa-solid fa-right-to-bracket"></i>
             Entrar
+          </button>
+
+          <div class="login-separator">
+            <span>ou</span>
+          </div>
+
+          <button type="button" class="btn-google" id="btn-google">
+            <i class="fa-brands fa-google"></i>
+            Continuar com o Google
           </button>
         </form>
       </div>

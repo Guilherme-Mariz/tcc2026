@@ -127,84 +127,168 @@
         </div>
 
         <main id="main-content">
-            <a href="/atividades" class="mf-back" data-nav>
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>Voltar para atividades</span>
-            </a>
+            <section class="activity-page-header" aria-labelledby="activity-title">
+                <div class="activity-header-copy">
+                    <p class="welcome-label">Comunicação</p>
 
-            <header class="mf-header">
-                <p class="welcome-label">Comunicação</p>
-                <h1 class="mf-title">Monte a Frase</h1>
-                <p class="mf-subtitle">
-                    Escolha as palavras certas e monte uma frase para mostrar o que você quer dizer.
-                </p>
-            </header>
+                    <h1 id="activity-title" class="activity-title">
+                        Monte a Frase
+                    </h1>
 
-            <section class="mf-stage" aria-label="Atividade Monte a Frase">
-                <div id="mf-intro" class="mf-panel mf-center-panel">
-                    <img src="/img/mascot/teko-icn.png" alt="Teko" class="mf-panel-image">
-                    <h2 class="mf-panel-title">Vamos montar frases?</h2>
-                    <p class="mf-panel-text">Escolha as palavras e mostre o que você quer dizer.</p>
-                    <button id="mf-start-btn" class="mf-btn mf-btn-primary mf-btn-start" type="button">
+                    <p class="activity-subtitle">
+                        Escolha as palavras certas e monte uma frase para mostrar o que você quer dizer.
+                    </p>
+                </div>
+
+                <a href="/atividades" class="activity-back" data-nav>
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Voltar para atividades</span>
+                </a>
+            </section>
+
+            <section id="activity-stage" class="activity-stage" aria-label="Atividade Monte a Frase">
+                <div id="mf-intro" class="activity-screen activity-center-screen">
+                    <h2 class="activity-screen-title">
+                        Vamos montar frases?
+                    </h2>
+
+                    <p class="activity-screen-text">
+                        Escolha as palavras e mostre o que você quer dizer.
+                    </p>
+
+                    <button
+                        id="mf-start-btn"
+                        class="activity-start-button"
+                        type="button"
+                    >
                         Iniciar
                     </button>
                 </div>
 
-                <div id="mf-loading" class="mf-panel mf-loading" aria-live="polite" hidden>
-                    <div class="mf-loading-card">
-                        <img src="/img/mascot/teko-andando.gif" alt="Teko andando" class="mf-loading-gif">
-                        <p>Carregando...</p>
+                <div
+                    id="mf-loading"
+                    class="activity-screen activity-loading"
+                    aria-live="polite"
+                    hidden
+                >
+                    <div class="activity-loading-content">
+                        <img
+                            src="/img/mascot/teko-andando.gif"
+                            alt="Teko andando"
+                            class="activity-loading-gif"
+                        >
+
+                        <p class="activity-loading-text">
+                            Carregando...
+                        </p>
                     </div>
                 </div>
 
-                <div id="mf-game" class="mf-panel mf-game" hidden>
+                <div id="mf-game" class="activity-screen mf-game" hidden>
                     <div class="mf-round-top">
-                        <span id="mf-round-indicator" class="atv-card-tag mf-round-indicator"></span>
-                        <p id="mf-instruction" class="mf-instruction"></p>
+                        <span
+                            id="mf-round-indicator"
+                            class="atv-card-tag mf-round-indicator"
+                        ></span>
+
+                        <p id="mf-instruction" class="activity-instruction"></p>
                     </div>
 
-                    <div id="mf-sentence-area" class="mf-sentence-area" aria-label="Frase montada"></div>
+                    <div
+                        id="mf-sentence-area"
+                        class="mf-sentence-area"
+                        aria-label="Frase montada"
+                    ></div>
 
-                    <div id="mf-options-area" class="mf-options-area" role="group" aria-label="Palavras disponíveis"></div>
+                    <div
+                        id="mf-options-area"
+                        class="mf-options-area"
+                        role="group"
+                        aria-label="Palavras disponíveis"
+                    ></div>
 
-                    <p id="mf-feedback" class="mf-feedback" role="status" aria-live="polite"></p>
+                    <p
+                        id="mf-feedback"
+                        class="mf-feedback"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
 
                     <div class="mf-controls">
-                        <button id="mf-clear-btn" class="mf-btn mf-btn-ghost" type="button">
+                        <button
+                            id="mf-clear-btn"
+                            class="mf-btn mf-btn-ghost"
+                            type="button"
+                        >
                             <i class="fa-solid fa-eraser"></i>
                             Limpar
                         </button>
 
-                        <button id="mf-listen-btn" class="mf-btn mf-btn-ghost" type="button">
+                        <button
+                            id="mf-listen-btn"
+                            class="mf-btn mf-btn-ghost"
+                            type="button"
+                        >
                             <i class="fa-solid fa-volume-high"></i>
                             Ouvir frase
                         </button>
 
-                        <button id="mf-confirm-btn" class="mf-btn mf-btn-primary" type="button">
+                        <button
+                            id="mf-confirm-btn"
+                            class="mf-btn mf-btn-primary"
+                            type="button"
+                        >
                             Confirmar
-                        </button>
-
-                        <button id="mf-next-btn" class="mf-btn mf-btn-primary" type="button" hidden>
-                            Próxima frase
-                            <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
 
-                <div id="mf-done" class="mf-panel mf-center-panel" hidden>
-                    <img src="/img/mascot/teko-icn.png" alt="Teko" class="mf-panel-image">
-                    <h2 class="mf-panel-title">Parabéns!</h2>
-                    <p id="mf-done-text" class="mf-panel-text"></p>
+                <div
+                    id="mf-done"
+                    class="activity-screen activity-center-screen"
+                    hidden
+                >
+                    <h2 class="activity-screen-title">
+                        Parabéns!
+                    </h2>
+
+                    <p
+                        id="mf-done-text"
+                        class="activity-screen-text"
+                    ></p>
 
                     <div class="mf-done-actions">
-                        <button id="mf-replay-btn" class="mf-btn mf-btn-ghost" type="button">
-                            <i class="fa-solid fa-rotate-right"></i>
-                            Jogar novamente
-                        </button>
+                        <a
+                            href="/home"
+                            class="mf-btn mf-btn-ghost"
+                            data-nav
+                        >
+                            Voltar ao início
+                        </a>
 
-                        <a href="/atividades" class="mf-btn mf-btn-primary" data-nav>
+                        <a
+                            href="/atividades"
+                            class="mf-btn mf-btn-primary"
+                            data-nav
+                        >
                             Voltar para atividades
                         </a>
+                    </div>
+                </div>
+
+                <div
+                    id="mf-success-popup"
+                    class="activity-success-popup"
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                >
+                    <div class="activity-success-popup-card">
+                        <span class="activity-success-icon" aria-hidden="true">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+
+                        <p id="mf-success-message" class="activity-success-message"></p>
                     </div>
                 </div>
             </section>

@@ -270,32 +270,110 @@
   /* ══════════════════════════════════════
      INTRO ANIMATION
   ══════════════════════════════════════ */
-  window.addEventListener('load', () => {
+  function mostrarCadastroSemAnimacao() {
+    const intro = document.getElementById("intro-screen");
+    const sucesso = document.getElementById("success-screen");
+    const app = document.getElementById("app");
+
+    gsap.killTweensOf(intro);
+    gsap.killTweensOf(sucesso);
+    gsap.killTweensOf(app);
+
+    intro.style.display = "none";
+    sucesso.style.display = "none";
+
+    app.classList.remove("app-hidden");
+
+    gsap.set(app, {
+        visibility: "visible",
+        opacity: 1,
+        filter: "none"
+    });
+}
+
+function animarEntradaCadastro() {
     const tl = gsap.timeline();
 
-    // intro entra
-    tl.from('.intro-logo',     { opacity: 0, y: 10, duration: 0.6, ease: 'power3.out' })
-      .from('.intro-line',     { scaleX: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
-      .from('.intro-headline', { opacity: 0, y: 16, duration: 0.7, ease: 'power3.out' }, '-=0.2')
-      .from('.intro-sub',      { opacity: 0, y: 10, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+    tl.from(".intro-logo", {
+        opacity: 0,
+        y: 10,
+        duration: 0.6,
+        ease: "power3.out"
+    })
+    .from(".intro-line", {
+        scaleX: 0,
+        duration: 0.5,
+        ease: "power3.out"
+    }, "-=0.2")
+    .from(".intro-headline", {
+        opacity: 0,
+        y: 16,
+        duration: 0.7,
+        ease: "power3.out"
+    }, "-=0.2")
+    .from(".intro-sub", {
+        opacity: 0,
+        y: 10,
+        duration: 0.5,
+        ease: "power3.out"
+    }, "-=0.3")
+    .to("#intro-screen", {
+        opacity: 0,
+        scale: 1.03,
+        duration: 0.7,
+        ease: "power2.inOut",
+        delay: 0.9
+    })
+    .set("#intro-screen", {
+        display: "none"
+    })
+    .set("#app", {
+        visibility: "visible",
+        className: "-=app-hidden"
+    })
+    .from(".reg-header", {
+        opacity: 0,
+        y: -14,
+        duration: 0.5,
+        ease: "power3.out"
+    }, "-=0.1")
+    .from(".reg-left", {
+        opacity: 0,
+        x: -24,
+        duration: 0.6,
+        ease: "power3.out"
+    }, "-=0.3")
+    .from(".reg-right", {
+        opacity: 0,
+        x: 24,
+        duration: 0.7,
+        ease: "power3.out"
+    }, "-=0.5")
+    .from(".step-indicator", {
+        opacity: 0,
+        y: 8,
+        duration: 0.4,
+        ease: "power2.out"
+    }, "-=0.4");
+}
 
-    // pausa — depois sai
-      .to('#intro-screen', {
-          opacity: 0,
-          scale: 1.03,
-          duration: 0.7,
-          ease: 'power2.inOut',
-          delay: 0.9
-        })
-      .set('#intro-screen', { display: 'none' })
+const navegacao = performance
+    .getEntriesByType("navigation")[0];
 
-    // app aparece
-      .set('#app', { visibility: 'visible', className: '-=app-hidden' })
-      .from('.reg-header',  { opacity: 0, y: -14, duration: 0.5, ease: 'power3.out' }, '-=0.1')
-      .from('.reg-left',    { opacity: 0, x: -24, duration: 0.6, ease: 'power3.out' }, '-=0.3')
-      .from('.reg-right',   { opacity: 0, x: 24,  duration: 0.7, ease: 'power3.out' }, '-=0.5')
-      .from('.step-indicator', { opacity: 0, y: 8, duration: 0.4, ease: 'power2.out' }, '-=0.4');
-  });
+if (navegacao?.type === "back_forward") {
+    mostrarCadastroSemAnimacao();
+} else {
+    window.addEventListener(
+        "load",
+        animarEntradaCadastro
+    );
+}
+
+window.addEventListener("pageshow", evento => {
+    if (evento.persisted) {
+        mostrarCadastroSemAnimacao();
+    }
+});
 
   /* ══════════════════════════════════════
      SUCCESS ANIMATION
@@ -314,7 +392,7 @@
       .from('.success-sub',    { opacity: 0, y: 8,  duration: 0.4, ease: 'power3.out' }, '-=0.2')
       .from('.success-loading',{ opacity: 0, duration: 0.3 }, '-=0.1')
       .to('.success-bar',      { width: '100%', duration: 1.8, ease: 'power1.inOut' }, '-=0.1')
-      .call(() => { window.location.href = '/login'; });
+      .call(() => { window.location.replace("/login"); });
   }
 
   /* ══════════════════════════════════════

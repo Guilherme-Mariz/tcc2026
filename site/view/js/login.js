@@ -1,121 +1,231 @@
-document.getElementById("form-login").addEventListener("submit", async (e) => {
-    e.preventDefault();
+const formularioLogin = document.getElementById("form-login");
+const botaoGoogle = document.getElementById("btn-google");
 
-    const email = document.getElementById("email").value;
+formularioLogin.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+
+    esconderAlerta();
+    limparErros();
+
+    const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value;
-    const login = document.querySelector('.cad-login');
+    const login = document.querySelector(".cad-login");
 
-    if (!email || !senha) {
-        validarLogin();
-        login.classList.add('sacudir');
-        login.addEventListener('animationend', () => login.classList.remove('sacudir'), { once: true });
+    if (!validarLogin()) {
+        mostrarAlerta(
+            "Confira os campos e tente novamente.",
+            "erro"
+        );
+
+        sacudirLogin(login);
         return;
-      }
+    }
 
     try {
-        const resposta = await fetch("http://localhost:3000/login", {
+        const resposta = await fetch("/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: 'include',
-            body: JSON.stringify({ email, senha })
+            credentials: "include",
+            body: JSON.stringify({
+                email,
+                senha
+            })
         });
 
         const resultado = await resposta.json();
 
-        
-        
         if (!resposta.ok) {
-            alert(resultado.erro);
+            mostrarAlerta(
+                resultado.erro || "E-mail ou senha incorretos.",
+                "erro"
+            );
+
+            sacudirLogin(login);
             return;
         }
 
-        // 🔥 salvar sessão (IMPORTANTE)
+        mostrarAlerta(
+            "Login realizado com sucesso!",
+            "sucesso"
+        );
 
-        alert("Login realizado!");
+        setTimeout(() => {
+            const carregamento =
+                document.getElementById("loading-screen");
 
-        window.location.href = "/home";
+            carregamento.classList.add("ativo");
+
+            setTimeout(() => {
+                window.location.href = ("/home");
+            }, 600);
+        }, 700);
 
     } catch (erro) {
         console.error(erro);
-        alert("Erro ao fazer login");
+
+        mostrarAlerta(
+            "Não foi possível conectar ao servidor.",
+            "erro"
+        );
+
+        sacudirLogin(login);
     }
 });
 
+botaoGoogle.addEventListener("click", () => {
+    // Backend do login com Google depois
+});
 
 function validarLogin() {
+    const email = document.getElementById("email");
+    const senha = document.getElementById("senha");
+
     let valido = true;
+    let primeiroCampoInvalido = null;
 
-    const login = document.querySelector('.cad-login');
-    const email     = document.getElementById('email');
-    const senha     = document.getElementById('senha');
+    if (
+        !email.value.trim() ||
+        !email.value.includes("@")
+    ) {
+        marcarErro(
+            email,
+            "Informe um e-mail válido."
+        );
 
-    limparErros();
-
-    
-    if (!email.value.trim() || !email.value.includes('@')) {
-        marcarErro(email, 'Informe um e-mail válido.');
-        login.classList.add('sacudir');
+        primeiroCampoInvalido = email;
         valido = false;
-        login.addEventListener('animationend', () => login.classList.remove('sacudir'), { once: true });
-        return;
     }
 
     if (senha.value.length < 8) {
-        marcarErro(senha, 'A senha deve ter no mínimo 8 caracteres.');
-        login.classList.add('sacudir');
+        marcarErro(
+            senha,
+            "A senha deve ter no mínimo 8 caracteres."
+        );
+
+        if (!primeiroCampoInvalido) {
+            primeiroCampoInvalido = senha;
+        }
 
         valido = false;
-        login.addEventListener('animationend', () => login.classList.remove('sacudir'), { once: true });
-        return;
-      }
+    }
 
-    
-
-    if (
-            !email ||
-            !senha 
-        ) {
-            console.log("Preencha todos os campos!");
-            login.classList.add('sacudir');
-            login.addEventListener('animationend', () => login.classList.remove('sacudir'), { once: true });
-            return;
-        }
+    if (primeiroCampoInvalido) {
+        primeiroCampoInvalido.focus();
+    }
 
     return valido;
 }
 
-function limparErros() {
-    document.querySelectorAll('.campo-erro').forEach(el => el.classList.remove('campo-erro'));
-    document.querySelectorAll('.msg-erro').forEach(el => el.remove());
-}
+function mostrarAlerta(mensagem, tipo) {
+    const caixa = document.getElementById("login-alert");
+    const texto = document.getElementById("login-alert-text");
+    const icone = document.getElementById("login-alert-icon");
 
-function marcarErro(input, msg) {
-    const grupo = input.closest('.input-group');
-    grupo.classList.add('campo-erro');
-    if (!grupo.querySelector('.msg-erro')) {
-        const err = document.createElement('span');
-        err.className = 'msg-erro';
-        err.textContent = msg;
-        grupo.appendChild(err);
+    texto.textContent = mensagem;
+
+    caixa.className = `login-alert visivel ${tipo}`;
+    caixa.setAttribute("aria-hidden", "false");
+
+    if (tipo === "sucesso") {
+        icone.className = "fa-solid fa-circle-check";
+    } else {
+        icone.className =
+            "fa-solid fa-circle-exclamation";
     }
-    input.focus();
 }
 
+function esconderAlerta() {
+    const caixa = document.getElementById("login-alert");
 
+    caixa.className = "login-alert";
+    caixa.setAttribute("aria-hidden", "true");
+}
 
+function sacudirLogin(login) {
+    login.classList.remove("sacudir");
 
+    void login.offsetWidth;
+
+    login.classList.add("sacudir");
+
+    login.addEventListener(
+        "animationend",
+        () => {
+            login.classList.remove("sacudir");
+        },
+        { once: true }
+    );
+}
+
+function limparErros() {
+    document
+        .querySelectorAll(".campo-erro")
+        .forEach(elemento => {
+            elemento.classList.remove("campo-erro");
+        });
+
+    document
+        .querySelectorAll(".msg-erro")
+        .forEach(elemento => {
+            elemento.remove();
+        });
+}
+
+function marcarErro(input, mensagem) {
+    const grupo = input.closest(".input-group");
+
+    grupo.classList.add("campo-erro");
+
+    if (!grupo.querySelector(".msg-erro")) {
+        const erro = document.createElement("span");
+
+        erro.className = "msg-erro";
+        erro.textContent = mensagem;
+
+        grupo.appendChild(erro);
+    }
+}
 
 function toggleSenha() {
-      const input = document.getElementById('senha');
-      const icone = document.getElementById('icone-olho');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icone.classList.replace('fa-eye', 'fa-eye-slash');
-      } else {
-        input.type = 'password';
-        icone.classList.replace('fa-eye-slash', 'fa-eye');
-      }
+    const input = document.getElementById("senha");
+    const icone = document.getElementById("icone-olho");
+
+    if (input.type === "password") {
+        input.type = "text";
+
+        icone.classList.replace(
+            "fa-eye",
+            "fa-eye-slash"
+        );
+
+        return;
     }
 
+    input.type = "password";
+
+    icone.classList.replace(
+        "fa-eye-slash",
+        "fa-eye"
+    );
+}
+
+function limparCarregamentoLogin() {
+    const carregamento =
+        document.getElementById("loading-screen");
+
+    if (carregamento) {
+        carregamento.classList.remove("ativo");
+    }
+}
+
+window.addEventListener(
+    "pagehide",
+    limparCarregamentoLogin
+);
+
+window.addEventListener(
+    "pageshow",
+    limparCarregamentoLogin
+);

@@ -7,7 +7,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #d4f0e2 0%, #a8d5ba 35%, #6bb08a 70%, #3a8c60 100%);
+  background: linear-gradient(135deg, #d4f0e2 0%, hsl(144, 35%, 75%) 35%, #6bb08a 70%, #3a8c60 100%);
 }
 
 .cad-logo, .cad-voltar {
@@ -329,6 +329,108 @@
 }
 
 .btn-entrar:active { transform: translateY(0); }
+
+.login-alert {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.login-alert.visivel {
+  display: flex;
+  animation: alertaEntrada 0.3s ease;
+}
+
+.login-alert.erro {
+  border-color: #f5b7b7;
+  background: #fff0f0;
+  color: #b93c3c;
+}
+
+.login-alert.sucesso {
+  border-color: #a8d5ba;
+  background: #edf9f2;
+  color: #26734a;
+}
+
+.login-alert i {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+@keyframes alertaEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-separator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #a0aec0;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.75rem;
+}
+
+.login-separator::before,
+.login-separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0.82rem 1.5rem;
+  border: 1.5px solid #dce2e8;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #2c2c2c;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-google i {
+  color: #4285f4;
+  font-size: 1rem;
+}
+
+.btn-google:hover {
+  border-color: #b8c2cc;
+  background: #f8fafc;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.btn-google:active {
+  transform: translateY(0);
+}
 
 /* ── animação sacudir (erro) ── */
 @keyframes sacudir {

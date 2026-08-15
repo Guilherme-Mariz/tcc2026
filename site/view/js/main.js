@@ -390,3 +390,36 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
 
 })();
+
+function limparTransicaoDaPagina() {
+    const transicao = document.getElementById("page-transition");
+
+    if (!transicao) {
+        return;
+    }
+
+    const logo = transicao.querySelector(".pt-logo");
+
+    gsap.killTweensOf(transicao);
+    gsap.killTweensOf(logo);
+
+    gsap.set(transicao, {
+        scaleY: 0,
+        transformOrigin: "bottom"
+    });
+
+    gsap.set(logo, {
+        opacity: 0,
+        y: 10
+    });
+}
+
+window.addEventListener(
+    "pagehide",
+    limparTransicaoDaPagina
+);
+
+window.addEventListener(
+    "pageshow",
+    limparTransicaoDaPagina
+);

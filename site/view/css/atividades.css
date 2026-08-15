@@ -92,6 +92,305 @@ body.page-leaving {
 }
 .module-icon { font-size: 1.5rem; line-height: 1; }
 
+/*titulo - atividades*/
+.activity-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 28px;
+    padding: 28px 32px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+}
+
+.activity-header-copy {
+    min-width: 0;
+}
+
+.activity-title {
+    margin: 4px 0 8px;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: clamp(1.9rem, 4vw, 2.35rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.activity-subtitle {
+    max-width: 600px;
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.activity-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 11px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    background: var(--bg-soft);
+    color: var(--text-mid);
+    font-family: "Poppins", sans-serif;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition),
+        transform var(--transition);
+}
+
+.activity-back:hover {
+    border-color: var(--green);
+    background: var(--bg-card);
+    color: var(--green-deep);
+    transform: translateX(-2px);
+}
+
+.activity-back:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+/*bloco das atividades - padronização*/
+[hidden] {
+    display: none !important;
+}
+
+.activity-stage {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    min-height: 480px;
+    padding: 32px;
+    border: 1.5px solid rgba(255, 255, 255, 0.72);
+    border-radius: var(--radius-xl);
+    background: rgba(255, 255, 255, 0.68);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        backdrop-filter var(--transition);
+}
+
+.activity-stage.activity-stage-active {
+    border-color: var(--border);
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.activity-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: #ffffff;
+    opacity: 0;
+    clip-path: circle(0% at 50% 50%);
+    pointer-events: none;
+}
+
+.activity-stage.activity-stage-revealing::before {
+    animation: activityStageReveal 1100ms ease forwards;
+}
+
+@keyframes activityStageReveal {
+    from {
+        opacity: 1;
+        clip-path: circle(0% at 50% 50%);
+    }
+    to {
+        opacity: 1;
+        clip-path: circle(150% at 50% 50%);
+    }
+}
+
+.activity-stage > * {
+    position: relative;
+    z-index: 1;
+}
+
+.activity-screen {
+    width: 100%;
+    opacity: 1;
+    transition: opacity 220ms ease;
+}
+
+.activity-screen-fade-out {
+    opacity: 0;
+}
+
+.activity-screen-fade-in {
+    opacity: 0;
+}
+
+.activity-center-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 520px;
+    margin: auto;
+    padding: 40px 16px;
+    text-align: center;
+}
+
+.activity-screen-title {
+    margin-bottom: 10px;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.activity-screen-text {
+    max-width: 480px;
+    margin-bottom: 24px;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.activity-start-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 190px;
+    padding: 14px 34px;
+    border: none;
+    border-radius: 50px;
+    background: var(--green-deep);
+    box-shadow: 0 6px 18px rgba(58, 140, 96, 0.28);
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.activity-start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(58, 140, 96, 0.34);
+}
+
+.activity-start-button:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.activity-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.activity-loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+}
+
+.activity-loading-gif {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+}
+
+.activity-loading-text {
+    color: var(--text-mid);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.activity-instruction {
+    max-width: 620px;
+    margin: 0 auto;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.activity-success-popup {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(58, 140, 96, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 260ms ease;
+}
+
+.activity-success-popup.activity-success-popup-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.activity-success-popup-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    max-width: 360px;
+    padding: 26px 30px;
+    border: 1.5px solid rgba(168, 213, 186, 0.7);
+    border-radius: var(--radius-xl);
+    background: #ffffff;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transform: scale(0.94);
+    transition: transform 260ms ease;
+}
+
+.activity-success-popup.activity-success-popup-visible .activity-success-popup-card {
+    transform: scale(1);
+}
+
+.activity-success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 1.1rem;
+}
+
+.activity-success-message {
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
 /* slideshow das img da primeira atividade */
 .atv-card-slideshow img {
     position: absolute;
@@ -319,4 +618,68 @@ body.page-leaving {
 }
 @media (max-width: 520px) {
     .atv-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .activity-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 22px 20px;
+    }
+
+    .activity-back {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .activity-stage {
+        min-height: 420px;
+        padding: 22px 16px;
+    }
+
+    .activity-center-screen {
+        padding: 32px 8px;
+    }
+
+    .activity-screen-title {
+        font-size: 1.5rem;
+    }
+
+    .activity-start-button {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .activity-loading-gif {
+        width: 115px;
+        height: 115px;
+    }
+
+    .activity-instruction {
+        font-size: 1.15rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .activity-stage::before {
+        clip-path: circle(150% at 50% 50%);
+        transition: opacity 220ms ease;
+    }
+
+    .activity-stage.activity-stage-revealing::before {
+        animation: none;
+        opacity: 1;
+    }
+
+    .activity-success-popup,
+    .activity-success-popup-card {
+        transition: opacity 200ms ease;
+    }
+
+    .activity-success-popup-card,
+    .activity-success-popup.activity-success-popup-visible .activity-success-popup-card {
+        transform: none;
+    }
 }

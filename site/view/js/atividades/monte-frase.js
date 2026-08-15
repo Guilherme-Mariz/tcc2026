@@ -1,29 +1,39 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const TEMPO_CARREGAMENTO = 1400;
+    const DURACAO_FADE_TELA = 220;
+    const DURACAO_TRANSICAO_POPUP = 260;
+    const TEMPO_EXIBICAO_POPUP = 2000;
+
     const frases = [
         {
             instrucao: "Monte uma frase para pedir água.",
             resposta: ["Eu quero", "água"],
-            opcoes: ["água", "brincar", "Eu quero", "não"]
+            opcoes: ["água", "brincar", "Eu quero", "não"],
+            parabens: "Muito bem! Você montou uma frase para pedir água."
         },
         {
             instrucao: "Monte uma frase para pedir ajuda.",
             resposta: ["Eu preciso", "de ajuda"],
-            opcoes: ["de ajuda", "Eu preciso", "brincar", "água"]
+            opcoes: ["de ajuda", "Eu preciso", "brincar", "água"],
+            parabens: "Ótimo trabalho! Você mostrou como pedir ajuda."
         },
         {
             instrucao: "Monte uma frase para dizer que quer brincar.",
             resposta: ["Eu quero", "brincar"],
-            opcoes: ["parar", "brincar", "Eu quero", "de ajuda"]
+            opcoes: ["parar", "brincar", "Eu quero", "de ajuda"],
+            parabens: "Que legal! Você disse que quer brincar."
         },
         {
             instrucao: "Monte uma frase para pedir que algo pare.",
             resposta: ["Eu quero", "parar"],
-            opcoes: ["Eu quero", "ler", "parar", "água"]
+            opcoes: ["Eu quero", "ler", "parar", "água"],
+            parabens: "Muito bem! Você conseguiu pedir para parar."
         },
         {
             instrucao: "Monte uma frase sobre algo que você gosta.",
             resposta: ["Eu gosto", "de ler"],
-            opcoes: ["de ler", "Eu gosto", "parar", "brincar"]
+            opcoes: ["de ler", "Eu gosto", "parar", "brincar"],
+            parabens: "Parabéns! Você contou que gosta de ler."
         }
     ];
 
@@ -33,6 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
         jogo: document.getElementById("mf-game"),
         conclusao: document.getElementById("mf-done")
     };
+
+    const palcoAtividade = document.getElementById("activity-stage");
 
     const elementos = {
         iniciar: document.getElementById("mf-start-btn"),
@@ -44,9 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
         limpar: document.getElementById("mf-clear-btn"),
         ouvir: document.getElementById("mf-listen-btn"),
         confirmar: document.getElementById("mf-confirm-btn"),
-        proxima: document.getElementById("mf-next-btn"),
         resultado: document.getElementById("mf-done-text"),
-        recomecar: document.getElementById("mf-replay-btn")
+        popup: document.getElementById("mf-success-popup"),
+        popupMensagem: document.getElementById("mf-success-message")
     };
 
     let rodadaAtual = 0;
@@ -55,10 +67,50 @@ document.addEventListener("DOMContentLoaded", () => {
     let rodadaConcluida = false;
     let carregamentoId;
 
-    function mostrarTela(nome) {
-        Object.entries(telas).forEach(([chave, tela]) => {
-            tela.hidden = chave !== nome;
-        });
+    function trocarTela(nomeAtual, nomeNovo, aoEntrar) {
+        function exibirNova() {
+            Object.keys(telas).forEach(chave => {
+                if (chave !== nomeNovo) {
+                    telas[chave].hidden = true;
+                    telas[chave].classList.remove("activity-screen-fade-out");
+                    telas[chave].classList.remove("activity-screen-fade-in");
+                }
+            });
+
+            const telaNova = telas[nomeNovo];
+
+            telaNova.classList.add("activity-screen-fade-in");
+            telaNova.hidden = false;
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    telaNova.classList.remove("activity-screen-fade-in");
+                });
+            });
+
+            const atividadeIniciada =
+                nomeNovo === "jogo" || nomeNovo === "conclusao";
+
+            palcoAtividade.classList.toggle(
+                "activity-stage-active",
+                atividadeIniciada
+            );
+
+            if (typeof aoEntrar === "function") {
+                aoEntrar();
+            }
+        }
+
+        const telaAtual = telas[nomeAtual];
+
+        if (telaAtual && !telaAtual.hidden) {
+            telaAtual.classList.add("activity-screen-fade-out");
+
+            setTimeout(exibirNova, DURACAO_FADE_TELA);
+            return;
+        }
+
+        exibirNova();
     }
 
     function embaralhar(lista) {
@@ -174,6 +226,12 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.feedback.className = "mf-feedback";
     }
 
+    function desativarControles(desativar) {
+        elementos.confirmar.disabled = desativar;
+        elementos.limpar.disabled = desativar;
+        elementos.ouvir.disabled = desativar;
+    }
+
     function carregarRodada() {
         const rodada = frases[rodadaAtual];
 
@@ -186,24 +244,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         elementos.instrucao.textContent = rodada.instrucao;
 
-        elementos.confirmar.hidden = false;
-        elementos.confirmar.disabled = false;
-        elementos.proxima.hidden = true;
-
+        desativarControles(false);
         limparFeedback();
         renderizarJogo();
     }
 
     function iniciarAtividade() {
-        mostrarTela("carregamento");
+        trocarTela("inicio", "carregamento", () => {
+            palcoAtividade.classList.add("activity-stage-revealing");
+        });
+
         clearTimeout(carregamentoId);
 
         carregamentoId = setTimeout(() => {
             rodadaAtual = 0;
 
             carregarRodada();
-            mostrarTela("jogo");
-        }, 1500);
+            trocarTela("carregamento", "jogo");
+        }, TEMPO_CARREGAMENTO);
     }
 
     function limparFrase() {
@@ -215,6 +273,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
         limparFeedback();
         renderizarJogo();
+    }
+
+    function exibirPopupSucesso(mensagem) {
+        elementos.popupMensagem.textContent = mensagem;
+        elementos.popup.hidden = false;
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                elementos.popup.classList.add(
+                    "activity-success-popup-visible"
+                );
+            });
+        });
+    }
+
+    function esconderPopupSucesso(aoFinalizar) {
+        elementos.popup.classList.remove(
+            "activity-success-popup-visible"
+        );
+
+        setTimeout(() => {
+            elementos.popup.hidden = true;
+
+            if (typeof aoFinalizar === "function") {
+                aoFinalizar();
+            }
+        }, DURACAO_TRANSICAO_POPUP);
     }
 
     function confirmarFrase() {
@@ -238,18 +323,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         rodadaConcluida = true;
 
-        elementos.feedback.textContent =
-            "Muito bem! Você mostrou o que queria dizer.";
+        limparFeedback();
+        desativarControles(true);
 
-        elementos.feedback.className =
-            "mf-feedback mf-feedback-correct";
+        exibirPopupSucesso(frases[rodadaAtual].parabens);
 
-        elementos.confirmar.hidden = true;
-        elementos.proxima.hidden = false;
-        elementos.proxima.focus();
+        setTimeout(() => {
+            esconderPopupSucesso(avancarRodadaAutomatico);
+        }, TEMPO_EXIBICAO_POPUP);
     }
 
-    function avancarRodada() {
+    function avancarRodadaAutomatico() {
         rodadaAtual += 1;
 
         if (rodadaAtual < frases.length) {
@@ -257,10 +341,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        elementos.resultado.textContent =
-            `Você completou ${frases.length} de ${frases.length} frases.`;
+        exibirConclusao();
+    }
 
-        mostrarTela("conclusao");
+    function exibirConclusao() {
+        desativarControles(false);
+
+        elementos.resultado.textContent =
+            "Você concluiu a atividade Monte a Frase e completou todas as 5 frases.";
+
+        trocarTela("jogo", "conclusao");
     }
 
     function ouvirFrase() {
@@ -299,17 +389,6 @@ document.addEventListener("DOMContentLoaded", () => {
         fala.lang = "pt-BR";
 
         window.speechSynthesis.speak(fala);
-    }
-
-    function recomecarAtividade() {
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
-
-        rodadaAtual = 0;
-        palavrasEscolhidas = [];
-
-        mostrarTela("inicio");
     }
 
     function configurarNavegacao() {
@@ -436,18 +515,12 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmarFrase
     );
 
-    elementos.proxima.addEventListener(
-        "click",
-        avancarRodada
-    );
-
-    elementos.recomecar.addEventListener(
-        "click",
-        recomecarAtividade
-    );
-
     configurarNavegacao();
     configurarMenuMobile();
     configurarLogout();
-    mostrarTela("inicio");
+
+    telas.inicio.hidden = false;
+    telas.carregamento.hidden = true;
+    telas.jogo.hidden = true;
+    telas.conclusao.hidden = true;
 });
