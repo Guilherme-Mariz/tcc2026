@@ -59,8 +59,6 @@ async function criarUsuarioEcrianca(
 }
 
 
-
-
 // LOGIN__________________________________________________________________
 
 async function loginUsuario(email, senha) {

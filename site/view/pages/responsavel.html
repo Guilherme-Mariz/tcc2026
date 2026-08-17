@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="../css/home.css">
     <link rel="stylesheet" href="../css/responsavel.css">
+    <script src="../js/session-switch.js" defer></script>
     <title>teko. — Responsável</title>
 </head>
 <body>
@@ -26,6 +27,57 @@
         </div>
     </div>
 
+    <div id="session-switch-overlay" class="session-switch-overlay" aria-hidden="true">
+        <div class="session-switch-modal" role="dialog" aria-modal="true" aria-labelledby="session-switch-title">
+            <button type="button" class="session-switch-close" id="session-switch-close" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="session-switch-icon" aria-hidden="true"
+            >
+                <i class="fa-solid fa-repeat"></i>
+            </div>
+
+            <h2 id="session-switch-title">
+                Trocar sessão
+            </h2>
+
+            <p class="session-switch-description">
+                Escolha a criança que usará a plataforma.
+            </p>
+
+            <div class="home-session-options" id="home-session-options"></div>
+
+            <div class="session-password-field">
+                <label for="session-password">
+                    Senha do responsável
+                </label>
+
+                <div class="session-password-wrap">
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+
+                    <input type="password" id="session-password" placeholder="Digite sua senha" autocomplete="current-password">
+
+                    <button type="button" id="session-password-toggle" aria-label="Mostrar senha">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+
+                <span class="session-switch-error" id="session-switch-error" aria-live="polite"></span>
+            </div>
+
+            <div class="session-switch-actions">
+                <button type="button" class="session-switch-cancel" id="session-switch-cancel">
+                    Cancelar
+                </button>
+
+                <button type="button" class="session-switch-confirm" id="session-switch-confirm">
+                    Confirmar troca
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ── SIDEBAR ── -->
     <aside id="sidebar" role="navigation" aria-label="Menu principal">
         <a href="/" class="sidebar-logo" aria-label="teko. início">
@@ -35,12 +87,35 @@
             <a href="/home"        class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-house"></i></span><span class="snav-label">Início</span></a>
             <a href="/atividades"  class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-shapes"></i></span><span class="snav-label">Atividades</span></a>
             <a href="/tekoia"      class="snav-item" data-nav><span class="snav-icon snav-icon-ia"><img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true"></span><span class="snav-label">TEKO.IA</span></a>
-            <a href="/perfil"      class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-user"></i></span><span class="snav-label">Perfil</span></a>
             <a href="/responsavel" class="snav-item active" data-nav><span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span><span class="snav-label">Responsável</span></a>
         </nav>
+
         <div class="sidebar-bottom">
-            <a href="/configuracoes" class="snav-item snav-config" data-nav><span class="snav-icon"><i class="fa-solid fa-gear"></i></span><span class="snav-label">Config.</span></a>
-            <button class="sidebar-logout-btn" onclick="abrirLogout()" aria-label="Sair da conta"><i class="fa-solid fa-right-from-bracket"></i></button>
+            <button type="button" class="snav-item session-switch-button" id="session-switch-button">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-repeat"></i>
+                </span>
+        
+                <span class="snav-label">
+                    Trocar sessão
+                </span>
+            </button>
+        
+            <span class="sidebar-divider" aria-hidden="true"></span>
+        
+            <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                <span class="snav-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </span>
+        
+                <span class="snav-label">
+                    Config.
+                </span>
+            </a>
+        
+            <button class="sidebar-logout-btn" onclick="abrirLogout()" title="Sair da conta" aria-label="Sair da conta">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
         </div>
     </aside>
 
@@ -58,12 +133,37 @@
     <div id="mobile_drawer">
         <button id="mobile_close" aria-label="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
         <nav class="drawer-nav">
-            <a href="/home"        class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-house"></i></span><span class="snav-label">Início</span></a>
-            <a href="/atividades"  class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-shapes"></i></span><span class="snav-label">Atividades</span></a>
-            <a href="/tekoia"      class="snav-item" data-nav><span class="snav-icon snav-icon-ia"><img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true"></span><span class="snav-label">TEKO.IA</span></a>
-            <a href="/perfil"      class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-user"></i></span><span class="snav-label">Perfil</span></a>
-            <a href="/responsavel" class="snav-item active" data-nav><span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span><span class="snav-label">Responsável</span></a>
-            <a href="/configuracoes" class="snav-item" data-nav><span class="snav-icon"><i class="fa-solid fa-gear"></i></span><span class="snav-label">Config.</span></a>
+            <a href="/home" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                <span class="snav-label">Início</span>
+            </a>
+            <a href="/atividades" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                <span class="snav-label">Atividades</span>
+            </a>
+            <a href="/tekoia" class="snav-item" data-nav>
+                <span class="snav-icon snav-icon-ia">
+                    <img src="../img/mascot/teko-icn.png" alt="" aria-hidden="true">
+                </span>
+                <span class="snav-label">TEKO.IA</span>
+            </a>
+            <a href="/responsavel" class="snav-item" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                <span class="snav-label">Responsável</span>
+            </a>
+            <button type="button" class="snav-item drawer-session-switch" id="drawer-session-switch">
+                <span class="snav-icon">
+                    <i class="fa-solid fa-repeat"></i>
+                </span>
+
+                <span class="snav-label">
+                    Trocar sessão
+                </span>
+            </button>
+            <a href="/configuracoes" class="snav-item active" data-nav>
+                <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="snav-label">Config.</span>
+            </a>
         </nav>
     </div>
 

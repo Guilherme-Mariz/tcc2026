@@ -1,249 +1,859 @@
-// ─── BACK-END ────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+    const formularios = {
+        responsavel: document.getElementById("etapa1"),
+        crianca1: document.getElementById("etapa2"),
+        crianca2: document.getElementById("etapa3")
+    };
 
-document.addEventListener('DOMContentLoaded', () => {
+    let dadosResponsavel = {};
+    let dadosCriancas = [];
+    let quantidadeCriancas = 1;
+    let criancaSelecionada = null;
 
-    let dadosEtapa1 = {};
+    configurarIntroducao();
+    configurarSenhas();
+    configurarMascaras();
+    configurarFormularios();
+    configurarBotoesDeVoltar();
+    configurarBotaoDeSessao();
 
-    // ── SUBMIT ETAPA 1 ────────────────────────────────
-    const form1 = document.getElementById('etapa1');
+    function configurarIntroducao() {
+        const navegacao = performance.getEntriesByType("navigation")[0];
 
-    form1.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const botao = form1.querySelector('button[type="submit"]');
-        botao.disabled = true;
-
-        if (!validarEtapa1()) {
-            sacudir('etapa1');
-            botao.disabled = false;
-            return;
-        }
-
-        const formData = new FormData(form1);
-
-        dadosEtapa1 = {
-            nome:     formData.get("nome"),
-            cpf:      formData.get("cpf_responsavel"),
-            email:    formData.get("email"),
-            senha:    formData.get("senha"),
-            telefone: formData.get("telefone"),
-            relacao:  formData.get("relacao")
-        };
-
-        // Usa a função de transição GSAP definida no HTML
-        irParaEtapa2();
-        botao.disabled = false;
-    });
-
-    // ── SUBMIT ETAPA 2 ────────────────────────────────
-    const form2 = document.getElementById('etapa2');
-
-    form2.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const botao = form2.querySelector('button[type="submit"]');
-        botao.disabled = true;
-
-        if (!validarEtapa2()) {
-            sacudir('etapa2');
-            botao.disabled = false;
-            return;
-        }
-
-        const formData = new FormData(form2);
-
-        const dadosEtapa2 = {
-            nomeCrianca: formData.get("nome_crianca"),
-            datanasc:    formData.get("data_nascimento"),
-            cpfcri:      formData.get("cpf_crianca"),
-            genero:      formData.get("genero")
-        };
-
-        const dadosCompletos = { ...dadosEtapa1, ...dadosEtapa2 };
-
-        try {
-            const resposta = await fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosCompletos)
+        if (navegacao?.type === "back_forward") {
+            mostrarCadastroSemAnimacao();
+        } else {
+            window.addEventListener("load", animarEntradaCadastro, {
+                once: true
             });
+        }
 
-            const resultado = await resposta.json();
+        window.addEventListener("pageshow", evento => {
+            if (evento.persisted) {
+                mostrarCadastroSemAnimacao();
+            }
+        });
+    }
 
-            if (!resposta.ok) {
-                alert(resultado.erro || "Erro ao cadastrar");
+    function mostrarCadastroSemAnimacao() {
+        const intro = document.getElementById("intro-screen");
+        const sucesso = document.getElementById("success-screen");
+        const app = document.getElementById("app");
+
+        gsap.killTweensOf([intro, sucesso, app]);
+
+        intro.style.display = "none";
+        sucesso.style.display = "none";
+        app.classList.remove("app-hidden");
+
+        gsap.set(app, {
+            visibility: "visible",
+            opacity: 1,
+            filter: "none"
+        });
+    }
+
+    function animarEntradaCadastro() {
+        const timeline = gsap.timeline();
+
+        timeline
+            .from(".intro-logo", {
+                opacity: 0,
+                y: 10,
+                duration: 0.6,
+                ease: "power3.out"
+            })
+            .from(".intro-line", {
+                scaleX: 0,
+                duration: 0.5,
+                ease: "power3.out"
+            }, "-=0.2")
+            .from(".intro-headline", {
+                opacity: 0,
+                y: 16,
+                duration: 0.7,
+                ease: "power3.out"
+            }, "-=0.2")
+            .from(".intro-sub", {
+                opacity: 0,
+                y: 10,
+                duration: 0.5,
+                ease: "power3.out"
+            }, "-=0.3")
+            .to("#intro-screen", {
+                opacity: 0,
+                scale: 1.03,
+                duration: 0.7,
+                delay: 0.9,
+                ease: "power2.inOut"
+            })
+            .set("#intro-screen", {
+                display: "none"
+            })
+            .set("#app", {
+                visibility: "visible"
+            })
+            .call(() => {
+                document
+                    .getElementById("app")
+                    .classList.remove("app-hidden");
+            })
+            .from(".reg-header", {
+                opacity: 0,
+                y: -14,
+                duration: 0.5,
+                ease: "power3.out"
+            }, "-=0.1")
+            .from(".reg-left", {
+                opacity: 0,
+                x: -24,
+                duration: 0.6,
+                ease: "power3.out"
+            }, "-=0.3")
+            .from(".reg-right", {
+                opacity: 0,
+                x: 24,
+                duration: 0.7,
+                ease: "power3.out"
+            }, "-=0.5")
+            .from(".step-indicator", {
+                opacity: 0,
+                y: 8,
+                duration: 0.4,
+                ease: "power2.out"
+            }, "-=0.4");
+    }
+
+    function configurarFormularios() {
+        formularios.responsavel.addEventListener("submit", evento => {
+            evento.preventDefault();
+
+            if (!validarResponsavel()) {
+                sacudir(formularios.responsavel);
+                return;
+            }
+
+            const dados = new FormData(formularios.responsavel);
+
+            quantidadeCriancas = Number(
+                dados.get("quantidade_criancas")
+            );
+
+            dadosResponsavel = {
+                nome: dados.get("nome"),
+                cpf: dados.get("cpf_responsavel"),
+                email: dados.get("email"),
+                senha: dados.get("senha"),
+                telefone: dados.get("telefone"),
+                relacao: dados.get("relacao")
+            };
+
+            if (quantidadeCriancas === 1) {
+                dadosCriancas = dadosCriancas.slice(0, 1);
+            }
+
+            atualizarQuantidadeDeEtapas();
+            irParaEtapa(2);
+        });
+
+        formularios.crianca1.addEventListener("submit", evento => {
+            evento.preventDefault();
+
+            const botao = formularios.crianca1.querySelector(
+                'button[type="submit"]'
+            );
+
+            botao.disabled = true;
+
+            if (!validarCrianca(1)) {
+                sacudir(formularios.crianca1);
                 botao.disabled = false;
                 return;
             }
 
-            // Usa a função de sucesso GSAP definida no HTML
-            mostrarSucesso();
+            dadosCriancas[0] = obterDadosCrianca(1);
 
-        } catch (erro) {
-            console.error("Erro: ", erro);
-            alert("Erro ao conectar com o servidor. Verifique se o servidor está rodando.");
+            if (quantidadeCriancas === 2) {
+                irParaEtapa(3);
+                botao.disabled = false;
+                return;
+            }
+
+            finalizarCadastroFrontend(botao);
+        });
+
+        formularios.crianca2.addEventListener("submit", evento => {
+            evento.preventDefault();
+
+            const botao = formularios.crianca2.querySelector(
+                'button[type="submit"]'
+            );
+
+            botao.disabled = true;
+
+            if (!validarCrianca(2)) {
+                sacudir(formularios.crianca2);
+                botao.disabled = false;
+                return;
+            }
+
+            dadosCriancas[1] = obterDadosCrianca(2);
+            finalizarCadastroFrontend(botao);
+        });
+    }
+
+    function configurarBotoesDeVoltar() {
+        document
+            .getElementById("voltar-etapa-2")
+            .addEventListener("click", () => {
+                irParaEtapa(1);
+            });
+
+        document
+            .getElementById("voltar-etapa-3")
+            .addEventListener("click", () => {
+                irParaEtapa(2);
+            });
+    }
+
+    function atualizarQuantidadeDeEtapas() {
+        const possuiDuas = quantidadeCriancas === 2;
+
+        const indicador3 =
+            document.getElementById("step-3-ind");
+
+        const conector3 =
+            document.getElementById("step-3-connector");
+
+        const label2 =
+            document.getElementById("step-2-label");
+
+        const titulo1 =
+            document.getElementById("titulo-crianca-1");
+
+        const textoBotao =
+            document.getElementById("texto-btn-crianca-1");
+
+        const iconeBotao =
+            document.getElementById("icone-btn-crianca-1");
+
+        indicador3.hidden = !possuiDuas;
+        conector3.hidden = !possuiDuas;
+
+        label2.textContent = possuiDuas
+            ? "Criança 1"
+            : "Criança";
+
+        titulo1.textContent = possuiDuas
+            ? "Dados da Criança 1"
+            : "Dados da Criança";
+
+        textoBotao.textContent = possuiDuas
+            ? "Avançar"
+            : "Concluir";
+
+        iconeBotao.className = possuiDuas
+            ? "fa-solid fa-arrow-right"
+            : "fa-solid fa-check";
+    }
+
+    function irParaEtapa(numero) {
+        const etapaAtual =
+            document.querySelector(".etapa.active");
+
+        const proximaEtapa =
+            document.getElementById(`etapa${numero}`);
+
+        atualizarIndicadores(numero);
+
+        if (etapaAtual === proximaEtapa) {
+            return;
         }
+
+        const numeroAtual = Number(
+            etapaAtual.id.replace("etapa", "")
+        );
+
+        const avancando = numero > numeroAtual;
+
+        gsap.to(etapaAtual, {
+            opacity: 0,
+            x: avancando ? -24 : 24,
+            duration: 0.28,
+            ease: "power2.in",
+
+            onComplete: () => {
+                etapaAtual.classList.remove("active");
+                proximaEtapa.classList.add("active");
+
+                gsap.fromTo(
+                    proximaEtapa,
+                    {
+                        opacity: 0,
+                        x: avancando ? 24 : -24
+                    },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.38,
+                        ease: "power3.out"
+                    }
+                );
+            }
+        });
+    }
+
+    function atualizarIndicadores(etapaAtual) {
+        document.querySelectorAll(".step-item").forEach(indicador => {
+            indicador.classList.remove("active", "done");
+        });
+
+        const totalEtapas = quantidadeCriancas + 1;
+
+        for (let etapa = 1; etapa <= totalEtapas; etapa++) {
+            const indicador = document.getElementById(
+                `step-${etapa}-ind`
+            );
+
+            if (!indicador) {
+                continue;
+            }
+
+            if (etapa < etapaAtual) {
+                indicador.classList.add("done");
+            }
+
+            if (etapa === etapaAtual) {
+                indicador.classList.add("active");
+            }
+        }
+    }
+
+    function obterDadosCrianca(numero) {
+        return {
+            nome: document
+                .getElementById(`nome-crianca-${numero}`)
+                .value
+                .trim(),
+
+            dataNascimento: document.getElementById(
+                `data-nascimento-${numero}`
+            ).value,
+
+            cpf: document.getElementById(
+                `cpf-crianca-${numero}`
+            ).value,
+
+            genero: document.getElementById(
+                `genero-${numero}`
+            ).value
+        };
+    }
+
+    function finalizarCadastroFrontend(botao) {
+        const criancasParaExibir = dadosCriancas.map(
+            (crianca, indice) => ({
+                id: `crianca-${indice + 1}`,
+                nome: crianca.nome
+            })
+        );
+
+        mostrarSucesso(criancasParaExibir);
 
         botao.disabled = false;
-    });
 
-});
-
-// ─── VALIDAÇÕES ──────────────────────────────────────────────────────────────
-
-function validarEtapa1() {
-    let valido   = true;
-    let primeiro = true;
-
-    const nome      = document.getElementById('nome');
-    const cpfResp   = document.getElementById('cpf-responsavel');
-    const email     = document.getElementById('reg-email');
-    const senha     = document.getElementById('reg-senha');
-    const confirmar = document.getElementById('confirmar-senha');
-    const relacao   = document.querySelector('input[name="relacao"]:checked');
-    const termos    = document.getElementById('termos');
-
-    limparErros();
-
-    if (!nome.value.trim()) {
-        marcarErro(nome, 'Informe o nome completo.', primeiro);
-        valido = false; primeiro = false;
+        /*
+            Backend depois:
+            enviar dadosResponsavel e dadosCriancas
+            para POST /register.
+        */
     }
 
-    if (cpfResp.value.replace(/\D/g, '').length !== 11) {
-        marcarErro(cpfResp, 'Informe um CPF válido (11 dígitos).', primeiro);
-        valido = false; primeiro = false;
+    function mostrarSucesso(criancas) {
+        const tela =
+            document.getElementById("success-screen");
+
+        const opcoes =
+            document.getElementById("session-options");
+
+        opcoes.replaceChildren();
+
+        criancaSelecionada = null;
+
+        criancas.forEach((crianca, indice) => {
+            const botao = criarOpcaoDeSessao(crianca);
+
+            opcoes.appendChild(botao);
+
+            if (indice === 0) {
+                selecionarSessao(botao, crianca);
+            }
+        });
+
+        reiniciarAnimacaoDoCheck();
+
+        tela.style.display = "flex";
+
+        gsap.to("#app", {
+            filter: "blur(3px)",
+            duration: 0.3,
+            ease: "power2.inOut"
+        });
+
+        gsap.fromTo(
+            ".success-content",
+            {
+                opacity: 0,
+                scale: 0.9,
+                y: 16
+            },
+            {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: 0.55,
+                delay: 0.2,
+                ease: "back.out(1.5)"
+            }
+        );
     }
 
-    if (!email.value.trim() || !email.value.includes('@')) {
-        marcarErro(email, 'Informe um e-mail válido.', primeiro);
-        valido = false; primeiro = false;
+    function criarOpcaoDeSessao(crianca) {
+        const botao = document.createElement("button");
+        const avatar = document.createElement("div");
+        const icone = document.createElement("i");
+        const nome = document.createElement("span");
+
+        botao.type = "button";
+        botao.className = "session-option";
+
+        avatar.className = "session-avatar";
+        icone.className = "fa-solid fa-child";
+
+        nome.className = "session-name";
+        nome.textContent = crianca.nome;
+
+        avatar.appendChild(icone);
+        botao.append(avatar, nome);
+
+        botao.addEventListener("click", () => {
+            selecionarSessao(botao, crianca);
+        });
+
+        return botao;
     }
 
-    if (senha.value.length < 8) {
-        marcarErro(senha, 'A senha deve ter no mínimo 8 caracteres.', primeiro);
-        valido = false; primeiro = false;
+    function selecionarSessao(botao, crianca) {
+        document
+            .querySelectorAll(".session-option")
+            .forEach(opcao => {
+                opcao.classList.remove("selected");
+            });
+
+        botao.classList.add("selected");
+
+        criancaSelecionada = crianca;
     }
 
-    if (confirmar.value !== senha.value) {
-        marcarErro(confirmar, 'As senhas não coincidem.', primeiro);
-        valido = false; primeiro = false;
+    function configurarBotaoDeSessao() {
+        document
+            .getElementById("btn-start-session")
+            .addEventListener("click", () => {
+                if (!criancaSelecionada) {
+                    return;
+                }
+
+                /*
+                    Backend depois:
+                    autenticar o responsável,
+                    salvar a criança ativa
+                    e redirecionar para /home.
+                */
+            });
     }
 
-    if (!relacao) {
-        mostrarErroGrupo('relacao', 'Selecione sua relação com a criança.');
-        valido = false;
+    function reiniciarAnimacaoDoCheck() {
+        document
+            .querySelectorAll(
+                ".check-circle-path, .check-mark-path"
+            )
+            .forEach(elemento => {
+                elemento.style.animation = "none";
+
+                void elemento.getBoundingClientRect();
+
+                elemento.style.animation = "";
+            });
     }
 
-    if (!termos.checked) {
-        mostrarErroCheck(termos, 'Você deve aceitar os termos para continuar.');
-        valido = false;
-    }
+    function validarResponsavel() {
+        limparErros(formularios.responsavel);
 
-    return valido;
-}
+        let valido = true;
+        let primeiroCampo = null;
 
-function validarEtapa2() {
-    let valido   = true;
-    let primeiro = true;
+        const nome =
+            document.getElementById("nome");
 
-    const nomeCrianca = document.getElementById('nome-crianca');
-    const datanasc    = document.getElementById('data-nascimento');
-    const cpf         = document.getElementById('cpf');
-    const genero      = document.getElementById('genero');
+        const cpf =
+            document.getElementById("cpf-responsavel");
 
-    limparErros();
+        const email =
+            document.getElementById("reg-email");
 
-    if (!nomeCrianca.value.trim()) {
-        marcarErro(nomeCrianca, 'Informe o nome da criança.', primeiro);
-        valido = false; primeiro = false;
-    }
+        const senha =
+            document.getElementById("reg-senha");
 
-    if (!datanasc.value) {
-        marcarErro(datanasc, 'Informe a data de nascimento.', primeiro);
-        valido = false; primeiro = false;
-    } else {
-        const nascimento = new Date(datanasc.value);
-        const hoje       = new Date();
-        const idade      = hoje.getFullYear() - nascimento.getFullYear();
-        if (nascimento > hoje || idade > 18) {
-            marcarErro(datanasc, 'Informe uma data de nascimento válida.', primeiro);
-            valido = false; primeiro = false;
+        const confirmarSenha =
+            document.getElementById("confirmar-senha");
+
+        const relacao = document.querySelector(
+            'input[name="relacao"]:checked'
+        );
+
+        const termos =
+            document.getElementById("termos");
+
+        if (!nome.value.trim()) {
+            primeiroCampo = primeiroCampo || nome;
+
+            marcarErro(
+                nome,
+                "Informe o nome completo."
+            );
+
+            valido = false;
         }
+
+        if (cpf.value.replace(/\D/g, "").length !== 11) {
+            primeiroCampo = primeiroCampo || cpf;
+
+            marcarErro(
+                cpf,
+                "Informe um CPF válido com 11 dígitos."
+            );
+
+            valido = false;
+        }
+
+        if (
+            !email.value.trim() ||
+            !email.value.includes("@")
+        ) {
+            primeiroCampo = primeiroCampo || email;
+
+            marcarErro(
+                email,
+                "Informe um e-mail válido."
+            );
+
+            valido = false;
+        }
+
+        if (senha.value.length < 8) {
+            primeiroCampo = primeiroCampo || senha;
+
+            marcarErro(
+                senha,
+                "A senha deve ter no mínimo 8 caracteres."
+            );
+
+            valido = false;
+        }
+
+        if (confirmarSenha.value !== senha.value) {
+            primeiroCampo =
+                primeiroCampo || confirmarSenha;
+
+            marcarErro(
+                confirmarSenha,
+                "As senhas não coincidem."
+            );
+
+            valido = false;
+        }
+
+        if (!relacao) {
+            mostrarErroNoGrupo(
+                document.getElementById("grupo-relacao"),
+                "Selecione sua relação com as crianças."
+            );
+
+            valido = false;
+        }
+
+        if (!termos.checked) {
+            mostrarErroNoGrupo(
+                document.getElementById("grupo-termos"),
+                "Você deve aceitar os termos para continuar."
+            );
+
+            valido = false;
+        }
+
+        primeiroCampo?.focus();
+
+        return valido;
     }
 
-    if (cpf.value.replace(/\D/g, '').length !== 11) {
-        marcarErro(cpf, 'Informe um CPF válido (11 dígitos).', primeiro);
-        valido = false; primeiro = false;
+    function validarCrianca(numero) {
+        const formulario = document.getElementById(
+            `etapa${numero + 1}`
+        );
+
+        limparErros(formulario);
+
+        let valido = true;
+        let primeiroCampo = null;
+
+        const nome = document.getElementById(
+            `nome-crianca-${numero}`
+        );
+
+        const nascimento = document.getElementById(
+            `data-nascimento-${numero}`
+        );
+
+        const cpf = document.getElementById(
+            `cpf-crianca-${numero}`
+        );
+
+        const genero = document.getElementById(
+            `genero-${numero}`
+        );
+
+        if (!nome.value.trim()) {
+            primeiroCampo = primeiroCampo || nome;
+
+            marcarErro(
+                nome,
+                "Informe o nome da criança."
+            );
+
+            valido = false;
+        }
+
+        if (
+            !nascimento.value ||
+            !dataDeNascimentoValida(nascimento.value)
+        ) {
+            primeiroCampo =
+                primeiroCampo || nascimento;
+
+            marcarErro(
+                nascimento,
+                "Informe uma data de nascimento válida."
+            );
+
+            valido = false;
+        }
+
+        if (cpf.value.replace(/\D/g, "").length !== 11) {
+            primeiroCampo = primeiroCampo || cpf;
+
+            marcarErro(
+                cpf,
+                "Informe um CPF válido com 11 dígitos."
+            );
+
+            valido = false;
+        }
+
+        if (!genero.value) {
+            primeiroCampo = primeiroCampo || genero;
+
+            marcarErro(
+                genero,
+                "Selecione o gênero da criança."
+            );
+
+            valido = false;
+        }
+
+        primeiroCampo?.focus();
+
+        return valido;
     }
 
-    if (!genero.value) {
-        marcarErro(genero, 'Selecione o gênero da criança.', primeiro);
-        valido = false;
+    function dataDeNascimentoValida(valor) {
+        const nascimento =
+            new Date(`${valor}T00:00:00`);
+
+        const hoje = new Date();
+
+        if (
+            Number.isNaN(nascimento.getTime()) ||
+            nascimento > hoje
+        ) {
+            return false;
+        }
+
+        let idade =
+            hoje.getFullYear() -
+            nascimento.getFullYear();
+
+        const aindaNaoFezAniversario =
+            hoje.getMonth() < nascimento.getMonth() ||
+            (
+                hoje.getMonth() === nascimento.getMonth() &&
+                hoje.getDate() < nascimento.getDate()
+            );
+
+        if (aindaNaoFezAniversario) {
+            idade--;
+        }
+
+        return idade <= 18;
     }
 
-    return valido;
-}
+    function marcarErro(input, mensagem) {
+        const grupo = input.closest(".field");
 
-// ─── UTILITÁRIOS DE ERRO ─────────────────────────────────────────────────────
+        grupo.classList.add("campo-erro");
 
-function marcarErro(input, msg, primeiroErro) {
-    const grupo = input.closest('.field') || input.closest('.input-group');
-    grupo.classList.add('campo-erro');
-    if (!grupo.querySelector('.msg-erro')) {
-        const err = document.createElement('span');
-        err.className   = 'msg-erro';
-        err.textContent = msg;
-        grupo.appendChild(err);
+        mostrarErroNoGrupo(grupo, mensagem);
     }
-    if (primeiroErro) input.focus();
-}
 
-function mostrarErroGrupo(name, msg) {
-    const input = document.querySelector('input[name="' + name + '"]');
-    if (!input) return;
-    const grupo = input.closest('.field') || input.closest('.input-group');
-    if (grupo.querySelector('.msg-erro')) return;
-    const err = document.createElement('span');
-    err.className   = 'msg-erro';
-    err.textContent = msg;
-    grupo.appendChild(err);
-}
+    function mostrarErroNoGrupo(grupo, mensagem) {
+        if (grupo.querySelector(".msg-erro")) {
+            return;
+        }
 
-function mostrarErroCheck(input, msg) {
-    const grupo = input.closest('.field') || input.closest('.input-group');
-    if (grupo.querySelector('.msg-erro')) return;
-    const err = document.createElement('span');
-    err.className   = 'msg-erro';
-    err.textContent = msg;
-    grupo.appendChild(err);
-}
+        const erro = document.createElement("span");
 
-function limparErros() {
-    document.querySelectorAll('.campo-erro').forEach(el => el.classList.remove('campo-erro'));
-    document.querySelectorAll('.msg-erro').forEach(el => el.remove());
-}
+        erro.className = "msg-erro";
+        erro.textContent = mensagem;
 
-function sacudir(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.add('sacudir');
-    el.addEventListener('animationend', () => el.classList.remove('sacudir'), { once: true });
-}
+        grupo.appendChild(erro);
+    }
 
-// ─── MÁSCARAS CPF ────────────────────────────────────────────────────────────
+    function limparErros(escopo) {
+        escopo
+            .querySelectorAll(".campo-erro")
+            .forEach(elemento => {
+                elemento.classList.remove("campo-erro");
+            });
 
-function aplicarMascaraCPF(inputId) {
-    const el = document.getElementById(inputId);
-    if (!el) return;
-    el.addEventListener('input', () => {
-        let v = el.value.replace(/\D/g, '').slice(0, 11);
-        if (v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
-        else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
-        else if (v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/, '$1.$2');
-        el.value = v;
-    });
-}
+        escopo
+            .querySelectorAll(".msg-erro")
+            .forEach(elemento => {
+                elemento.remove();
+            });
+    }
 
-aplicarMascaraCPF('cpf-responsavel');
-aplicarMascaraCPF('cpf');
+    function sacudir(elemento) {
+        elemento.classList.remove("sacudir");
+
+        void elemento.offsetWidth;
+
+        elemento.classList.add("sacudir");
+
+        elemento.addEventListener(
+            "animationend",
+            () => {
+                elemento.classList.remove("sacudir");
+            },
+            {
+                once: true
+            }
+        );
+    }
+
+    function configurarSenhas() {
+        document
+            .querySelectorAll("[data-password-target]")
+            .forEach(botao => {
+                botao.addEventListener("click", () => {
+                    const input = document.getElementById(
+                        botao.dataset.passwordTarget
+                    );
+
+                    const icone = botao.querySelector("i");
+                    const mostrar =
+                        input.type === "password";
+
+                    input.type = mostrar
+                        ? "text"
+                        : "password";
+
+                    icone.classList.toggle(
+                        "fa-eye",
+                        !mostrar
+                    );
+
+                    icone.classList.toggle(
+                        "fa-eye-slash",
+                        mostrar
+                    );
+
+                    botao.setAttribute(
+                        "aria-label",
+                        mostrar
+                            ? "Ocultar senha"
+                            : "Mostrar senha"
+                    );
+                });
+            });
+    }
+
+    function configurarMascaras() {
+        aplicarMascaraCPF("cpf-responsavel");
+        aplicarMascaraCPF("cpf-crianca-1");
+        aplicarMascaraCPF("cpf-crianca-2");
+        aplicarMascaraTelefone("telefone");
+    }
+
+    function aplicarMascaraCPF(inputId) {
+        const input =
+            document.getElementById(inputId);
+
+        input.addEventListener("input", () => {
+            let valor = input.value
+                .replace(/\D/g, "")
+                .slice(0, 11);
+
+            if (valor.length > 9) {
+                valor = valor.replace(
+                    /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
+                    "$1.$2.$3-$4"
+                );
+            } else if (valor.length > 6) {
+                valor = valor.replace(
+                    /(\d{3})(\d{3})(\d{0,3})/,
+                    "$1.$2.$3"
+                );
+            } else if (valor.length > 3) {
+                valor = valor.replace(
+                    /(\d{3})(\d{0,3})/,
+                    "$1.$2"
+                );
+            }
+
+            input.value = valor;
+        });
+    }
+
+    function aplicarMascaraTelefone(inputId) {
+        const input =
+            document.getElementById(inputId);
+
+        input.addEventListener("input", () => {
+            const numeros = input.value
+                .replace(/\D/g, "")
+                .slice(0, 11);
+
+            if (numeros.length <= 2) {
+                input.value = numeros;
+            } else if (numeros.length <= 7) {
+                input.value =
+                    `(${numeros.slice(0, 2)}) ` +
+                    numeros.slice(2);
+            } else {
+                input.value =
+                    `(${numeros.slice(0, 2)}) ` +
+                    `${numeros.slice(2, 7)}-` +
+                    numeros.slice(7);
+            }
+        });
+    }
+});
