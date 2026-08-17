@@ -452,6 +452,15 @@ body.page-leaving {
 }
 
 /* fotos das atividades */
+.atv-card-icon-wrap img.atv-card-img-reduzida {
+    width: 100%;
+    height: 100%;
+    align-self: flex-end;
+    object-fit: contain;
+    object-position: center bottom;
+    transform-origin: center bottom;
+    transform: scale(1.07) !important;
+}
 .atv-card-icon-wrap {
     flex: 1;
     width: 100%;
