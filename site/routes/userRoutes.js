@@ -46,4 +46,18 @@ router.get("/atividades/monte-frase", verificarAuth, (req, res) => {
     );
 });
 
+//O QUE POSSO DIZER
+router.get(
+    "/atividades/oq-posso-dizer",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/oq-posso-dizer.html"
+            )
+        );
+    }
+);
+
 module.exports = router;

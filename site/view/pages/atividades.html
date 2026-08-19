@@ -52,15 +52,15 @@
     
                 <div class="session-password-field">
                     <label for="session-password">
-                        Senha do responsável
+                    PIN do responsável
                     </label>
     
                     <div class="session-password-wrap">
-                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
     
-                        <input type="password" id="session-password" placeholder="Digite sua senha" autocomplete="current-password">
+                    <input type="password" id="session-password" placeholder="Digite o PIN de 4 números" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" aria-label="PIN de 4 números">
     
-                        <button type="button" id="session-password-toggle" aria-label="Mostrar senha">
+                    <button type="button" id="session-password-toggle" aria-label="Mostrar PIN">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>

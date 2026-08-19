@@ -51,6 +51,9 @@ formularioLogin.addEventListener("submit", async (evento) => {
             "sucesso"
         );
 
+        localStorage.removeItem("teko_session");
+        sessionStorage.setItem("teko_iniciar_sessao", "true");
+
         setTimeout(() => {
             const carregamento =
                 document.getElementById("loading-screen");
@@ -58,7 +61,7 @@ formularioLogin.addEventListener("submit", async (evento) => {
             carregamento.classList.add("ativo");
 
             setTimeout(() => {
-                window.location.href = ("/home");
+                window.location.href = "/home";
             }, 600);
         }, 700);
 

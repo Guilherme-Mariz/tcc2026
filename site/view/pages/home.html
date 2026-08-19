@@ -44,19 +44,23 @@
             <div class="home-session-options" id="home-session-options"></div>
 
             <div class="session-password-field">
-                <label for="session-password">Senha do responsável</label>
+                <label for="session-password">PIN do responsável</label>
 
                 <div class="session-password-wrap">
-                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    <i class="fa-solid fa-key" aria-hidden="true"></i>
 
                     <input
                         type="password"
                         id="session-password"
-                        placeholder="Digite sua senha"
-                        autocomplete="current-password"
+                        placeholder="Digite o PIN de 4 números"
+                        maxlength="4"
+                        inputmode="numeric"
+                        pattern="[0-9]{4}"
+                        autocomplete="off"
+                        aria-label="PIN de 4 números"
                     >
 
-                    <button type="button" id="session-password-toggle" aria-label="Mostrar senha">
+                    <button type="button" id="session-password-toggle" aria-label="Mostrar PIN">
                         <i class="fa-solid fa-eye"></i>
                     </button>
                 </div>
@@ -335,6 +339,7 @@
     <script>
         let criancasDisponiveis = [];
         let criancaTrocaSelecionada = null;
+        let selecaoInicial = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             // ── Nome da criança e cor do perfil ──
@@ -418,6 +423,14 @@
 
             configurarModalTrocaSessao();
 
+            const deveIniciarSessao =
+                sessionStorage.getItem("teko_iniciar_sessao") === "true";
+
+            if (deveIniciarSessao) {
+                sessionStorage.removeItem("teko_iniciar_sessao");
+                abrirTrocaSessao(true);
+            }
+
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") {
                     fecharDrawer();
@@ -456,7 +469,13 @@
 
                 criancasDisponiveis = criancasDisponiveis.filter(Boolean);
 
-                const crianca = criancasDisponiveis[0];
+                const criancaSalva = obterCriancaAtiva();
+                const idSalvo = obterIdCrianca(criancaSalva);
+
+                const crianca =
+                    criancasDisponiveis.find(item => {
+                        return obterIdCrianca(item) === idSalvo;
+                    }) || criancasDisponiveis[0];
 
                 const nomeCompleto = obterNomeCrianca(crianca);
 
@@ -478,10 +497,20 @@
                 if (nomeElemento) nomeElemento.textContent = "amigo";
                 if (nomePerfil) nomePerfil.textContent = "Criança";
 
-                criancasDisponiveis = [{
-                    id: "crianca-frontend",
-                    nome: "Criança"
-                }];
+                try {
+                    const cadastradas = JSON.parse(
+                        localStorage.getItem("teko_registered_children") || "[]"
+                    );
+
+                    criancasDisponiveis = Array.isArray(cadastradas) && cadastradas.length
+                        ? cadastradas
+                        : [{ id: "crianca-frontend", nome: "Criança" }];
+                } catch (erroLocal) {
+                    criancasDisponiveis = [{
+                        id: "crianca-frontend",
+                        nome: "Criança"
+                    }];
+                }
 
                 renderizarOpcoesTrocaSessao();
             }
@@ -495,6 +524,74 @@
                 crianca?.nomeCrianca ||
                 ""
             );
+        }
+
+        function obterIdCrianca(crianca) {
+            return (
+                crianca?.id ||
+                crianca?.crianca_id ||
+                crianca?.child_id ||
+                obterNomeCrianca(crianca)
+            );
+        }
+
+        function obterCriancaAtiva() {
+            try {
+                const sessao = JSON.parse(
+                    localStorage.getItem("teko_session") || "{}"
+                );
+
+                return sessao?.crianca || null;
+            } catch (erro) {
+                return null;
+            }
+        }
+
+        function salvarCriancaAtiva(crianca) {
+            let sessao = {};
+
+            try {
+                sessao = JSON.parse(
+                    localStorage.getItem("teko_session") || "{}"
+                );
+            } catch (erro) {
+                sessao = {};
+            }
+
+            sessao.crianca = {
+                ...crianca,
+                id: obterIdCrianca(crianca),
+                nome: obterNomeCrianca(crianca)
+            };
+
+            localStorage.setItem(
+                "teko_session",
+                JSON.stringify(sessao)
+            );
+        }
+
+        function obterPinCadastrado() {
+            const pinLocal = localStorage.getItem("teko_access_pin");
+
+            if (/^\d{4}$/.test(pinLocal || "")) {
+                return pinLocal;
+            }
+
+            try {
+                const sessao = JSON.parse(
+                    localStorage.getItem("teko_session") || "{}"
+                );
+
+                const pinSessao = String(
+                    sessao?.responsavel?.pin || ""
+                );
+
+                return /^\d{4}$/.test(pinSessao)
+                    ? pinSessao
+                    : "";
+            } catch (erro) {
+                return "";
+            }
         }
 
         function configurarModalTrocaSessao() {
@@ -526,17 +623,62 @@
 
                 mostrarSenha.setAttribute(
                     "aria-label",
-                    exibindo ? "Mostrar senha" : "Ocultar senha"
+                    exibindo ? "Mostrar PIN" : "Ocultar PIN"
                 );
+            });
+
+            senha.addEventListener("input", () => {
+                senha.value = senha.value
+                    .replace(/\D/g, "")
+                    .slice(0, 4);
+
+                document.getElementById(
+                    "session-switch-error"
+                ).textContent = "";
+            });
+
+            senha.addEventListener("keydown", evento => {
+                if (evento.key === "Enter") {
+                    confirmarTrocaSessao();
+                }
             });
 
             confirmar.addEventListener("click", confirmarTrocaSessao);
         }
 
-        function abrirTrocaSessao() {
+        function abrirTrocaSessao(modoInicial = false) {
             const overlay = document.getElementById("session-switch-overlay");
             const senha = document.getElementById("session-password");
             const erro = document.getElementById("session-switch-error");
+            const campoSenha = document.querySelector(".session-password-field");
+            const fechar = document.getElementById("session-switch-close");
+            const cancelar = document.getElementById("session-switch-cancel");
+            const confirmar = document.getElementById("session-switch-confirm");
+            const titulo = document.getElementById("session-switch-title");
+            const descricao = document.querySelector(".session-switch-description");
+
+            selecaoInicial = modoInicial;
+
+            campoSenha.style.display = modoInicial
+                ? "none"
+                : "";
+
+            fechar.style.display = modoInicial
+                ? "none"
+                : "";
+
+            cancelar.style.display = modoInicial
+                ? "none"
+                : "";
+            confirmar.textContent = modoInicial
+                ? "Iniciar sessão"
+                : "Confirmar troca";
+            titulo.textContent = modoInicial
+                ? "Quem vai usar o teko.?"
+                : "Trocar sessão";
+            descricao.textContent = modoInicial
+                ? "Escolha a criança para começar."
+                : "Escolha a criança que usará a plataforma.";
 
             renderizarOpcoesTrocaSessao();
 
@@ -545,13 +687,16 @@
             overlay.classList.add("active");
             overlay.setAttribute("aria-hidden", "false");
 
-            setTimeout(() => senha.focus(), 250);
+            if (!modoInicial) {
+                setTimeout(() => senha.focus(), 250);
+            }
         }
 
         function fecharTrocaSessao() {
             const overlay = document.getElementById("session-switch-overlay");
 
             if (!overlay) return;
+            if (selecaoInicial) return;
 
             overlay.classList.remove("active");
             overlay.setAttribute("aria-hidden", "true");
@@ -564,6 +709,10 @@
 
             container.replaceChildren();
             criancaTrocaSelecionada = null;
+
+            const idAtivo = obterIdCrianca(
+                obterCriancaAtiva()
+            );
 
             criancasDisponiveis.forEach((crianca, indice) => {
                 const botao = document.createElement("button");
@@ -589,7 +738,11 @@
 
                 container.appendChild(botao);
 
-                if (indice === 0) {
+                const deveSelecionar = idAtivo
+                    ? obterIdCrianca(crianca) === idAtivo
+                    : indice === 0;
+
+                if (deveSelecionar) {
                     selecionarCriancaTroca(botao, crianca);
                 }
             });
@@ -617,19 +770,44 @@
                 return;
             }
 
-            if (!senha.value.trim()) {
-                erro.textContent = "Digite a senha do responsável.";
+            const pinDigitado = senha.value.trim();
+
+            if (!selecaoInicial && !/^\d{4}$/.test(pinDigitado)) {
+                erro.textContent = "Digite o PIN de 4 números.";
                 senha.focus();
                 return;
             }
 
-            erro.textContent = "";
+            if (!selecaoInicial) {
+                const pinCadastrado = obterPinCadastrado();
 
-            /*
-                Backend depois:
-                validar a senha do responsável, salvar a criança escolhida
-                como sessão ativa e atualizar os dados exibidos na Home.
-            */
+                if (!pinCadastrado) {
+                    erro.textContent =
+                        "Nenhum PIN foi configurado para esta conta.";
+                    return;
+                }
+
+                if (pinDigitado !== pinCadastrado) {
+                    erro.textContent = "PIN incorreto. Tente novamente.";
+                    senha.value = "";
+                    senha.focus();
+                    return;
+                }
+            }
+
+            erro.textContent = "";
+            salvarCriancaAtiva(criancaTrocaSelecionada);
+
+            const nomeCompleto = obterNomeCrianca(
+                criancaTrocaSelecionada
+            );
+            const primeiroNome = nomeCompleto.trim().split(" ")[0];
+
+            document.getElementById("child-name").textContent = primeiroNome;
+            document.getElementById("profile-child-name").textContent = primeiroNome;
+
+            selecaoInicial = false;
+            fecharTrocaSessao();
         }
 
         // ── Modal de logout (chamadas via onclick no HTML) ──

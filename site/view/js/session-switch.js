@@ -1,89 +1,60 @@
 document.addEventListener("DOMContentLoaded", () => {
-    if (window.__tekoSessionSwitchInitialized) {
-        return;
-    }
+    if (window.__tekoSessionSwitchInitialized) return;
 
     window.__tekoSessionSwitchInitialized = true;
 
-    const botaoAbrir =
-        document.getElementById("session-switch-button");
+    garantirInterface();
+    adaptarInterfaceParaPin();
 
-    const botaoAbrirMobile =
-        document.getElementById("drawer-session-switch");
+    const elementos = {
+        abrir: document.getElementById("session-switch-button"),
+        abrirMobile: document.getElementById("drawer-session-switch"),
+        overlay: document.getElementById("session-switch-overlay"),
+        modal: document.querySelector(".session-switch-modal"),
+        fechar: document.getElementById("session-switch-close"),
+        cancelar: document.getElementById("session-switch-cancel"),
+        confirmar: document.getElementById("session-switch-confirm"),
+        mostrarPin: document.getElementById("session-password-toggle"),
+        pin: document.getElementById("session-password"),
+        erro: document.getElementById("session-switch-error"),
+        opcoes: document.getElementById("home-session-options")
+    };
 
-    const overlay =
-        document.getElementById("session-switch-overlay");
+    if (Object.values(elementos).some(elemento => !elemento)) return;
 
-    const modal =
-        document.querySelector(".session-switch-modal");
-
-    const botaoFechar =
-        document.getElementById("session-switch-close");
-
-    const botaoCancelar =
-        document.getElementById("session-switch-cancel");
-
-    const botaoConfirmar =
-        document.getElementById("session-switch-confirm");
-
-    const botaoMostrarSenha =
-        document.getElementById("session-password-toggle");
-
-    const inputSenha =
-        document.getElementById("session-password");
-
-    const mensagemErro =
-        document.getElementById("session-switch-error");
-
-    const opcoes =
-        document.getElementById("home-session-options");
-
-    if (
-        !botaoAbrir ||
-        !overlay ||
-        !modal ||
-        !botaoFechar ||
-        !botaoCancelar ||
-        !botaoConfirmar ||
-        !botaoMostrarSenha ||
-        !inputSenha ||
-        !mensagemErro ||
-        !opcoes
-    ) {
-        return;
-    }
-
-    let criancasDisponiveis = [
-        {
-            id: "crianca-frontend",
-            nome: "Criança"
-        }
-    ];
-
+    let criancasDisponiveis = [];
     let criancaSelecionada = null;
 
     carregarCriancas();
 
-    botaoAbrir.addEventListener("click", abrirModal);
+    elementos.abrir.addEventListener("click", abrirModal);
 
-    if (botaoAbrirMobile) {
-        botaoAbrirMobile.addEventListener("click", () => {
-            fecharMenuMobile();
-            abrirModal();
-        });
-    }
+    elementos.abrirMobile.addEventListener("click", () => {
+        fecharMenuMobile();
+        abrirModal();
+    });
 
-    botaoFechar.addEventListener("click", fecharModal);
-    botaoCancelar.addEventListener("click", fecharModal);
-    botaoConfirmar.addEventListener("click", confirmarTroca);
+    elementos.fechar.addEventListener("click", fecharModal);
+    elementos.cancelar.addEventListener("click", fecharModal);
+    elementos.confirmar.addEventListener("click", confirmarTroca);
+    elementos.mostrarPin.addEventListener("click", alternarPin);
 
-    botaoMostrarSenha.addEventListener(
-        "click",
-        alternarVisibilidadeSenha
-    );
+    elementos.pin.addEventListener("input", () => {
+        elementos.pin.value = elementos.pin.value
+            .replace(/\D/g, "")
+            .slice(0, 4);
 
-    overlay.addEventListener("click", evento => {
-        if (!modal.contains(evento.target)) {
+        elementos.erro.textContent = "";
+    });
+
+    elementos.pin.addEventListener("keydown", evento => {
+        if (evento.key === "Enter") {
+            confirmarTroca();
+        }
+    });
+
+    elementos.overlay.addEventListener("click", evento => {
+        if (!elementos.modal.contains(evento.target)) {
             fecharModal();
         }
     });
@@ -115,34 +86,45 @@ document.addEventListener("DOMContentLoaded", () => {
                 resultado.criancas ||
                 resultado;
 
-            const criancasRecebidas = Array.isArray(lista)
+            const recebidas = Array.isArray(lista)
                 ? lista
                 : [lista];
 
-            const criancasValidas =
-                criancasRecebidas.filter(crianca => {
-                    return (
-                        crianca &&
-                        obterNomeCrianca(crianca)
-                    );
-                });
-
-            if (criancasValidas.length > 0) {
-                criancasDisponiveis = criancasValidas;
-            }
-
-            renderizarOpcoes();
-        } catch (erro) {
-            console.error(
-                "Erro ao carregar crianças:",
-                erro
+            criancasDisponiveis = recebidas.filter(
+                crianca => crianca && obterNome(crianca)
             );
 
             renderizarOpcoes();
+        } catch (erro) {
+            console.error("Erro ao carregar crianças:", erro);
+
+            const cadastradas = obterCriancasLocais();
+
+            criancasDisponiveis = cadastradas;
+            renderizarOpcoes();
+
+            if (cadastradas.length === 0) {
+                elementos.erro.textContent =
+                    "Não foi possível carregar as crianças.";
+            }
         }
     }
 
-    function obterNomeCrianca(crianca) {
+    function obterCriancasLocais() {
+        try {
+            const lista = JSON.parse(
+                localStorage.getItem("teko_registered_children") || "[]"
+            );
+
+            return Array.isArray(lista)
+                ? lista.filter(crianca => crianca && obterNome(crianca))
+                : [];
+        } catch (erro) {
+            return [];
+        }
+    }
+
+    function obterNome(crianca) {
         return (
             crianca?.nome ||
             crianca?.nome_completo ||
@@ -152,26 +134,94 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+    function obterId(crianca) {
+        return (
+            crianca?.id ||
+            crianca?.crianca_id ||
+            crianca?.child_id ||
+            obterNome(crianca)
+        );
+    }
+
+    function obterCriancaAtiva() {
+        try {
+            const sessao = JSON.parse(
+                localStorage.getItem("teko_session") || "{}"
+            );
+
+            return sessao?.crianca || null;
+        } catch (erro) {
+            return null;
+        }
+    }
+
+    function obterPinCadastrado() {
+        const pinLocal = localStorage.getItem("teko_access_pin");
+
+        if (/^\d{4}$/.test(pinLocal || "")) {
+            return pinLocal;
+        }
+
+        try {
+            const sessao = JSON.parse(
+                localStorage.getItem("teko_session") || "{}"
+            );
+
+            const pinSessao = String(
+                sessao?.responsavel?.pin || ""
+            );
+
+            return /^\d{4}$/.test(pinSessao)
+                ? pinSessao
+                : "";
+        } catch (erro) {
+            return "";
+        }
+    }
+
+    function salvarCriancaAtiva(crianca) {
+        let sessao = {};
+
+        try {
+            sessao = JSON.parse(
+                localStorage.getItem("teko_session") || "{}"
+            );
+        } catch (erro) {
+            sessao = {};
+        }
+
+        sessao.crianca = {
+            ...crianca,
+            id: obterId(crianca),
+            nome: obterNome(crianca)
+        };
+
+        localStorage.setItem(
+            "teko_session",
+            JSON.stringify(sessao)
+        );
+    }
+
     function abrirModal() {
-        inputSenha.value = "";
-        mensagemErro.textContent = "";
+        elementos.pin.value = "";
+        elementos.pin.type = "password";
+        elementos.erro.textContent = "";
+        elementos.mostrarPin.querySelector("i").className =
+            "fa-solid fa-eye";
 
         renderizarOpcoes();
 
-        overlay.classList.add("active");
-        overlay.setAttribute("aria-hidden", "false");
+        elementos.overlay.classList.add("active");
+        elementos.overlay.setAttribute("aria-hidden", "false");
 
-        setTimeout(() => {
-            inputSenha.focus();
-        }, 250);
+        setTimeout(() => elementos.pin.focus(), 250);
     }
 
     function fecharModal() {
-        overlay.classList.remove("active");
-        overlay.setAttribute("aria-hidden", "true");
-
-        inputSenha.value = "";
-        mensagemErro.textContent = "";
+        elementos.overlay.classList.remove("active");
+        elementos.overlay.setAttribute("aria-hidden", "true");
+        elementos.pin.value = "";
+        elementos.erro.textContent = "";
     }
 
     function fecharMenuMobile() {
@@ -182,139 +232,254 @@ document.addEventListener("DOMContentLoaded", () => {
         document
             .getElementById("mobile_overlay")
             ?.classList.remove("active");
+
+        document.body.style.overflow = "";
     }
 
     function renderizarOpcoes() {
-        opcoes.replaceChildren();
-
+        elementos.opcoes.replaceChildren();
         criancaSelecionada = null;
 
-        criancasDisponiveis.forEach(
-            (crianca, indice) => {
-                const botao =
-                    document.createElement("button");
+        if (criancasDisponiveis.length === 0) {
+            const aviso = document.createElement("p");
 
-                const avatar =
-                    document.createElement("span");
+            aviso.className = "session-switch-empty";
+            aviso.textContent = "Nenhuma criança cadastrada.";
 
-                const icone =
-                    document.createElement("i");
+            elementos.opcoes.appendChild(aviso);
+            return;
+        }
 
-                const nome =
-                    document.createElement("span");
+        const idAtivo = obterId(obterCriancaAtiva());
 
-                botao.type = "button";
-                botao.className = "home-session-option";
-                botao.setAttribute(
-                    "aria-pressed",
-                    "false"
-                );
+        criancasDisponiveis.forEach((crianca, indice) => {
+            const botao = document.createElement("button");
+            const avatar = document.createElement("span");
+            const icone = document.createElement("i");
+            const nome = document.createElement("span");
 
-                avatar.className =
-                    "home-session-avatar";
+            botao.type = "button";
+            botao.className = "home-session-option";
+            botao.setAttribute("aria-pressed", "false");
 
-                icone.className =
-                    "fa-solid fa-child";
+            avatar.className = "home-session-avatar";
+            icone.className = "fa-solid fa-child";
+            nome.className = "home-session-name";
+            nome.textContent =
+                obterNome(crianca) || `Criança ${indice + 1}`;
 
-                nome.className =
-                    "home-session-name";
+            avatar.appendChild(icone);
+            botao.append(avatar, nome);
 
-                nome.textContent =
-                    obterNomeCrianca(crianca) ||
-                    `Criança ${indice + 1}`;
+            botao.addEventListener("click", () => {
+                selecionar(botao, crianca);
+            });
 
-                avatar.appendChild(icone);
-                botao.append(avatar, nome);
+            elementos.opcoes.appendChild(botao);
 
-                botao.addEventListener("click", () => {
-                    selecionarCrianca(
-                        botao,
-                        crianca
-                    );
-                });
+            const deveSelecionar = idAtivo
+                ? obterId(crianca) === idAtivo
+                : indice === 0;
 
-                opcoes.appendChild(botao);
-
-                if (indice === 0) {
-                    selecionarCrianca(
-                        botao,
-                        crianca
-                    );
-                }
+            if (deveSelecionar) {
+                selecionar(botao, crianca);
             }
-        );
+        });
     }
 
-    function selecionarCrianca(botao, crianca) {
-        opcoes
+    function selecionar(botao, crianca) {
+        elementos.opcoes
             .querySelectorAll(".home-session-option")
             .forEach(opcao => {
                 opcao.classList.remove("selected");
-
-                opcao.setAttribute(
-                    "aria-pressed",
-                    "false"
-                );
+                opcao.setAttribute("aria-pressed", "false");
             });
 
         botao.classList.add("selected");
-
-        botao.setAttribute(
-            "aria-pressed",
-            "true"
-        );
+        botao.setAttribute("aria-pressed", "true");
 
         criancaSelecionada = crianca;
-        mensagemErro.textContent = "";
+        elementos.erro.textContent = "";
     }
 
-    function alternarVisibilidadeSenha() {
-        const mostrandoSenha =
-            inputSenha.type === "text";
+    function alternarPin() {
+        const mostrando = elementos.pin.type === "text";
+        const icone = elementos.mostrarPin.querySelector("i");
 
-        const icone =
-            botaoMostrarSenha.querySelector("i");
-
-        inputSenha.type = mostrandoSenha
+        elementos.pin.type = mostrando
             ? "password"
             : "text";
 
-        icone.className = mostrandoSenha
+        icone.className = mostrando
             ? "fa-solid fa-eye"
             : "fa-solid fa-eye-slash";
 
-        botaoMostrarSenha.setAttribute(
+        elementos.mostrarPin.setAttribute(
             "aria-label",
-            mostrandoSenha
-                ? "Mostrar senha"
-                : "Ocultar senha"
+            mostrando ? "Mostrar PIN" : "Ocultar PIN"
         );
     }
 
     function confirmarTroca() {
         if (!criancaSelecionada) {
-            mensagemErro.textContent =
-                "Escolha uma criança.";
-
+            elementos.erro.textContent = "Escolha uma criança.";
             return;
         }
 
-        if (!inputSenha.value.trim()) {
-            mensagemErro.textContent =
-                "Digite a senha do responsável.";
+        const pinDigitado = elementos.pin.value.trim();
 
-            inputSenha.focus();
+        if (!/^\d{4}$/.test(pinDigitado)) {
+            elementos.erro.textContent =
+                "Digite o PIN de 4 números.";
 
+            elementos.pin.focus();
             return;
         }
 
-        mensagemErro.textContent = "";
+        const pinCadastrado = obterPinCadastrado();
 
-        /*
-            Backend depois:
-            validar a senha do responsável,
-            salvar a criança escolhida como sessão ativa
-            e atualizar a página atual.
-        */
+        if (!pinCadastrado) {
+            elementos.erro.textContent =
+                "Nenhum PIN foi configurado para esta conta.";
+            return;
+        }
+
+        if (pinDigitado !== pinCadastrado) {
+            elementos.erro.textContent =
+                "PIN incorreto. Tente novamente.";
+
+            elementos.pin.value = "";
+            elementos.pin.focus();
+            return;
+        }
+
+        salvarCriancaAtiva(criancaSelecionada);
+        fecharModal();
+
+        window.location.reload();
+    }
+
+    function adaptarInterfaceParaPin() {
+        const campo = document.querySelector(
+            ".session-password-field"
+        );
+
+        const rotulo = campo?.querySelector("label");
+        const input = document.getElementById("session-password");
+        const botao = document.getElementById(
+            "session-password-toggle"
+        );
+
+        if (rotulo) {
+            rotulo.textContent = "PIN do responsável";
+        }
+
+        if (input) {
+            input.placeholder = "Digite o PIN de 4 números";
+            input.inputMode = "numeric";
+            input.maxLength = 4;
+            input.pattern = "[0-9]{4}";
+            input.autocomplete = "off";
+            input.setAttribute("aria-label", "PIN de 4 números");
+        }
+
+        if (botao) {
+            botao.setAttribute("aria-label", "Mostrar PIN");
+        }
+    }
+
+    function garantirInterface() {
+        if (!document.getElementById("session-switch-overlay")) {
+            document.body.insertAdjacentHTML(
+                "afterbegin",
+                `
+                    <div id="session-switch-overlay" class="session-switch-overlay" aria-hidden="true">
+                        <div class="session-switch-modal" role="dialog" aria-modal="true" aria-labelledby="session-switch-title">
+                            <button type="button" class="session-switch-close" id="session-switch-close" aria-label="Fechar">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <div class="session-switch-icon" aria-hidden="true">
+                                <i class="fa-solid fa-repeat"></i>
+                            </div>
+                            <h2 id="session-switch-title">Trocar sessão</h2>
+                            <p class="session-switch-description">Escolha a criança que usará a plataforma.</p>
+                            <div class="home-session-options" id="home-session-options"></div>
+                            <div class="session-password-field">
+                                <label for="session-password">PIN do responsável</label>
+                                <div class="session-password-wrap">
+                                    <i class="fa-solid fa-key" aria-hidden="true"></i>
+                                    <input type="password" id="session-password" placeholder="Digite o PIN de 4 números" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" aria-label="PIN de 4 números">
+                                    <button type="button" id="session-password-toggle" aria-label="Mostrar PIN">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="session-switch-error" id="session-switch-error" aria-live="polite"></span>
+                            </div>
+                            <div class="session-switch-actions">
+                                <button type="button" class="session-switch-cancel" id="session-switch-cancel">Cancelar</button>
+                                <button type="button" class="session-switch-confirm" id="session-switch-confirm">Confirmar troca</button>
+                            </div>
+                        </div>
+                    </div>
+                `
+            );
+        }
+
+        const rodape = document.querySelector(".sidebar-bottom");
+
+        if (
+            rodape &&
+            !document.getElementById("session-switch-button")
+        ) {
+            const configuracoes =
+                rodape.querySelector(".snav-config");
+
+            const botao = document.createElement("button");
+            const divisor = document.createElement("span");
+
+            botao.type = "button";
+            botao.className =
+                "snav-item session-switch-button";
+            botao.id = "session-switch-button";
+            botao.innerHTML = `
+                <span class="snav-icon">
+                    <i class="fa-solid fa-repeat"></i>
+                </span>
+                <span class="snav-label">Trocar sessão</span>
+            `;
+
+            divisor.className = "sidebar-divider";
+            divisor.setAttribute("aria-hidden", "true");
+
+            rodape.insertBefore(botao, configuracoes);
+            rodape.insertBefore(divisor, configuracoes);
+        }
+
+        const menuMobile =
+            document.querySelector(".drawer-nav");
+
+        if (
+            menuMobile &&
+            !document.getElementById("drawer-session-switch")
+        ) {
+            const configuracoes = menuMobile.querySelector(
+                'a[href="/configuracoes"]'
+            );
+
+            const botao = document.createElement("button");
+
+            botao.type = "button";
+            botao.className =
+                "snav-item drawer-session-switch";
+            botao.id = "drawer-session-switch";
+            botao.innerHTML = `
+                <span class="snav-icon">
+                    <i class="fa-solid fa-repeat"></i>
+                </span>
+                <span class="snav-label">Trocar sessão</span>
+            `;
+
+            menuMobile.insertBefore(botao, configuracoes);
+        }
     }
 });

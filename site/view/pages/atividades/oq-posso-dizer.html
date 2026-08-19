@@ -10,10 +10,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/home.css">
         <link rel="stylesheet" href="/css/atividades.css">
-        <link rel="stylesheet" href="/css/atividades/monte-frase.css">
-        <script src="/js/session-switch.js" defer></script>
+        <link rel="stylesheet" href="/css/atividades/oq-posso-dizer.css">
 
-        <title>teko. — Monte a Frase</title>
+        <title>teko. — O que Posso Dizer?</title>
     </head>
 
     <body>
@@ -133,11 +132,11 @@
                     <p class="welcome-label">Comunicação</p>
 
                     <h1 id="activity-title" class="activity-title">
-                        Monte a Frase
+                        O que Posso Dizer?
                     </h1>
 
                     <p class="activity-subtitle">
-                        Escolha as palavras certas e monte uma frase para mostrar o que você quer dizer.
+                        Observe cada situação e escolha o que o Teko pode dizer naquele momento.
                     </p>
                 </div>
 
@@ -147,37 +146,24 @@
                 </a>
             </section>
 
-            <section id="activity-stage" class="activity-stage" aria-label="Atividade Monte a Frase">
-                <div id="mf-intro" class="activity-screen activity-center-screen">
+            <section id="activity-stage" class="activity-stage" aria-label="Atividade O que Posso Dizer">
+                <div id="opd-intro" class="activity-screen activity-center-screen">
                     <h2 class="activity-screen-title">
-                        Vamos montar frases?
+                        O que o Teko pode dizer?
                     </h2>
 
                     <p class="activity-screen-text">
-                        Escolha as palavras e mostre o que você quer dizer.
+                        Veja as imagens, escolha uma frase e ajude o Teko a se comunicar.
                     </p>
 
-                    <button
-                        id="mf-start-btn"
-                        class="activity-start-button"
-                        type="button"
-                    >
+                    <button id="opd-start-btn" class="activity-start-button" type="button">
                         Iniciar
                     </button>
                 </div>
 
-                <div
-                    id="mf-loading"
-                    class="activity-screen activity-loading"
-                    aria-live="polite"
-                    hidden
-                >
+                <div id="opd-loading" class="activity-screen activity-loading" aria-live="polite" hidden>
                     <div class="activity-loading-content">
-                        <img
-                            src="/img/mascot/teko-andando.gif"
-                            alt="Teko andando"
-                            class="activity-loading-gif"
-                        >
+                        <img src="/img/mascot/teko-andando.gif" alt="Teko andando" class="activity-loading-gif">
 
                         <p class="activity-loading-text">
                             Carregando...
@@ -185,116 +171,74 @@
                     </div>
                 </div>
 
-                <div id="mf-game" class="activity-screen mf-game" hidden>
-                    <div class="mf-round-top">
-                        <span
-                            id="mf-round-indicator"
-                            class="atv-card-tag mf-round-indicator"
-                        ></span>
+                <div id="opd-game" class="activity-screen opd-game" hidden>
+                    <div class="opd-round-top">
+                        <span id="opd-round-indicator" class="atv-card-tag opd-round-indicator"></span>
 
-                        <p id="mf-instruction" class="activity-instruction"></p>
+                        <p id="opd-instruction" class="activity-instruction"></p>
                     </div>
 
-                    <div
-                        id="mf-sentence-area"
-                        class="mf-sentence-area"
-                        aria-label="Frase montada"
-                    ></div>
+                    <div class="opd-content">
+                        <figure class="opd-image-frame">
+                            <img id="opd-scene-image" class="opd-scene-image" src="" alt="">
+                        </figure>
 
-                    <div
-                        id="mf-options-area"
-                        class="mf-options-area"
-                        role="group"
-                        aria-label="Palavras disponíveis"
-                    ></div>
+                        <div class="opd-answer-panel">
+                            <p class="opd-answer-title">Escolha uma frase:</p>
 
-                    <p
-                        id="mf-feedback"
-                        class="mf-feedback"
-                        role="status"
-                        aria-live="polite"
-                    ></p>
+                            <div id="opd-options-area" class="opd-options-area" role="group" aria-label="Frases disponíveis"></div>
 
-                    <div class="mf-controls">
-                        <button
-                            id="mf-clear-btn"
-                            class="mf-btn mf-btn-ghost"
-                            type="button"
-                        >
-                            <i class="fa-solid fa-eraser"></i>
-                            Limpar
-                        </button>
+                            <p id="opd-feedback" class="opd-feedback" role="status" aria-live="polite"></p>
 
-                        <button
-                            id="mf-listen-btn"
-                            class="mf-btn mf-btn-ghost"
-                            type="button"
-                        >
-                            <i class="fa-solid fa-volume-high"></i>
-                            Ouvir frase
-                        </button>
+                            <div class="opd-controls">
+                                <button id="opd-clear-btn" class="opd-btn opd-btn-ghost" type="button">
+                                    <i class="fa-solid fa-eraser"></i>
+                                    Limpar escolha
+                                </button>
 
-                        <button
-                            id="mf-confirm-btn"
-                            class="mf-btn mf-btn-primary"
-                            type="button"
-                        >
-                            Confirmar
-                        </button>
+                                <button id="opd-listen-btn" class="opd-btn opd-btn-ghost" type="button">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                    Ouvir frase
+                                </button>
+
+                                <button id="opd-confirm-btn" class="opd-btn opd-btn-primary" type="button">
+                                    Confirmar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div
-                    id="mf-done"
-                    class="activity-screen activity-center-screen"
-                    hidden
-                >
+                <div id="opd-done" class="activity-screen activity-center-screen" hidden>
                     <h2 class="activity-screen-title">
                         Parabéns!
                     </h2>
 
-                    <p
-                        id="mf-done-text"
-                        class="activity-screen-text"
-                    ></p>
+                    <p id="opd-done-text" class="activity-screen-text"></p>
 
-                    <div class="mf-done-actions">
-                        <a
-                            href="/home"
-                            class="mf-btn mf-btn-ghost"
-                            data-nav
-                        >
+                    <div class="opd-done-actions">
+                        <a href="/home" class="opd-btn opd-btn-ghost" data-nav>
                             Voltar ao início
                         </a>
 
-                        <a
-                            href="/atividades"
-                            class="mf-btn mf-btn-primary"
-                            data-nav
-                        >
+                        <a href="/atividades" class="opd-btn opd-btn-primary" data-nav>
                             Voltar para atividades
                         </a>
                     </div>
                 </div>
 
-                <div
-                    id="mf-success-popup"
-                    class="activity-success-popup"
-                    role="status"
-                    aria-live="polite"
-                    hidden
-                >
+                <div id="opd-success-popup" class="activity-success-popup" role="status" aria-live="polite" hidden>
                     <div class="activity-success-popup-card">
                         <span class="activity-success-icon" aria-hidden="true">
                             <i class="fa-solid fa-check"></i>
                         </span>
 
-                        <p id="mf-success-message" class="activity-success-message"></p>
+                        <p id="opd-success-message" class="activity-success-message"></p>
                     </div>
                 </div>
             </section>
         </main>
 
-        <script src="/js/atividades/monte-frase.js" defer></script>
+        <script src="/js/atividades/oq-posso-dizer.js" defer></script>
     </body>
 </html>

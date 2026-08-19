@@ -417,6 +417,11 @@ html, body {
 }
 .req  { color: #e53e3e; }
 .opt  { font-weight: 400; color: var(--text-soft); }
+.field-hint {
+  color: var(--text-soft);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
 
 /* ── inputs ── */
 .input-wrap {

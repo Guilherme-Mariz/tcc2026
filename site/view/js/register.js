@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 cpf: dados.get("cpf_responsavel"),
                 email: dados.get("email"),
                 senha: dados.get("senha"),
+                pin: dados.get("pin"),
                 telefone: dados.get("telefone"),
                 relacao: dados.get("relacao")
             };
@@ -360,6 +361,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         mostrarSucesso(criancasParaExibir);
 
+        localStorage.setItem(
+            "teko_access_pin",
+            dadosResponsavel.pin
+        );
+
+        localStorage.setItem(
+            "teko_registered_children",
+            JSON.stringify(criancasParaExibir)
+        );
+
         botao.disabled = false;
 
         /*
@@ -463,12 +474,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                /*
-                    Backend depois:
-                    autenticar o responsável,
-                    salvar a criança ativa
-                    e redirecionar para /home.
-                */
+                localStorage.setItem(
+                    "teko_session",
+                    JSON.stringify({
+                        responsavel: {
+                            nome_completo: dadosResponsavel.nome,
+                            email: dadosResponsavel.email
+                        },
+                        crianca: criancaSelecionada
+                    })
+                );
+
+                window.location.href = "/home";
             });
     }
 
@@ -506,6 +523,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const confirmarSenha =
             document.getElementById("confirmar-senha");
+
+        const pin =
+            document.getElementById("reg-pin");
+
+        const confirmarPin =
+            document.getElementById("confirmar-pin");
 
         const relacao = document.querySelector(
             'input[name="relacao"]:checked'
@@ -568,6 +591,29 @@ document.addEventListener("DOMContentLoaded", () => {
             marcarErro(
                 confirmarSenha,
                 "As senhas não coincidem."
+            );
+
+            valido = false;
+        }
+
+        if (!/^\d{4}$/.test(pin.value)) {
+            primeiroCampo = primeiroCampo || pin;
+
+            marcarErro(
+                pin,
+                "Crie um PIN com exatamente 4 números."
+            );
+
+            valido = false;
+        }
+
+        if (confirmarPin.value !== pin.value) {
+            primeiroCampo =
+                primeiroCampo || confirmarPin;
+
+            marcarErro(
+                confirmarPin,
+                "Os PINs não coincidem."
             );
 
             valido = false;
@@ -801,6 +847,8 @@ document.addEventListener("DOMContentLoaded", () => {
         aplicarMascaraCPF("cpf-crianca-1");
         aplicarMascaraCPF("cpf-crianca-2");
         aplicarMascaraTelefone("telefone");
+        aplicarMascaraPin("reg-pin");
+        aplicarMascaraPin("confirmar-pin");
     }
 
     function aplicarMascaraCPF(inputId) {
@@ -854,6 +902,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     `${numeros.slice(2, 7)}-` +
                     numeros.slice(7);
             }
+        });
+    }
+
+    function aplicarMascaraPin(inputId) {
+        const input = document.getElementById(inputId);
+
+        input.addEventListener("input", () => {
+            input.value = input.value
+                .replace(/\D/g, "")
+                .slice(0, 4);
         });
     }
 });

@@ -142,6 +142,25 @@
                 </div>
               </div>
             </div>
+            <div class="field-row two-col">
+              <div class="field">
+                <label for="reg-pin">PIN de acesso <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-key"></i>
+                  <input type="password" id="reg-pin" name="pin" placeholder="4 números" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="new-password">
+                  <button type="button" class="eye-btn" data-password-target="reg-pin" aria-label="Mostrar PIN"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <span class="field-hint">Usado para trocar sessões e acessar a Área do Responsável.</span>
+              </div>
+              <div class="field">
+                <label for="confirmar-pin">Confirmar PIN <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-key"></i>
+                  <input type="password" id="confirmar-pin" name="confirmar_pin" placeholder="Repita o PIN" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="new-password">
+                  <button type="button" class="eye-btn" data-password-target="confirmar-pin" aria-label="Mostrar PIN"><i class="fa-solid fa-eye"></i></button>
+                </div>
+              </div>
+            </div>
             <div class="field-row">
               <div class="field full">
                 <label for="telefone">Telefone <span class="opt">(opcional)</span></label>
