@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
             opcoes: [
                 "Oi! Bom dia!",
                 "Tchau! Até amanhã!",
-                "Pode me dar um lápis?"
+                "Pode me dar um lápis?",
+                "Você pode sair daqui?"
             ],
             parabens: "Muito bem! Teko cumprimentou a colega de forma gentil."
         },
@@ -21,11 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
             instrucao: "Uma colega emprestou um lápis ao Teko. O que ele pode dizer?",
             imagem: "/img/atv/oq-posso-dizer/fase2.png",
             descricaoImagem: "Uma pessoa entregando um lápis ao Teko na sala de aula",
-            resposta: "Obrigado por me ajudar!",
+            resposta: "Obrigado por me emprestar!",
             opcoes: [
                 "Pode abaixar o som?",
-                "Obrigado por me ajudar!",
-                "Eu não quero brincar."
+                "Obrigado por me emprestar!",
+                "Eu não quero brincar.",
+                "Que horas é o recreio?"
             ],
             parabens: "Ótimo! Teko agradeceu pela ajuda que recebeu."
         },
@@ -37,7 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
             opcoes: [
                 "Posso brincar com vocês?",
                 "Até amanhã!",
-                "Quero ficar sozinho agora."
+                "Quero ficar sozinho agora.",
+                "Onde está meu caderno?"
             ],
             parabens: "Muito bem! Teko pediu para participar da brincadeira."
         },
@@ -49,7 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
             opcoes: [
                 "Obrigado pelo presente!",
                 "Não entendi. Pode explicar de novo?",
-                "Posso pegar a bola?"
+                "Posso pegar a bola?",
+                "Posso ir ao banheiro?"
             ],
             parabens: "Excelente! Teko pediu que explicassem novamente."
         },
@@ -61,7 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
             opcoes: [
                 "Posso brincar com vocês?",
                 "Fale ainda mais alto!",
-                "O som está muito alto. Pode abaixar, por favor?"
+                "O som está muito alto. Pode abaixar, por favor?",
+                "Obrigado pelo lápis!"
             ],
             parabens: "Parabéns! Teko explicou o que estava incomodando e pediu ajuda."
         }
