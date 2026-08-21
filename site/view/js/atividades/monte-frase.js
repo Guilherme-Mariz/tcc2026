@@ -67,66 +67,22 @@ document.addEventListener("DOMContentLoaded", () => {
     let rodadaConcluida = false;
     let carregamentoId;
 
-    function trocarTela(nomeAtual, nomeNovo, aoEntrar) {
-        function exibirNova() {
-            Object.keys(telas).forEach(chave => {
-                if (chave !== nomeNovo) {
-                    telas[chave].hidden = true;
-                    telas[chave].classList.remove("activity-screen-fade-out");
-                    telas[chave].classList.remove("activity-screen-fade-in");
-                }
-            });
+    const trocarTela = TekoActivityCore.createScreenTransition({
+        screens: telas,
+        stage: palcoAtividade,
+        duration: DURACAO_FADE_TELA
+    });
 
-            const telaNova = telas[nomeNovo];
+    const embaralhar = TekoActivityCore.shuffle;
 
-            telaNova.classList.add("activity-screen-fade-in");
-            telaNova.hidden = false;
+    const popupSucesso = TekoActivityCore.createSuccessPopup({
+        popup: elementos.popup,
+        message: elementos.popupMensagem,
+        duration: DURACAO_TRANSICAO_POPUP
+    });
 
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    telaNova.classList.remove("activity-screen-fade-in");
-                });
-            });
-
-            const atividadeIniciada =
-                nomeNovo === "jogo" || nomeNovo === "conclusao";
-
-            palcoAtividade.classList.toggle(
-                "activity-stage-active",
-                atividadeIniciada
-            );
-
-            if (typeof aoEntrar === "function") {
-                aoEntrar();
-            }
-        }
-
-        const telaAtual = telas[nomeAtual];
-
-        if (telaAtual && !telaAtual.hidden) {
-            telaAtual.classList.add("activity-screen-fade-out");
-
-            setTimeout(exibirNova, DURACAO_FADE_TELA);
-            return;
-        }
-
-        exibirNova();
-    }
-
-    function embaralhar(lista) {
-        const copia = [...lista];
-
-        for (let i = copia.length - 1; i > 0; i--) {
-            const indice = Math.floor(Math.random() * (i + 1));
-
-            [copia[i], copia[indice]] = [
-                copia[indice],
-                copia[i]
-            ];
-        }
-
-        return copia;
-    }
+    const exibirPopupSucesso = popupSucesso.show;
+    const esconderPopupSucesso = popupSucesso.hide;
 
     function criarCartao(palavra, selecionado) {
         const botao = document.createElement("button");
@@ -273,33 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         limparFeedback();
         renderizarJogo();
-    }
-
-    function exibirPopupSucesso(mensagem) {
-        elementos.popupMensagem.textContent = mensagem;
-        elementos.popup.hidden = false;
-
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                elementos.popup.classList.add(
-                    "activity-success-popup-visible"
-                );
-            });
-        });
-    }
-
-    function esconderPopupSucesso(aoFinalizar) {
-        elementos.popup.classList.remove(
-            "activity-success-popup-visible"
-        );
-
-        setTimeout(() => {
-            elementos.popup.hidden = true;
-
-            if (typeof aoFinalizar === "function") {
-                aoFinalizar();
-            }
-        }, DURACAO_TRANSICAO_POPUP);
     }
 
     function confirmarFrase() {
