@@ -145,44 +145,27 @@
             </section>
 
             <section id="activity-stage" class="activity-stage rt-stage" aria-label="Atividade Respire com o Teko">
-                <div id="rt-intro" class="activity-screen rt-intro">
-                    <div class="rt-intro-art" aria-hidden="true">
-                        <span class="rt-intro-sun"></span>
-                        <span class="rt-intro-wave rt-intro-wave-one"></span>
-                        <span class="rt-intro-wave rt-intro-wave-two"></span>
-                        <img src="/img/atv/respire-com-teko/teko-barco.webp" alt="">
-                    </div>
+                <div id="rt-intro" class="activity-screen activity-center-screen">
+                    <h2 class="activity-screen-title">
+                        Vamos respirar com o Teko?
+                    </h2>
 
-                    <div class="rt-intro-copy">
-                        <span class="rt-eyebrow">
-                            <i class="fa-solid fa-sailboat"></i>
-                            Uma viagem tranquila
-                        </span>
+                    <p class="activity-screen-text">
+                        Faça cinco respirações tranquilas e ajude o barquinho do Teko a chegar até a ilha.
+                    </p>
 
-                        <h2 class="activity-screen-title">Vamos levar o Teko até a ilha?</h2>
-
-                        <p class="activity-screen-text">
-                            Puxe o ar devagar. Depois, solte o ar e veja o barquinho avançar um pouco.
-                        </p>
-
-                        <div class="rt-intro-details" aria-label="Como funciona">
-                            <span><i class="fa-regular fa-circle-check"></i> 5 respirações</span>
-                            <span><i class="fa-regular fa-clock"></i> No seu ritmo</span>
-                            <span><i class="fa-solid fa-volume-xmark"></i> Som opcional</span>
-                        </div>
-
-                        <button id="rt-start-btn" class="activity-start-button rt-start-button" type="button">
-                            Começar a viagem
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
+                    <button id="rt-start-btn" class="activity-start-button" type="button">
+                        Iniciar
+                    </button>
                 </div>
 
                 <div id="rt-loading" class="activity-screen activity-loading" aria-live="polite" hidden>
                     <div class="activity-loading-content">
-                        <div class="rt-loading-boat" aria-hidden="true">
-                            <i class="fa-solid fa-sailboat"></i>
-                        </div>
+                        <img
+                            src="/img/mascot/teko-andando.gif"
+                            alt="Teko andando"
+                            class="activity-loading-gif"
+                        >
                         <p class="activity-loading-text">Preparando o mar...</p>
                     </div>
                 </div>
@@ -341,7 +324,7 @@
                             <i class="fa-solid fa-rotate-right"></i>
                             Fazer novamente
                         </button>
-                        <a href="/atividades" class="rt-button rt-button-primary" data-nav>
+                        <a href="/atividades?modulo=calma#atividade-respire-com-teko" class="rt-button rt-button-primary" data-nav>
                             Voltar para atividades
                         </a>
                     </div>

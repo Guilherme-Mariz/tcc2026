@@ -423,9 +423,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function reiniciarJogo() {
+        const jogoJaEstaVisivel = telaAtual === "jogo";
+
         prepararJogo();
-        trocarTela("jogo");
-        elementos.iniciarViagem.focus();
+
+        if (!jogoJaEstaVisivel) {
+            trocarTela("jogo");
+        }
+
+        requestAnimationFrame(() => {
+            elementos.iniciarViagem.focus();
+        });
+    }
+
+    function reiniciarAtividade() {
+        prepararJogo();
+        trocarTela("inicio");
+
+        requestAnimationFrame(() => {
+            elementos.iniciar.focus();
+        });
     }
 
     function alternarPausa() {
@@ -516,7 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
     elementos.som.addEventListener("click", alternarNarracao);
     elementos.respirarExtra.addEventListener("click", fazerRespiracaoExtra);
     elementos.finalizar.addEventListener("click", finalizarAtividade);
-    elementos.jogarNovamente.addEventListener("click", reiniciarJogo);
+    elementos.jogarNovamente.addEventListener("click", reiniciarAtividade);
 
     elementos.opcoesSentimento.forEach(botao => {
         botao.addEventListener("click", () => {

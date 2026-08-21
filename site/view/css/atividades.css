@@ -620,3 +620,9 @@ body.page-leaving {
         transform: none;
     }
 }
+.atv-card:target {
+    border-color: var(--green-deep);
+    box-shadow:
+        0 0 0 4px rgba(58, 140, 96, 0.14),
+        var(--shadow-md);
+}
