@@ -61,6 +61,20 @@ router.get(
 );
 
 
+//QUEBRA-CABEÇA DAS EMOÇÕES
+router.get(
+    "/atividades/quebra-cabeca-emocoes",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/quebra-cabeca-emocoes.html"
+            )
+        );
+    }
+);
+
 //RESPIRE COM O TEKO
 router.get(
     "/atividades/respire-com-teko",
