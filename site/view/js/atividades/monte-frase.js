@@ -391,110 +391,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.speechSynthesis.speak(fala);
     }
 
-    function configurarNavegacao() {
-        const links = document.querySelectorAll("[data-nav]");
-
-        links.forEach(link => {
-            link.addEventListener("click", evento => {
-                const destino = link.getAttribute("href");
-
-                if (!destino || destino === "#") {
-                    return;
-                }
-
-                evento.preventDefault();
-
-                document.body.classList.add("page-leaving");
-
-                setTimeout(() => {
-                    window.location.href = destino;
-                }, 180);
-            });
-        });
-    }
-
-    function configurarMenuMobile() {
-        const abrir = document.getElementById("mobile_btn");
-        const fechar = document.getElementById("mobile_close");
-        const menu = document.getElementById("mobile_drawer");
-        const fundo = document.getElementById("mobile_overlay");
-
-        function fecharMenu() {
-            menu.classList.remove("active");
-            fundo.classList.remove("active");
-            document.body.style.overflow = "";
-        }
-
-        if (abrir) {
-            abrir.addEventListener("click", () => {
-                menu.classList.add("active");
-                fundo.classList.add("active");
-                document.body.style.overflow = "hidden";
-            });
-        }
-
-        if (fechar) {
-            fechar.addEventListener("click", fecharMenu);
-        }
-
-        if (fundo) {
-            fundo.addEventListener("click", fecharMenu);
-        }
-    }
-
-    function configurarLogout() {
-        const fundo = document.getElementById("logout-overlay");
-        const cancelar = document.getElementById("logout-cancel");
-        const confirmar = document.getElementById("logout-confirm");
-
-        function abrirLogout() {
-            fundo.classList.add("active");
-            fundo.setAttribute("aria-hidden", "false");
-            document.body.style.overflow = "hidden";
-        }
-
-        function fecharLogout() {
-            fundo.classList.remove("active");
-            fundo.setAttribute("aria-hidden", "true");
-            document.body.style.overflow = "";
-        }
-
-        const botoesAbrir = document.querySelectorAll(
-            "[data-logout-open]"
-        );
-
-        botoesAbrir.forEach(botao => {
-            botao.addEventListener("click", abrirLogout);
-        });
-
-        if (cancelar) {
-            cancelar.addEventListener("click", fecharLogout);
-        }
-
-        if (confirmar) {
-            confirmar.addEventListener("click", () => {
-                localStorage.removeItem("teko_session");
-                localStorage.removeItem("teko_streak");
-
-                window.location.href = "/pages/login.html";
-            });
-        }
-
-        if (fundo) {
-            fundo.addEventListener("click", evento => {
-                if (evento.target === fundo) {
-                    fecharLogout();
-                }
-            });
-        }
-
-        document.addEventListener("keydown", evento => {
-            if (evento.key === "Escape") {
-                fecharLogout();
-            }
-        });
-    }
-
     elementos.iniciar.addEventListener(
         "click",
         iniciarAtividade
@@ -514,11 +410,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         confirmarFrase
     );
-
-    configurarNavegacao();
-    configurarMenuMobile();
-    configurarLogout();
-
     telas.inicio.hidden = false;
     telas.carregamento.hidden = true;
     telas.jogo.hidden = true;
