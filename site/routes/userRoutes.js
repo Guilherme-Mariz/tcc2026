@@ -60,4 +60,19 @@ router.get(
     }
 );
 
+
+//RESPIRE COM O TEKO
+router.get(
+    "/atividades/respire-com-teko",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/respire-com-teko.html"
+            )
+        );
+    }
+);
+
 module.exports = router;

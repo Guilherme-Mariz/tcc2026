@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="/css/shell.css">
+        <link rel="stylesheet" href="/css/atividades.css">
+        <link rel="stylesheet" href="/css/atividades/respire-com-teko.css">
+        <script src="/js/site-shell.js" defer></script>
+        <script src="/js/session-switch.js" defer></script>
+
+        <title>teko. — Respire com o Teko</title>
+    </head>
+
+    <body>
+        <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+            <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+                <div class="logout-icon">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+
+                <h2 id="logout-title" class="logout-title">Sair da conta?</h2>
+                <p class="logout-desc">Você tem certeza que quer sair?</p>
+
+                <div class="logout-actions">
+                    <button id="logout-cancel" class="logout-btn-cancel" type="button">Cancelar</button>
+                    <button id="logout-confirm" class="logout-btn-confirm" type="button">Sim, sair</button>
+                </div>
+            </div>
+        </div>
+
+        <aside id="sidebar" role="navigation" aria-label="Menu principal">
+            <a href="/" class="sidebar-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="/home" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                    <span class="snav-label">Início</span>
+                </a>
+
+                <a href="/atividades" class="snav-item active" aria-current="page" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                    <span class="snav-label">Atividades</span>
+                </a>
+
+                <a href="/tekoia" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
+                    <span class="snav-label">TEKO.IA</span>
+                </a>
+
+                <a href="/responsavel" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                    <span class="snav-label">Responsável</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="snav-label">Config.</span>
+                </a>
+
+                <button class="sidebar-logout-btn" type="button" data-logout-open aria-label="Sair da conta">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <header id="mobile-header">
+            <a href="/" class="sidebar-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
+            <div class="mobile-header-right">
+                <button class="mobile-logout-btn" type="button" data-logout-open aria-label="Sair da conta">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+
+                <button id="mobile_btn" type="button" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="mobile_overlay"></div>
+
+        <div id="mobile_drawer">
+            <button id="mobile_close" type="button" aria-label="Fechar menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <nav class="drawer-nav">
+                <a href="/home" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                    <span class="snav-label">Início</span>
+                </a>
+
+                <a href="/atividades" class="snav-item active" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                    <span class="snav-label">Atividades</span>
+                </a>
+
+                <a href="/tekoia" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
+                    <span class="snav-label">TEKO.IA</span>
+                </a>
+
+                <a href="/responsavel" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                    <span class="snav-label">Responsável</span>
+                </a>
+
+                <a href="/configuracoes" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="snav-label">Config.</span>
+                </a>
+            </nav>
+        </div>
+
+        <main id="main-content">
+            <section class="activity-page-header" aria-labelledby="activity-title">
+                <div class="activity-header-copy">
+                    <p class="welcome-label">Refúgio</p>
+
+                    <h1 id="activity-title" class="activity-title">
+                        Respire com o Teko
+                    </h1>
+
+                    <p class="activity-subtitle">
+                        Faça cinco respirações tranquilas e ajude o barquinho do Teko a chegar até a ilha.
+                    </p>
+                </div>
+
+                <a href="/atividades" class="activity-back" data-nav>
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Voltar para atividades</span>
+                </a>
+            </section>
+
+            <section id="activity-stage" class="activity-stage rt-stage" aria-label="Atividade Respire com o Teko">
+                <div id="rt-intro" class="activity-screen rt-intro">
+                    <div class="rt-intro-art" aria-hidden="true">
+                        <span class="rt-intro-sun"></span>
+                        <span class="rt-intro-wave rt-intro-wave-one"></span>
+                        <span class="rt-intro-wave rt-intro-wave-two"></span>
+                        <img src="/img/atv/respire-com-teko/teko-barco.webp" alt="">
+                    </div>
+
+                    <div class="rt-intro-copy">
+                        <span class="rt-eyebrow">
+                            <i class="fa-solid fa-sailboat"></i>
+                            Uma viagem tranquila
+                        </span>
+
+                        <h2 class="activity-screen-title">Vamos levar o Teko até a ilha?</h2>
+
+                        <p class="activity-screen-text">
+                            Puxe o ar devagar. Depois, solte o ar e veja o barquinho avançar um pouco.
+                        </p>
+
+                        <div class="rt-intro-details" aria-label="Como funciona">
+                            <span><i class="fa-regular fa-circle-check"></i> 5 respirações</span>
+                            <span><i class="fa-regular fa-clock"></i> No seu ritmo</span>
+                            <span><i class="fa-solid fa-volume-xmark"></i> Som opcional</span>
+                        </div>
+
+                        <button id="rt-start-btn" class="activity-start-button rt-start-button" type="button">
+                            Começar a viagem
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="rt-loading" class="activity-screen activity-loading" aria-live="polite" hidden>
+                    <div class="activity-loading-content">
+                        <div class="rt-loading-boat" aria-hidden="true">
+                            <i class="fa-solid fa-sailboat"></i>
+                        </div>
+                        <p class="activity-loading-text">Preparando o mar...</p>
+                    </div>
+                </div>
+
+                <div id="rt-game" class="activity-screen rt-game" hidden>
+                    <div class="rt-game-topbar">
+                        <div class="rt-progress-copy">
+                            <span id="rt-progress-label">Respiração 1 de 5</span>
+                            <div id="rt-progress-dots" class="rt-progress-dots" aria-label="Progresso: nenhuma de cinco respirações concluída">
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                            </div>
+                        </div>
+
+                        <button id="rt-sound-btn" class="rt-icon-button" type="button" aria-pressed="false" aria-label="Ativar narração">
+                            <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
+                            <span>Narração desligada</span>
+                        </button>
+                    </div>
+
+                    <div id="rt-scene" class="rt-scene" data-moment="0">
+                        <div class="rt-sky" aria-hidden="true">
+                            <span class="rt-sun"></span>
+                            <span class="rt-cloud rt-cloud-one"></span>
+                            <span class="rt-cloud rt-cloud-two"></span>
+                            <span class="rt-bird rt-bird-one">⌁</span>
+                            <span class="rt-bird rt-bird-two">⌁</span>
+                        </div>
+
+                        <div class="rt-route" aria-hidden="true">
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+
+                        <div class="rt-sea" aria-hidden="true">
+                            <span class="rt-wave rt-wave-one"></span>
+                            <span class="rt-wave rt-wave-two"></span>
+                            <span class="rt-wave rt-wave-three"></span>
+                            <span class="rt-fish rt-fish-one"><i class="fa-solid fa-fish-fins"></i></span>
+                            <span class="rt-fish rt-fish-two"><i class="fa-solid fa-fish-fins"></i></span>
+                        </div>
+
+                        <img class="rt-island" src="/img/atv/respire-com-teko/ilha-final.webp" alt="Ilha tranquila com flores e um pequeno píer">
+
+                        <div id="rt-boat" class="rt-boat">
+                            <img src="/img/atv/respire-com-teko/teko-barco.webp" alt="Teko navegando em um barquinho">
+                            <span class="rt-boat-shadow" aria-hidden="true"></span>
+                        </div>
+
+                        <div id="rt-arrival-sparkles" class="rt-arrival-sparkles" aria-hidden="true">
+                            <span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span>
+                        </div>
+
+                        <div id="rt-scene-start" class="rt-scene-start">
+                            <div class="rt-scene-start-card">
+                                <span class="rt-scene-start-icon"><i class="fa-solid fa-wind"></i></span>
+                                <strong>Quando estiver pronto...</strong>
+                                <p>Vamos respirar juntos cinco vezes.</p>
+                                <button id="rt-journey-btn" type="button">Estou pronto</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rt-guide-panel">
+                        <div class="rt-breath-visual" aria-hidden="true">
+                            <span class="rt-breath-ring rt-breath-ring-outer"></span>
+                            <span class="rt-breath-ring rt-breath-ring-middle"></span>
+                            <span id="rt-breath-orb" class="rt-breath-orb"><i class="fa-solid fa-wind"></i></span>
+                        </div>
+
+                        <div class="rt-guide-copy" aria-live="polite" aria-atomic="true">
+                            <span id="rt-phase-kicker">Vamos começar</span>
+                            <strong id="rt-phase-text">Encontre uma posição confortável</strong>
+                            <p id="rt-phase-help">Você pode pausar quando quiser.</p>
+                        </div>
+
+                        <div class="rt-countdown-wrap" aria-hidden="true">
+                            <span id="rt-countdown">—</span>
+                            <small>segundos</small>
+                        </div>
+
+                        <div class="rt-controls">
+                            <button id="rt-pause-btn" class="rt-control-button" type="button" disabled>
+                                <i class="fa-solid fa-pause" aria-hidden="true"></i>
+                                <span>Pausar</span>
+                            </button>
+                            <button id="rt-restart-btn" class="rt-control-button" type="button">
+                                <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+                                <span>Recomeçar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rt-checkin" class="activity-screen rt-checkin" hidden>
+                    <div class="rt-checkin-visual" aria-hidden="true">
+                        <span class="rt-checkin-halo"></span>
+                        <img src="/img/atv/respire-com-teko/teko-barco.webp" alt="">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+
+                    <span class="rt-eyebrow"><i class="fa-solid fa-seedling"></i> Você chegou</span>
+                    <h2 class="activity-screen-title">Como você está agora?</h2>
+                    <p class="activity-screen-text">Não existe resposta certa. Escolha o que mais combina com este momento.</p>
+
+                    <div id="rt-feeling-options" class="rt-feeling-options" role="group" aria-label="Como você está agora?">
+                        <button class="rt-feeling-button rt-feeling-calm" type="button" data-feeling="calm">
+                            <span class="rt-feeling-icon">☀️</span>
+                            <span><strong>Mais tranquilo</strong><small>Meu corpo acalmou um pouco</small></span>
+                        </button>
+
+                        <button class="rt-feeling-button rt-feeling-same" type="button" data-feeling="same">
+                            <span class="rt-feeling-icon">🌤️</span>
+                            <span><strong>Mais ou menos igual</strong><small>Ainda estou percebendo como me sinto</small></span>
+                        </button>
+
+                        <button class="rt-feeling-button rt-feeling-bothered" type="button" data-feeling="bothered">
+                            <span class="rt-feeling-icon">🌧️</span>
+                            <span><strong>Ainda incomodado</strong><small>Quero um pouco mais de apoio</small></span>
+                        </button>
+                    </div>
+
+                    <div id="rt-checkin-response" class="rt-checkin-response" role="status" aria-live="polite" hidden>
+                        <span id="rt-response-icon" class="rt-response-icon" aria-hidden="true"></span>
+                        <div>
+                            <strong id="rt-response-title"></strong>
+                            <p id="rt-response-text"></p>
+                        </div>
+                    </div>
+
+                    <div id="rt-checkin-actions" class="rt-checkin-actions" hidden>
+                        <button id="rt-extra-breath-btn" class="rt-button rt-button-secondary" type="button" hidden>
+                            <i class="fa-solid fa-wind"></i>
+                            Respirar mais uma vez
+                        </button>
+                        <button id="rt-finish-btn" class="rt-button rt-button-primary" type="button">
+                            Finalizar atividade
+                        </button>
+                    </div>
+                </div>
+
+                <div id="rt-done" class="activity-screen rt-done" hidden>
+                    <div class="rt-done-icon" aria-hidden="true">
+                        <i class="fa-solid fa-sailboat"></i>
+                    </div>
+                    <p class="welcome-label">Viagem concluída</p>
+                    <h2 class="activity-screen-title">Você cuidou de si por alguns minutos.</h2>
+                    <p class="activity-screen-text">
+                        O Teko chegou à ilha e você pode voltar a esta respiração sempre que precisar.
+                    </p>
+
+                    <div class="rt-done-actions">
+                        <button id="rt-play-again-btn" class="rt-button rt-button-secondary" type="button">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            Fazer novamente
+                        </button>
+                        <a href="/atividades" class="rt-button rt-button-primary" data-nav>
+                            Voltar para atividades
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="/js/atividades/activity-core.js" defer></script>
+        <script src="/js/atividades/respire-com-teko.js" defer></script>
+    </body>
+</html>
