@@ -1,6 +1,6 @@
 # TEKO
 
-Plataforma de educação socioemocional para crianças com TEA de 6 a 10 anos.
+Plataforma de educação socioemocional para crianças com TEA de 6 a 10 anos
 
 ## Tecnologias
 
@@ -19,6 +19,7 @@ cd site
 npm install
 npm start
 ```
+(Na escola tem q usar o setPATH - para rodar local)
 
 A aplicação ficará disponível em `http://localhost:3000`.
 
