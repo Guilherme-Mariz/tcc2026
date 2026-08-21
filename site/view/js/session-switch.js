@@ -24,18 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let criancasDisponiveis = [];
     let criancaSelecionada = null;
+    let selecaoInicial = false;
 
-    carregarCriancas();
+    carregarCriancas().then(() => {
+        const deveIniciar =
+            sessionStorage.getItem("teko_iniciar_sessao") === "true";
 
-    elementos.abrir.addEventListener("click", abrirModal);
+        if (deveIniciar) {
+            sessionStorage.removeItem("teko_iniciar_sessao");
+            abrirModal(true);
+        }
+    });
+
+    elementos.abrir.addEventListener("click", () => abrirModal(false));
 
     elementos.abrirMobile.addEventListener("click", () => {
         fecharMenuMobile();
         abrirModal();
     });
 
-    elementos.fechar.addEventListener("click", fecharModal);
-    elementos.cancelar.addEventListener("click", fecharModal);
+    elementos.fechar.addEventListener("click", () => fecharModal());
+    elementos.cancelar.addEventListener("click", () => fecharModal());
     elementos.confirmar.addEventListener("click", confirmarTroca);
     elementos.mostrarPin.addEventListener("click", alternarPin);
 
@@ -202,22 +211,51 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    function abrirModal() {
+    function abrirModal(modoInicial = false) {
+        selecaoInicial = Boolean(modoInicial);
+
+        const campoPin = document.querySelector(".session-password-field");
+        const titulo = document.getElementById("session-switch-title");
+        const descricao = document.querySelector(".session-switch-description");
+
         elementos.pin.value = "";
         elementos.pin.type = "password";
         elementos.erro.textContent = "";
         elementos.mostrarPin.querySelector("i").className =
             "fa-solid fa-eye";
 
+        if (campoPin) campoPin.hidden = selecaoInicial;
+        elementos.fechar.hidden = selecaoInicial;
+        elementos.cancelar.hidden = selecaoInicial;
+        elementos.confirmar.textContent = selecaoInicial
+            ? "Iniciar sessão"
+            : "Confirmar troca";
+
+        if (titulo) {
+            titulo.textContent = selecaoInicial
+                ? "Quem vai usar o teko.?"
+                : "Trocar sessão";
+        }
+
+        if (descricao) {
+            descricao.textContent = selecaoInicial
+                ? "Escolha a criança para começar."
+                : "Escolha a criança que usará a plataforma.";
+        }
+
         renderizarOpcoes();
 
         elementos.overlay.classList.add("active");
         elementos.overlay.setAttribute("aria-hidden", "false");
 
-        setTimeout(() => elementos.pin.focus(), 250);
+        if (!selecaoInicial) {
+            setTimeout(() => elementos.pin.focus(), 250);
+        }
     }
 
-    function fecharModal() {
+    function fecharModal(forcar = false) {
+        if (selecaoInicial && !forcar) return;
+
         elementos.overlay.classList.remove("active");
         elementos.overlay.setAttribute("aria-hidden", "true");
         elementos.pin.value = "";
@@ -326,36 +364,45 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const pinDigitado = elementos.pin.value.trim();
+        if (!selecaoInicial) {
+            const pinDigitado = elementos.pin.value.trim();
 
-        if (!/^\d{4}$/.test(pinDigitado)) {
-            elementos.erro.textContent =
-                "Digite o PIN de 4 números.";
+            if (!/^\d{4}$/.test(pinDigitado)) {
+                elementos.erro.textContent =
+                    "Digite o PIN de 4 números.";
 
-            elementos.pin.focus();
-            return;
-        }
+                elementos.pin.focus();
+                return;
+            }
 
-        const pinCadastrado = obterPinCadastrado();
+            const pinCadastrado = obterPinCadastrado();
 
-        if (!pinCadastrado) {
-            elementos.erro.textContent =
-                "Nenhum PIN foi configurado para esta conta.";
-            return;
-        }
+            if (!pinCadastrado) {
+                elementos.erro.textContent =
+                    "Nenhum PIN foi configurado para esta conta.";
+                return;
+            }
 
-        if (pinDigitado !== pinCadastrado) {
-            elementos.erro.textContent =
-                "PIN incorreto. Tente novamente.";
+            if (pinDigitado !== pinCadastrado) {
+                elementos.erro.textContent =
+                    "PIN incorreto. Tente novamente.";
 
-            elementos.pin.value = "";
-            elementos.pin.focus();
-            return;
+                elementos.pin.value = "";
+                elementos.pin.focus();
+                return;
+            }
         }
 
         salvarCriancaAtiva(criancaSelecionada);
-        fecharModal();
 
+        window.dispatchEvent(
+            new CustomEvent("teko:session-changed", {
+                detail: { child: criancaSelecionada }
+            })
+        );
+
+        selecaoInicial = false;
+        fecharModal(true);
         window.location.reload();
     }
 
