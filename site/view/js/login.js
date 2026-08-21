@@ -1,3 +1,11 @@
+function irParaIndex() {
+    window.location.href = "/";
+}
+
+function irParaRegister() {
+    window.location.href = "/register";
+}
+
 const formularioLogin = document.getElementById("form-login");
 const botaoGoogle = document.getElementById("btn-google");
 
