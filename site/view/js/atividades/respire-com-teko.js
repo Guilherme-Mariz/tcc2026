@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const TOTAL_RESPIRACOES = 5;
     const DURACAO_INSPIRAR = 4000;
     const DURACAO_EXPIRAR = 5000;
-    const DURACAO_CARREGAMENTO = 1050;
+    const DURACAO_CARREGAMENTO = 3000;
 
     const telas = {
         inicio: document.getElementById("rt-intro"),
@@ -412,11 +412,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function iniciarAtividade() {
-        tokenExecucao += 1;
+        const tokenAtual = ++tokenExecucao;
         trocarTela("carregamento");
         elementos.palco.classList.add("activity-stage-revealing");
 
         window.setTimeout(() => {
+            if (tokenAtual !== tokenExecucao) {
+                return;
+            }
+
             prepararJogo();
             trocarTela("jogo");
         }, DURACAO_CARREGAMENTO);

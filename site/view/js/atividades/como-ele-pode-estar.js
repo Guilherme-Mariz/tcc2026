@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const MINIMUM_LOADING_TIME = 900;
-    const SUCCESS_TIME = 1550;
+    const MINIMUM_LOADING_TIME = 3000;
 
     const emotions = [
         {
@@ -78,9 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         question: document.getElementById("ce-question"),
         options: document.getElementById("ce-options"),
         feedback: document.getElementById("ce-feedback"),
-        playAgain: document.getElementById("ce-play-again-btn"),
-        successPopup: document.getElementById("ce-success-popup"),
-        successMessage: document.getElementById("ce-success-message")
+        playAgain: document.getElementById("ce-play-again-btn")
     };
 
     const screens = {
@@ -99,9 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
         activeScreens: ["game", "done"]
     });
 
-    const successPopup = TekoActivityCore.createSuccessPopup({
-        popup: elements.successPopup,
-        message: elements.successMessage
+    const levelTransition = TekoActivityCore.createLevelTransition({
+        container: screens.game
     });
 
     let currentScreen = "intro";
@@ -174,26 +170,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function advancePhase(token) {
-        if (token !== activityToken) {
+    function advancePhase() {
+        if (currentPhase < phases.length - 1) {
+            currentPhase += 1;
+            renderPhase();
+            elements.options.querySelector(".ce-emotion-card")?.focus();
             return;
         }
 
-        successPopup.hide(() => {
-            if (token !== activityToken) {
-                return;
-            }
-
-            if (currentPhase < phases.length - 1) {
-                currentPhase += 1;
-                renderPhase();
-                elements.options.querySelector(".ce-emotion-card")?.focus();
-                return;
-            }
-
-            switchScreen("done", () => {
-                elements.playAgain.focus();
-            });
+        switchScreen("done", () => {
+            elements.playAgain.focus();
         });
     }
 
@@ -217,14 +203,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         phaseCompleted = true;
-        card.classList.add("is-correct");
+        card.classList.add("is-correct", "activity-answer-correct");
         disableOptions();
-        elements.feedback.textContent = "Você encontrou a emoção!";
-        elements.feedback.className = "ce-feedback";
+        elements.feedback.textContent = phase.success;
+        elements.feedback.className = "ce-feedback ce-feedback-correct";
 
-        const token = activityToken;
-        successPopup.show(phase.success);
-        window.setTimeout(() => advancePhase(token), SUCCESS_TIME);
+        levelTransition.run(advancePhase);
     }
 
     async function startActivity() {
@@ -256,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
         activityToken += 1;
         currentPhase = 0;
         phaseCompleted = false;
-        successPopup.hide();
+        levelTransition.cancel();
         elements.options.replaceChildren();
         elements.stage.classList.remove("activity-stage-revealing");
 
@@ -278,5 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("pagehide", () => {
         activityToken += 1;
+        levelTransition.cancel();
     });
 });

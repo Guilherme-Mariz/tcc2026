@@ -3,6 +3,10 @@
    Depende de shell.css
    ═══════════════════════════════════════════════ */
 
+:root {
+    --activity-button-radius: 14px;
+}
+
 body {
     animation: pageFadeIn 0.3s ease both;
     background-image: url("../img/fundo-atividades.webp");
@@ -135,7 +139,7 @@ body.page-leaving {
     flex-shrink: 0;
     padding: 11px 18px;
     border: 1.5px solid var(--border);
-    border-radius: 50px;
+    border-radius: var(--activity-button-radius);
     background: var(--bg-soft);
     color: var(--text-mid);
     font-family: "Poppins", sans-serif;
@@ -271,7 +275,7 @@ body.page-leaving {
     min-width: 190px;
     padding: 14px 34px;
     border: none;
-    border-radius: 50px;
+    border-radius: var(--activity-button-radius);
     background: var(--green-deep);
     box-shadow: 0 6px 18px rgba(58, 140, 96, 0.28);
     color: #ffffff;
@@ -330,6 +334,29 @@ body.page-leaving {
     font-weight: 700;
     line-height: 1.4;
     text-align: center;
+}
+
+.activity-answer-correct {
+    border-color: var(--green-deep) !important;
+    background: #e9f7ee !important;
+    box-shadow:
+        0 0 0 3px rgba(58, 140, 96, 0.12),
+        0 7px 18px rgba(58, 140, 96, 0.12) !important;
+    color: #245a3d !important;
+    opacity: 1 !important;
+}
+
+.activity-level-leaving {
+    opacity: 0 !important;
+    transform: translateY(-8px);
+    transition:
+        opacity 220ms ease,
+        transform 220ms ease;
+}
+
+.activity-level-entering {
+    opacity: 0;
+    transform: translateY(8px);
 }
 
 .activity-success-popup {
@@ -602,5 +629,11 @@ body.page-leaving {
     .activity-success-popup-card,
     .activity-success-popup.activity-success-popup-visible .activity-success-popup-card {
         transform: none;
+    }
+
+    .activity-level-leaving,
+    .activity-level-entering {
+        transform: none;
+        transition: none;
     }
 }

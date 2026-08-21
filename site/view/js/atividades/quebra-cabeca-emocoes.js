@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const GRID_SIZE = 3;
     const PIECE_COUNT = GRID_SIZE * GRID_SIZE;
-    const MINIMUM_LOADING_TIME = 900;
+    const MINIMUM_LOADING_TIME = 3000;
     const PREVIEW_TIME = 2600;
 
     const phases = [

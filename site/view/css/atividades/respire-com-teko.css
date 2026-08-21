@@ -105,7 +105,7 @@
 .rt-icon-button {
     min-height: 39px;
     padding: 8px 13px;
-    border-radius: 999px;
+    border-radius: var(--activity-button-radius);
 }
 
 .rt-icon-button:hover,
@@ -485,7 +485,7 @@
 #rt-journey-btn {
     padding: 10px 22px;
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--activity-button-radius);
     background: var(--rt-blue-deep);
     color: #ffffff;
     cursor: pointer;
@@ -821,7 +821,7 @@
     min-height: 45px;
     padding: 11px 21px;
     border: 1.5px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--activity-button-radius);
     cursor: pointer;
     font-family: "Poppins", sans-serif;
     font-size: 0.79rem;

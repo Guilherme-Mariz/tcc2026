@@ -102,14 +102,14 @@
 }
 
 .opd-option.opd-selected {
-    border-color: var(--green-deep);
-    background: rgba(168, 213, 186, 0.14);
-    box-shadow: 0 5px 16px rgba(58, 140, 96, 0.12);
+    border-color: #6f96b1;
+    background: #edf5fb !important;
+    box-shadow: 0 5px 16px rgba(65, 117, 151, 0.12);
 }
 
 .opd-option.opd-selected::after {
-    border-color: var(--green-deep);
-    background: var(--green-deep);
+    border-color: #5f88a5;
+    background: #5f88a5;
     box-shadow: inset 0 0 0 3px #ffffff;
 }
 
@@ -137,6 +137,10 @@
     color: #9a6f16;
 }
 
+.opd-feedback-correct {
+    color: var(--green-deep);
+}
+
 .opd-controls,
 .opd-done-actions {
     display: flex;
@@ -160,7 +164,7 @@
     gap: 8px;
     padding: 12px 20px;
     border: 1.5px solid transparent;
-    border-radius: 50px;
+    border-radius: var(--activity-button-radius);
     cursor: pointer;
     font-family: "Poppins", sans-serif;
     font-size: 0.88rem;
@@ -259,10 +263,15 @@
 }
 
 .opd-option.opd-selected {
-    border-color: var(--green-deep);
+    border-color: #6f96b1;
     box-shadow:
-        0 5px 16px rgba(58, 140, 96, 0.12),
-        inset 0 0 0 1px var(--green-deep);
+        0 5px 16px rgba(65, 117, 151, 0.12),
+        inset 0 0 0 1px #6f96b1;
+}
+
+.opd-option.activity-answer-correct::after {
+    border-color: var(--green-deep);
+    background: var(--green-deep);
 }
 
 .opd-feedback {
