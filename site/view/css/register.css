@@ -567,7 +567,7 @@ html, body {
    LADO DIREITO
 ══════════════════════════════════════ */
 .reg-right {
-  background-image: url("../img/fundo-cadastro.png") !important;
+  background-image: url("../img/fundo-cadastro.webp") !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;

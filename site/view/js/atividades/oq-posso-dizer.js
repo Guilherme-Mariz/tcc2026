@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fases = [
         {
             instrucao: "Teko chegou à escola e encontrou uma colega. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase1.png",
+            imagem: "/img/atv/oq-posso-dizer/fase1.webp",
             descricaoImagem: "Teko chegando à escola e cumprimentando uma colega",
             resposta: "Oi! Bom dia!",
             opcoes: [
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Uma colega emprestou um lápis ao Teko. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase2.png",
+            imagem: "/img/atv/oq-posso-dizer/fase2.webp",
             descricaoImagem: "Uma pessoa entregando um lápis ao Teko na sala de aula",
             resposta: "Obrigado por me emprestar!",
             opcoes: [
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Teko quer brincar com as crianças no parque. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase3.png",
+            imagem: "/img/atv/oq-posso-dizer/fase3.webp",
             descricaoImagem: "Teko se aproximando de crianças que brincam com uma bola",
             resposta: "Posso brincar com vocês?",
             opcoes: [
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Teko recebeu um recado, mas não entendeu. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase4.png",
+            imagem: "/img/atv/oq-posso-dizer/fase4.webp",
             descricaoImagem: "Teko olhando para um recado com expressão de dúvida",
             resposta: "Não entendi. Pode explicar de novo?",
             opcoes: [
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Um barulho alto está incomodando o Teko. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase5.png",
+            imagem: "/img/atv/oq-posso-dizer/fase5.webp",
             descricaoImagem: "Teko cobrindo os ouvidos por causa de um barulho alto",
             resposta: "O som está muito alto. Pode abaixar, por favor?",
             opcoes: [

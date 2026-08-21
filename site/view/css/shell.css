@@ -161,9 +161,6 @@ body {
 
 .snav-item.active .snav-icon { background: var(--green-mid); color: #fff; }
 
-.snav-icon-ia { overflow: hidden; padding: 0; }
-
-.snav-icon-ia img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .snav-label { line-height: 1; }
 

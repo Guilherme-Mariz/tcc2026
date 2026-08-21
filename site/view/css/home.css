@@ -10,7 +10,7 @@
     align-items: center;
     padding: 24px 36px;
     border-radius: var(--radius-xl);
-    background-image: url("../img/teko-inicio.png");
+    background-image: url("../img/teko-inicio.webp");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -223,7 +223,7 @@
     align-items: flex-end;
     justify-content: flex-start;
     padding: 24px;
-    background-image: url("../img/teko-chat-card.png");
+    background-image: url("../img/teko-chat-card.webp");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
