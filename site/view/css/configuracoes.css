@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════
    TEKO — CONFIGURAÇÕES
-   Usa os tokens do home.css (--bg, --green-deep, etc.)
+   Usa os tokens do shell.css (--bg, --green-deep, etc.)
    ═══════════════════════════════════════════════════ */
 
 :root { --font-scale: 1; }
