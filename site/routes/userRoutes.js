@@ -75,6 +75,20 @@ router.get(
     }
 );
 
+//COMO ELE PODE ESTAR
+router.get(
+    "/atividades/como-ele-pode-estar",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/como-ele-pode-estar.html"
+            )
+        );
+    }
+);
+
 //RESPIRE COM O TEKO
 router.get(
     "/atividades/respire-com-teko",
