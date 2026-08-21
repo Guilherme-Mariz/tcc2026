@@ -46,6 +46,13 @@
                 }, 5000);
             });
 
+            document.querySelectorAll('.atv-card[href="#"]').forEach(card => {
+                card.setAttribute('aria-disabled', 'true');
+                card.addEventListener('click', event => {
+                    event.preventDefault();
+                });
+            });
+
             /* ── animação dos cards com GSAP ── */
             function animarGrid(id) {
                 const cards = document.querySelectorAll('#' + id + ' .atv-card');
