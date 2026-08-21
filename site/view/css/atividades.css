@@ -391,22 +391,6 @@ body.page-leaving {
     line-height: 1.5;
 }
 
-/* slideshow das img da primeira atividade */
-.atv-card-slideshow img {
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    opacity: 0;
-    transform: translateY(28%) scale(1.45);
-    transition:
-        opacity 1.4s ease-in-out,
-        transform 1.4s ease-in-out;
-}
-
-.atv-card-slideshow img.active {
-    opacity: 1;
-    transform: translateY(28%) scale(1.38);
-}
 
 /*card das atividades*/
 .atv-card {
@@ -481,7 +465,7 @@ body.page-leaving {
     object-fit: contain;
 }
 
-.atv-card-icon-wrap:not(.atv-card-slideshow) img {
+.atv-card-icon-wrap img {
     transform: translateY(28%) scale(1.38);
 }
 
@@ -619,10 +603,4 @@ body.page-leaving {
     .activity-success-popup.activity-success-popup-visible .activity-success-popup-card {
         transform: none;
     }
-}
-.atv-card:target {
-    border-color: var(--green-deep);
-    box-shadow:
-        0 0 0 4px rgba(58, 140, 96, 0.14),
-        var(--shadow-md);
 }

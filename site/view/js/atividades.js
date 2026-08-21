@@ -53,51 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     }
 
-    function focusReturnedActivity() {
-        if (!window.location.hash) {
-            return;
-        }
-
-        const activity = document.getElementById(
-            window.location.hash.slice(1)
-        );
-
-        if (!activity || !activity.classList.contains("atv-card")) {
-            return;
-        }
-
-        requestAnimationFrame(() => {
-            activity.scrollIntoView({
-                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                    ? "auto"
-                    : "smooth",
-                block: "center"
-            });
-
-            activity.focus({ preventScroll: true });
-        });
-    }
-
     moduleButtons.forEach(button => {
         button.addEventListener("click", () => {
             selectModule(button.dataset.cat);
         });
-    });
-
-    document.querySelectorAll(".atv-card-slideshow").forEach(wrapper => {
-        const images = wrapper.querySelectorAll("img");
-
-        if (images.length < 2) {
-            return;
-        }
-
-        let current = 0;
-
-        window.setInterval(() => {
-            images[current].classList.remove("active");
-            current = (current + 1) % images.length;
-            images[current].classList.add("active");
-        }, 5000);
     });
 
     document.querySelectorAll('.atv-card[href="#"]').forEach(card => {
@@ -112,14 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.search
     ).get("modulo");
 
-    const initialModule = selectModule(requestedModule)
-        ? requestedModule
-        : "emocoes";
-
-    if (initialModule === "emocoes" && requestedModule !== "emocoes") {
+    if (!selectModule(requestedModule)) {
         selectModule("emocoes");
     }
 
     document.body.style.opacity = "1";
-    focusReturnedActivity();
 });
