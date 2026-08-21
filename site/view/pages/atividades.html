@@ -3,12 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>body{opacity:0}</style>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="../css/home.css">
+        <link rel="stylesheet" href="../css/shell.css">
         <link rel="stylesheet" href="../css/atividades.css">
         <script src="../js/session-switch.js" defer></script>
         <title>teko. — Atividades</title>
@@ -327,126 +326,9 @@
 
         </main>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script src="../js/vendor/gsap.min.js"></script>
 
-        <script>
-            /* ── fade in ── */
-            document.addEventListener('DOMContentLoaded', () => {
-                document.body.style.opacity = '1';
-                animarGrid('grid-emocoes');
-            });
-
-            /* ── módulos ── */
-            const modBtns = document.querySelectorAll('.module-btn');
-            const grids   = document.querySelectorAll('.atv-grid');
-
-            modBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const cat = btn.dataset.cat;
-
-                    modBtns.forEach(b => {
-                        b.classList.remove('active');
-                        b.setAttribute('aria-checked', 'false');
-                    });
-                    btn.classList.add('active');
-                    btn.setAttribute('aria-checked', 'true');
-
-                    grids.forEach(g => {
-                        g.classList.remove('active');
-                        g.setAttribute('hidden', '');
-                    });
-
-                    const target = document.getElementById('grid-' + cat);
-                    target.removeAttribute('hidden');
-
-                    requestAnimationFrame(() => {
-                        target.classList.add('active');
-                        animarGrid('grid-' + cat);
-                    });
-                });
-            });
-
-            /* ── slideshow de imagens nos cards ── */
-            document.querySelectorAll('.atv-card-slideshow').forEach(wrap => {
-                const imgs = wrap.querySelectorAll('img');
-                if (imgs.length < 2) return;
-                let i = 0;
-                setInterval(() => {
-                    imgs[i].classList.remove('active');
-                    i = (i + 1) % imgs.length;
-                    imgs[i].classList.add('active');
-                }, 5000);
-            });
-
-            /* ── animação dos cards com GSAP ── */
-            function animarGrid(id) {
-                const cards = document.querySelectorAll('#' + id + ' .atv-card');
-                gsap.fromTo(cards,
-                    { opacity: 0, y: 22, scale: 0.97 },
-                    {
-                        opacity: 1, y: 0, scale: 1,
-                        duration: 0.45,
-                        ease: 'power2.out',
-                        stagger: 0.055,
-                        clearProps: 'transform'
-                    }
-                );
-            }
-
-            /* ── mobile drawer ── */
-            const overlay  = document.getElementById('mobile_overlay');
-            const drawer   = document.getElementById('mobile_drawer');
-            document.getElementById('mobile_btn').addEventListener('click', () => {
-                drawer.classList.add('active'); overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-            document.getElementById('mobile_close').addEventListener('click', fecharDrawer);
-            overlay.addEventListener('click', fecharDrawer);
-            function fecharDrawer() {
-                drawer.classList.remove('active'); overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            /* ── transição de página ── */
-            document.querySelectorAll('[data-nav]').forEach(link => {
-                link.addEventListener('click', e => {
-                    const href = link.getAttribute('href');
-                    if (!href || href === '#') return;
-                    e.preventDefault();
-                    document.body.classList.add('page-leaving');
-                    setTimeout(() => { window.location.href = href; }, 180);
-                });
-            });
-
-            /* ── logout ── */
-            function abrirLogout() {
-                document.getElementById('logout-overlay').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            function fecharLogout() {
-                document.getElementById('logout-overlay').classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            function confirmarLogout() {
-                localStorage.removeItem('teko_session');
-                localStorage.removeItem('teko_streak');
-                document.body.classList.add('page-leaving');
-                setTimeout(() => { window.location.href = '/pages/login.html'; }, 180);
-            }
-            document.getElementById('logout-overlay').addEventListener('click', e => {
-                if (e.target === e.currentTarget) fecharLogout();
-            });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharLogout(); });
-
-            /* ── avatar ── */
-            try {
-                const s = JSON.parse(localStorage.getItem('teko_session') || '{}');
-                const nome = s?.crianca?.nome || s?.responsavel?.nome_completo || 'T';
-                document.querySelectorAll('#user-avatar,#user-avatar-mobile').forEach(el => {
-                    if (el) el.textContent = nome.charAt(0).toUpperCase();
-                });
-            } catch(e) {}
-
-        </script>
+        <script src="../js/site-shell.js"></script>
+        <script src="../js/atividades.js"></script>
     </body>
 </html>

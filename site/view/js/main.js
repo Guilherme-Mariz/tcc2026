@@ -1,9 +1,5 @@
 // ROTAS DE NAVEGAÇÃO 
 
-function irParaLogin() {
-  window.location.href = "/login";
-}
-
 function irParaRegister() {
   window.location.href = "/register";
 }
@@ -179,7 +175,7 @@ function irParaLogin() {
             gsap.to(logo, { opacity: 1, y: 0, duration: 0.28, ease: 'power2.out',
                 onComplete: () => {
                     setTimeout(() => {
-                        window.location.href = 'pages/login.html';
+                        window.location.href = '/login';
                     }, 340);
                 }
             });
