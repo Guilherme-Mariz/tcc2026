@@ -1,0 +1,359 @@
+.ovd-stage {
+    min-height: 650px;
+}
+
+.ovd-game {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+.ovd-round-indicator {
+    align-self: flex-start;
+}
+
+.ovd-context-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--bg-soft);
+}
+
+.ovd-context-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 1.1rem;
+}
+
+.ovd-context-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ovd-context-label,
+.ovd-context {
+    margin: 0;
+}
+
+.ovd-context-label {
+    color: var(--green-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ovd-context {
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.28rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.ovd-instruction {
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ovd-sequence {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    min-height: 128px;
+    margin: 0;
+    padding: 14px;
+    border: 1.5px dashed #9bb9a7;
+    border-radius: var(--radius-xl);
+    background: #f8fbf8;
+    list-style: none;
+    transition:
+        border-color var(--transition),
+        background var(--transition),
+        box-shadow var(--transition);
+}
+
+.ovd-sequence-item {
+    display: flex;
+    position: relative;
+    align-items: stretch;
+    justify-content: center;
+    min-width: 0;
+    min-height: 98px;
+    padding: 28px 9px 9px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.78);
+}
+
+.ovd-sequence-number {
+    display: flex;
+    position: absolute;
+    top: 7px;
+    left: 8px;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.ovd-sequence-placeholder {
+    align-self: center;
+    color: var(--text-soft);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.ovd-selected-step,
+.ovd-option {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--activity-button-radius);
+    background: #ffffff;
+    color: var(--text);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.ovd-selected-step {
+    justify-content: center;
+    gap: 7px;
+    padding: 9px;
+}
+
+.ovd-option {
+    gap: 11px;
+    min-height: 64px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+}
+
+.ovd-option:hover,
+.ovd-selected-step:hover {
+    border-color: var(--green);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.ovd-option:focus-visible,
+.ovd-selected-step:focus-visible,
+.ovd-button:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.ovd-step-icon {
+    flex: 0 0 auto;
+    font-size: 1.45rem;
+    line-height: 1;
+}
+
+.ovd-step-text {
+    font-size: 0.84rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.ovd-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.ovd-options-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 16px;
+    color: var(--text-soft);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ovd-sequence.activity-answer-correct .ovd-sequence-item,
+.ovd-sequence.activity-answer-correct .ovd-selected-step {
+    border-color: rgba(58, 140, 96, 0.42);
+    background: #f3fbf6;
+    color: #245a3d;
+}
+
+.ovd-sequence-wrong {
+    border-color: #e1aa38;
+    background: #fffaf0;
+    animation: ovdShake 360ms ease;
+}
+
+.ovd-feedback {
+    min-height: 24px;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ovd-feedback-warn,
+.ovd-feedback-retry {
+    color: #8a6718;
+}
+
+.ovd-feedback-correct {
+    color: var(--green-deep);
+}
+
+.ovd-controls,
+.ovd-done-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ovd-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 11px 19px;
+    border: 1.5px solid transparent;
+    border-radius: var(--activity-button-radius);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.ovd-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.ovd-button:disabled {
+    cursor: default;
+    opacity: 0.58;
+}
+
+.ovd-button-secondary {
+    border-color: var(--border);
+    background: var(--bg-soft);
+    color: var(--text-mid);
+}
+
+.ovd-button-primary {
+    border-color: var(--green-deep);
+    background: var(--green-deep);
+    box-shadow: 0 6px 18px rgba(58, 140, 96, 0.24);
+    color: #ffffff;
+}
+
+.ovd-done-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 1.55rem;
+}
+
+@keyframes ovdShake {
+    0%, 100% { transform: translateX(0); }
+    30% { transform: translateX(-5px); }
+    70% { transform: translateX(5px); }
+}
+
+@media (max-width: 760px) {
+    .ovd-sequence,
+    .ovd-options {
+        grid-template-columns: 1fr;
+    }
+
+    .ovd-sequence {
+        min-height: auto;
+    }
+
+    .ovd-sequence-item {
+        min-height: 72px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ovd-stage {
+        min-height: 580px;
+    }
+
+    .ovd-context-card {
+        align-items: flex-start;
+        gap: 12px;
+        padding: 17px;
+    }
+
+    .ovd-context-icon {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .ovd-context {
+        font-size: 1.12rem;
+    }
+
+    .ovd-controls,
+    .ovd-done-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .ovd-button {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ovd-selected-step,
+    .ovd-option,
+    .ovd-button {
+        transition: none;
+    }
+
+    .ovd-sequence-wrong {
+        animation: none;
+    }
+}

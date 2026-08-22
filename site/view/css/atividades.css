@@ -549,7 +549,10 @@ body.page-leaving {
 /* cores de destaque por categoria — borda topo sutil */
 #grid-emocoes      .atv-card:not(.atv-card-soon)::before,
 #grid-comportamento .atv-card:not(.atv-card-soon)::before,
-#grid-comunicacao  .atv-card:not(.atv-card-soon)::before {
+#grid-comunicacao  .atv-card:not(.atv-card-soon)::before,
+#grid-situacoes-sociais .atv-card:not(.atv-card-soon)::before,
+#grid-rotina .atv-card:not(.atv-card-soon)::before,
+#grid-calma .atv-card:not(.atv-card-soon)::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -559,6 +562,9 @@ body.page-leaving {
 #grid-emocoes      .atv-card:not(.atv-card-soon)::before { background: linear-gradient(90deg, #FEEAEA, #F4899A); }
 #grid-comportamento .atv-card:not(.atv-card-soon)::before { background: linear-gradient(90deg, #FFF5D6, #E8BE50); }
 #grid-comunicacao  .atv-card:not(.atv-card-soon)::before { background: linear-gradient(90deg, #DDF4FF, #74C0FC); }
+#grid-situacoes-sociais .atv-card:not(.atv-card-soon)::before { background: linear-gradient(90deg, #FFF5D6, #E8BE50); }
+#grid-rotina .atv-card:not(.atv-card-soon)::before { background: linear-gradient(90deg, #F3EBFF, #AD8BD4); }
+#grid-calma .atv-card:not(.atv-card-soon)::before { background: linear-gradient(90deg, #E4F6F3, #63B4AC); }
 
 /* ── responsivo ── */
 @media (max-width: 820px) {

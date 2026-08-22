@@ -103,4 +103,32 @@ router.get(
     }
 );
 
+//O QUE VEM DEPOIS
+router.get(
+    "/atividades/oq-vem-depois",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/oq-vem-depois.html"
+            )
+        );
+    }
+);
+
+//MUDOU O PLANO
+router.get(
+    "/atividades/mudou-o-plano",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/mudou-o-plano.html"
+            )
+        );
+    }
+);
+
 module.exports = router;
