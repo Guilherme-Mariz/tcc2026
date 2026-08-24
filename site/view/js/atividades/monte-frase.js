@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Pode me dar",
                 "água",
                 "por favor",
-                "brincar",
-                "agora não"
+                "brincar"
             ],
             parabens: "Muito bem! Você montou uma frase para pedir água."
         },
@@ -23,16 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
             instrucao: "Monte uma frase para pedir ajuda.",
             respostas: [
                 ["Eu preciso", "de ajuda", "por favor"],
-                ["Pode me ajudar", "por favor"]
+                ["Pode", "me ajudar", "por favor"]
             ],
             opcoes: [
                 "Eu preciso",
                 "de ajuda",
-                "Pode me ajudar",
+                "Pode",
+                "me ajudar",
                 "por favor",
-                "sozinho",
-                "brincar",
-                "de água"
+                "sozinho"
             ],
             parabens: "Ótimo trabalho! Você mostrou como pedir ajuda."
         },
@@ -40,35 +38,30 @@ document.addEventListener("DOMContentLoaded", () => {
             instrucao: "Monte uma frase para pedir para participar da brincadeira.",
             respostas: [
                 ["Eu quero", "brincar", "com vocês"],
-                ["Posso", "brincar", "com vocês?"]
+                ["Posso", "brincar", "com vocês"]
             ],
             opcoes: [
                 "Eu quero",
                 "Posso",
                 "brincar",
                 "com vocês",
-                "com vocês?",
-                "parar",
-                "sozinho"
+                "parar"
             ],
             parabens: "Que legal! Você montou uma frase para participar da brincadeira."
         },
         {
             instrucao: "Monte uma frase para pedir que uma brincadeira pare.",
             respostas: [
-                ["Por favor", "pare", "essa brincadeira"],
+                ["Pare", "com", "essa brincadeira"],
                 ["Eu quero", "que você pare", "por favor"]
             ],
             opcoes: [
-                "Por favor",
-                "por favor",
-                "pare",
+                "Pare",
+                "com",
                 "essa brincadeira",
                 "Eu quero",
                 "que você pare",
-                "continuar",
-                "água",
-                "de novo"
+                "por favor"
             ],
             parabens: "Muito bem! Você comunicou com clareza que quer parar."
         },
@@ -83,10 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Gosto muito",
                 "de ler",
                 "histórias",
-                "não quero",
-                "parar",
-                "de ajuda",
-                "agora"
+                "parar"
             ],
             parabens: "Parabéns! Você contou que gosta de ler."
         },
@@ -94,20 +84,15 @@ document.addEventListener("DOMContentLoaded", () => {
             instrucao: "Monte uma frase para explicar que o barulho está incomodando.",
             respostas: [
                 ["O barulho", "está muito alto", "para mim.", "Preciso de uma pausa."],
-                ["Eu preciso", "de uma pausa", "porque o barulho", "está muito alto."]
+                ["O barulho", "está me incomodando.", "Por favor,", "Preciso de uma pausa."]
             ],
             opcoes: [
                 "O barulho",
                 "está muito alto",
                 "para mim.",
                 "Preciso de uma pausa.",
-                "Eu preciso",
-                "de uma pausa",
-                "porque o barulho",
-                "continuar brincando",
-                "está silencioso",
-                "de um brinquedo",
-                "está muito alto."
+                "está me incomodando.",
+                "Por favor,"
             ],
             parabens: "Muito bem! Você explicou o incômodo e pediu uma pausa."
         },
@@ -115,19 +100,15 @@ document.addEventListener("DOMContentLoaded", () => {
             instrucao: "Monte uma frase para pedir que alguém explique uma tarefa novamente.",
             respostas: [
                 ["Eu não entendi", "a tarefa.", "Pode explicar", "de novo, por favor?"],
-                ["Pode explicar", "o que devo fazer", "mais uma vez,", "por favor?"]
+                ["Eu não entendi", "o que devo fazer.", "Pode explicar", "mais uma vez?"]
             ],
             opcoes: [
                 "Eu não entendi",
                 "a tarefa.",
-                "o que devo fazer",
+                "o que devo fazer.",
                 "Pode explicar",
                 "de novo, por favor?",
-                "mais uma vez,",
-                "por favor?",
-                "Eu já terminei",
-                "não precisa",
-                "vamos brincar"
+                "mais uma vez?"
             ],
             parabens: "Excelente! Você montou uma frase clara para pedir outra explicação."
         }
@@ -145,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const elementos = {
         iniciar: document.getElementById("mf-start-btn"),
         indicador: document.getElementById("mf-round-indicator"),
+        quantidadeBlocos: document.getElementById("mf-block-count"),
         instrucao: document.getElementById("mf-instruction"),
         frase: document.getElementById("mf-sentence-area"),
         opcoes: document.getElementById("mf-options-area"),
@@ -263,6 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderizarJogo() {
+        const blocosNecessarios =
+            frases[rodadaAtual].respostas[0].length;
+
+        elementos.quantidadeBlocos.textContent =
+            `${palavrasEscolhidas.length} de ${blocosNecessarios} blocos escolhidos`;
+
         renderizarFrase();
         renderizarOpcoes();
     }

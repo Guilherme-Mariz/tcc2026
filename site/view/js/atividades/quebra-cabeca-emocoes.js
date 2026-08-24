@@ -390,7 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function preparePhase() {
-        levelTransition.cancel();
         completed = false;
         order = createShuffledOrder();
         hidePreview();
