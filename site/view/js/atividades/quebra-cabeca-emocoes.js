@@ -9,23 +9,93 @@ document.addEventListener("DOMContentLoaded", () => {
     const phases = [
         {
             emotion: "felicidade",
-            image: "/img/atv/quebra-cabeca-emocoes/fase-feliz.webp"
+            image: "/img/atv/quebra-cabeca-emocoes/fase-feliz.webp",
+            causes: [
+                {
+                    text: "Conseguiu fazer algo difícil e recebeu um elogio.",
+                    correct: true
+                },
+                {
+                    text: "Perdeu um objeto de que gostava muito.",
+                    correct: false
+                },
+                {
+                    text: "Ouviu um barulho muito alto e inesperado.",
+                    correct: false
+                }
+            ]
         },
         {
             emotion: "tristeza",
-            image: "/img/atv/quebra-cabeca-emocoes/fase-triste.webp"
+            image: "/img/atv/quebra-cabeca-emocoes/fase-triste.webp",
+            causes: [
+                {
+                    text: "Seu brinquedo favorito quebrou durante a brincadeira.",
+                    correct: true
+                },
+                {
+                    text: "Foi convidado para uma brincadeira de que gosta.",
+                    correct: false
+                },
+                {
+                    text: "Não entendeu para qual sala deveria ir.",
+                    correct: false
+                }
+            ]
         },
         {
             emotion: "raiva",
-            image: "/img/atv/quebra-cabeca-emocoes/fase-raiva.webp"
+            image: "/img/atv/quebra-cabeca-emocoes/fase-raiva.webp",
+            causes: [
+                {
+                    text: "Alguém pegou seu material sem pedir e não quis devolver.",
+                    correct: true
+                },
+                {
+                    text: "Terminou uma tarefa e recebeu parabéns.",
+                    correct: false
+                },
+                {
+                    text: "Encontrou um amigo que não via há muito tempo.",
+                    correct: false
+                }
+            ]
         },
         {
             emotion: "medo",
-            image: "/img/atv/quebra-cabeca-emocoes/fase-medo.webp"
+            image: "/img/atv/quebra-cabeca-emocoes/fase-medo.webp",
+            causes: [
+                {
+                    text: "Um trovão muito forte o acordou de repente.",
+                    correct: true
+                },
+                {
+                    text: "Ganhou um presente que estava esperando.",
+                    correct: false
+                },
+                {
+                    text: "Escolheu sua brincadeira preferida para o recreio.",
+                    correct: false
+                }
+            ]
         },
         {
             emotion: "confusão",
-            image: "/img/atv/quebra-cabeca-emocoes/fase-confuso.webp"
+            image: "/img/atv/quebra-cabeca-emocoes/fase-confuso.webp",
+            causes: [
+                {
+                    text: "A rotina mudou e ninguém explicou o que aconteceria.",
+                    correct: true
+                },
+                {
+                    text: "Comeu seu lanche favorito com os amigos.",
+                    correct: false
+                },
+                {
+                    text: "Conseguiu descansar em um lugar tranquilo.",
+                    correct: false
+                }
+            ]
         }
     ];
 
@@ -39,10 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
         preview: document.getElementById("qe-preview"),
         previewImage: document.getElementById("qe-preview-image"),
         previewButton: document.getElementById("qe-preview-btn"),
+        controls: document.querySelector(".qe-controls"),
+        causePanel: document.getElementById("qe-cause-panel"),
+        causeQuestion: document.getElementById("qe-cause-question"),
+        causeOptions: document.getElementById("qe-cause-options"),
+        causeFeedback: document.getElementById("qe-cause-feedback"),
         restart: document.getElementById("qe-restart-btn"),
         playAgain: document.getElementById("qe-play-again-btn"),
-        successPopup: document.getElementById("qe-success-popup"),
-        successMessage: document.getElementById("qe-success-message")
     };
 
     const screens = {
@@ -59,9 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeScreens: ["game", "done"]
     });
 
-    const successPopup = TekoActivityCore.createSuccessPopup({
-        popup: elements.successPopup,
-        message: elements.successMessage
+    const levelTransition = TekoActivityCore.createLevelTransition({
+        container: screens.game,
+        hold: 1100
     });
 
     let currentScreen = "intro";
@@ -190,6 +263,81 @@ document.addEventListener("DOMContentLoaded", () => {
         elements.previewButton.disabled = false;
     }
 
+    function createCauseOption(cause) {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "qe-cause-option";
+        button.textContent = cause.text;
+        button.dataset.correct = String(cause.correct);
+
+        return button;
+    }
+
+    function showCauseQuestion() {
+        const phase = phases[currentPhase];
+        const fragment = document.createDocumentFragment();
+
+        elements.causeQuestion.textContent =
+            `O que pode ter acontecido para o Teko sentir ${phase.emotion}?`;
+        elements.causeFeedback.textContent =
+            "Escolha uma possibilidade entre as três opções.";
+        elements.causeFeedback.className = "qe-cause-feedback";
+        elements.causeOptions.replaceChildren();
+
+        TekoActivityCore.shuffle(phase.causes).forEach(cause => {
+            fragment.appendChild(createCauseOption(cause));
+        });
+
+        elements.causeOptions.appendChild(fragment);
+        elements.controls.hidden = true;
+        elements.causePanel.hidden = false;
+        elements.causeOptions.querySelector(".qe-cause-option")?.focus();
+    }
+
+    function advancePhase() {
+        if (currentPhase < phases.length - 1) {
+            currentPhase += 1;
+            preparePhase();
+            elements.board.querySelector(".qe-piece")?.focus();
+            return;
+        }
+
+        switchScreen("done", () => {
+            elements.playAgain.focus();
+        });
+    }
+
+    function selectCause(button) {
+        if (button.disabled) {
+            return;
+        }
+
+        elements.causeOptions.querySelectorAll(".qe-cause-option").forEach(option => {
+            option.classList.remove("is-wrong");
+        });
+
+        if (button.dataset.correct !== "true") {
+            button.classList.add("is-wrong");
+            elements.causeFeedback.textContent =
+                "Essa situação pode provocar outra emoção. Observe a expressão do Teko e tente novamente.";
+            elements.causeFeedback.className =
+                "qe-cause-feedback qe-cause-feedback-retry";
+            return;
+        }
+
+        button.classList.add("is-correct", "activity-answer-correct");
+        elements.causeOptions.querySelectorAll(".qe-cause-option").forEach(option => {
+            option.disabled = true;
+        });
+        elements.causeFeedback.textContent =
+            "Muito bem! Essa é uma situação que pode fazer alguém se sentir assim.";
+        elements.causeFeedback.className =
+            "qe-cause-feedback qe-cause-feedback-correct";
+
+        levelTransition.run(advancePhase);
+    }
+
     function finishPhase() {
         completed = true;
         clearSelection("Quebra-cabeça concluído!");
@@ -201,23 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
             piece.draggable = false;
         });
 
-        const phase = phases[currentPhase];
-        successPopup.show(`Muito bem! Esta emoção é ${phase.emotion}.`);
-
-        window.setTimeout(() => {
-            successPopup.hide(() => {
-                if (currentPhase < phases.length - 1) {
-                    currentPhase += 1;
-                    preparePhase();
-                    elements.board.querySelector(".qe-piece")?.focus();
-                    return;
-                }
-
-                switchScreen("done", () => {
-                    elements.playAgain.focus();
-                });
-            });
-        }, 1500);
+        showCauseQuestion();
     }
 
     function swapPieces(firstSlot, secondSlot) {
@@ -258,9 +390,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function preparePhase() {
+        levelTransition.cancel();
         completed = false;
         order = createShuffledOrder();
         hidePreview();
+        elements.causePanel.hidden = true;
+        elements.causeOptions.replaceChildren();
+        elements.controls.hidden = false;
         buildBoard();
         clearSelection();
     }
@@ -292,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function restartPhase() {
         activityToken += 1;
-        successPopup.hide();
+        levelTransition.cancel();
         preparePhase();
         elements.board.querySelector(".qe-piece")?.focus();
     }
@@ -303,7 +439,10 @@ document.addEventListener("DOMContentLoaded", () => {
         completed = false;
         order = [];
         hidePreview();
-        successPopup.hide();
+        levelTransition.cancel();
+        elements.causePanel.hidden = true;
+        elements.causeOptions.replaceChildren();
+        elements.controls.hidden = false;
         elements.board.replaceChildren();
         elements.stage.classList.remove("activity-stage-revealing");
 
@@ -423,6 +562,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    elements.causeOptions.addEventListener("click", event => {
+        const option = event.target.closest(".qe-cause-option");
+
+        if (option) {
+            selectCause(option);
+        }
+    });
+
     elements.start.addEventListener("click", startActivity);
     elements.previewButton.addEventListener("click", showPreview);
     elements.restart.addEventListener("click", restartPhase);
@@ -431,5 +578,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("pagehide", () => {
         activityToken += 1;
         hidePreview();
+        levelTransition.cancel();
     });
 });

@@ -33,39 +33,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const phases = [
         {
-            story: "Teko terminou uma atividade da escola sozinho e recebeu um elogio da professora.",
+            story: "Depois de tentar algumas vezes, Teko conseguiu terminar um desenho difícil. A professora reconheceu seu esforço e ele abriu um grande sorriso.",
             question: "Como ele pode estar?",
-            answer: "feliz",
+            answers: ["feliz"],
             options: ["feliz", "triste", "raiva", "confuso"],
-            success: "Muito bem! Receber um elogio pode deixar o Teko feliz."
+            feedback: {
+                feliz: "Faz sentido! Conseguir algo difícil e ter seu esforço reconhecido pode deixar Teko feliz."
+            }
         },
         {
-            story: "Na hora de brincar, o brinquedo favorito do Teko quebrou e não dava mais para usar.",
+            story: "Durante o recreio, o brinquedo favorito de Teko quebrou. Ele queria continuar brincando, mas precisou guardar as peças.",
             question: "Como ele pode estar?",
-            answer: "triste",
+            answers: ["triste", "raiva"],
             options: ["triste", "feliz", "medo", "raiva"],
-            success: "Isso mesmo! Perder um brinquedo querido pode deixar o Teko triste."
+            feedback: {
+                triste: "Faz sentido! Não poder continuar uma brincadeira importante pode deixar Teko triste.",
+                raiva: "Também faz sentido! Algo querido quebrar de repente pode deixar Teko com raiva."
+            }
         },
         {
-            story: "Teko organizou seus lápis, mas um colega pegou vários sem pedir e não quis devolver.",
+            story: "Teko separou seus lápis para desenhar. Um colega pegou vários sem pedir e continuou usando mesmo depois de Teko pedir que devolvesse.",
             question: "Como ele pode estar?",
-            answer: "raiva",
+            answers: ["raiva", "triste"],
             options: ["raiva", "confuso", "feliz", "triste"],
-            success: "Muito bem! Essa situação pode fazer o Teko sentir raiva."
+            feedback: {
+                raiva: "Faz sentido! Não respeitarem seu pedido pode deixar Teko com raiva.",
+                triste: "Também é possível! Teko pode ficar triste por não respeitarem seu material e seu pedido."
+            }
         },
         {
-            story: "À noite, começou uma tempestade e um trovão bem alto acordou o Teko.",
+            story: "Durante a noite, um trovão muito alto acordou Teko de repente. Ele não sabia se outro barulho forte aconteceria.",
             question: "Como ele pode estar?",
-            answer: "medo",
+            answers: ["medo"],
             options: ["medo", "feliz", "confuso", "raiva"],
-            success: "Isso mesmo! Um barulho forte e inesperado pode causar medo."
+            feedback: {
+                medo: "Faz sentido! Um barulho forte e inesperado pode fazer Teko sentir medo."
+            }
         },
         {
-            story: "A professora mudou o horário da aula, mas Teko não entendeu para qual sala deveria ir.",
+            story: "Ao chegar à escola, Teko descobriu que a aula seria em outra sala. Ninguém explicou onde sua turma estava e ele ficou procurando o caminho.",
             question: "Como ele pode estar?",
-            answer: "confuso",
+            answers: ["confuso", "medo"],
             options: ["confuso", "triste", "medo", "feliz"],
-            success: "Muito bem! Não entender uma mudança pode deixar o Teko confuso."
+            feedback: {
+                confuso: "Faz sentido! Uma mudança sem explicação pode deixar Teko confuso sobre o que fazer.",
+                medo: "Também é possível! Não encontrar a turma depois de uma mudança pode fazer Teko sentir medo."
+            }
         }
     ];
 
@@ -153,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elements.round.textContent = `Fase ${currentPhase + 1} de ${phases.length}`;
         elements.story.textContent = phase.story;
         elements.question.textContent = phase.question;
-        elements.feedback.textContent = "Escolha a emoção que combina com a história.";
+        elements.feedback.textContent = "Escolha uma emoção possível. Algumas histórias aceitam mais de uma resposta.";
         elements.feedback.className = "ce-feedback";
         elements.options.replaceChildren();
 
@@ -195,9 +208,10 @@ document.addEventListener("DOMContentLoaded", () => {
             option.classList.remove("is-wrong");
         });
 
-        if (selectedEmotion !== phase.answer) {
+        if (!phase.answers.includes(selectedEmotion)) {
             card.classList.add("is-wrong");
-            elements.feedback.textContent = "Quase! Pense no que aconteceu e tente outra vez.";
+            elements.feedback.textContent =
+                "Essa emoção pode aparecer em outras situações. Leia as pistas da história e tente novamente.";
             elements.feedback.className = "ce-feedback ce-feedback-retry";
             return;
         }
@@ -205,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
         phaseCompleted = true;
         card.classList.add("is-correct", "activity-answer-correct");
         disableOptions();
-        elements.feedback.textContent = phase.success;
+        elements.feedback.textContent = phase.feedback[selectedEmotion];
         elements.feedback.className = "ce-feedback ce-feedback-correct";
 
         levelTransition.run(advancePhase);

@@ -195,7 +195,7 @@
                     <h2 class="activity-screen-title">Vamos descobrir as emoções?</h2>
 
                     <p class="activity-screen-text">
-                        Cada imagem tem 9 peças. Toque em duas peças para trocar suas posições e montar o Teko.
+                        Monte o Teko trocando as 9 peças de lugar. Depois, pense no que pode ter acontecido para ele se sentir assim.
                     </p>
 
                     <button id="qe-start-btn" class="activity-start-button" type="button">Iniciar</button>
@@ -242,6 +242,25 @@
                             Recomeçar fase
                         </button>
                     </div>
+
+                    <div id="qe-cause-panel" class="qe-cause-panel" hidden>
+                        <p class="qe-cause-label">Depois do quebra-cabeça</p>
+                        <h3 id="qe-cause-question" class="qe-cause-question"></h3>
+
+                        <div
+                            id="qe-cause-options"
+                            class="qe-cause-options"
+                            role="group"
+                            aria-label="Escolha o que pode ter acontecido"
+                        ></div>
+
+                        <p
+                            id="qe-cause-feedback"
+                            class="qe-cause-feedback"
+                            role="status"
+                            aria-live="polite"
+                        ></p>
+                    </div>
                 </div>
 
                 <div id="qe-done" class="activity-screen activity-center-screen" hidden>
@@ -267,15 +286,6 @@
                     </div>
                 </div>
 
-                <div id="qe-success-popup" class="activity-success-popup" role="status" aria-live="polite" hidden>
-                    <div class="activity-success-popup-card">
-                        <span class="activity-success-icon" aria-hidden="true">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-
-                        <p id="qe-success-message" class="activity-success-message"></p>
-                    </div>
-                </div>
             </section>
         </main>
 

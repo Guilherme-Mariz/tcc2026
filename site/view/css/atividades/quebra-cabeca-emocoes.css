@@ -160,6 +160,106 @@
     margin-top: 20px;
 }
 
+.qe-cause-panel {
+    width: min(100%, 760px);
+    margin: 24px auto 0;
+    padding: 22px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--bg-soft);
+}
+
+.qe-cause-panel[hidden] {
+    display: none;
+}
+
+.qe-cause-label {
+    margin: 0 0 6px;
+    color: var(--green-deep);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.qe-cause-question {
+    margin: 0;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.qe-cause-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.qe-cause-option {
+    min-height: 86px;
+    padding: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--activity-button-radius);
+    background: #ffffff;
+    color: var(--text-mid);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.84rem;
+    font-weight: 600;
+    line-height: 1.45;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.qe-cause-option:hover {
+    border-color: var(--green);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+
+.qe-cause-option:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.qe-cause-option.is-wrong {
+    border-color: #e8be50;
+    background: #fffaf0;
+}
+
+.qe-cause-option.is-correct {
+    border-color: var(--green-deep);
+    box-shadow: 0 0 0 3px rgba(58, 140, 96, 0.12);
+}
+
+.qe-cause-option:disabled:not(.activity-answer-correct) {
+    cursor: default;
+    opacity: 0.62;
+}
+
+.qe-cause-feedback {
+    min-height: 24px;
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.qe-cause-feedback-retry {
+    color: #8a6718;
+}
+
+.qe-cause-feedback-correct {
+    color: var(--green-deep);
+}
+
 .qe-button {
     display: inline-flex;
     align-items: center;
@@ -270,10 +370,23 @@
         width: 100%;
         max-width: 290px;
     }
+
+    .qe-cause-panel {
+        padding: 18px;
+    }
+
+    .qe-cause-options {
+        grid-template-columns: 1fr;
+    }
+
+    .qe-cause-option {
+        min-height: 68px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .qe-piece,
+    .qe-cause-option,
     .qe-button {
         transition: none;
     }

@@ -5,33 +5,131 @@ document.addEventListener("DOMContentLoaded", () => {
     const frases = [
         {
             instrucao: "Monte uma frase para pedir água.",
-            resposta: ["Eu quero", "água"],
-            opcoes: ["água", "brincar", "Eu quero", "não"],
+            respostas: [
+                ["Eu quero", "água", "por favor"],
+                ["Pode me dar", "água", "por favor"]
+            ],
+            opcoes: [
+                "Eu quero",
+                "Pode me dar",
+                "água",
+                "por favor",
+                "brincar",
+                "agora não"
+            ],
             parabens: "Muito bem! Você montou uma frase para pedir água."
         },
         {
             instrucao: "Monte uma frase para pedir ajuda.",
-            resposta: ["Eu preciso", "de ajuda"],
-            opcoes: ["de ajuda", "Eu preciso", "brincar", "água"],
+            respostas: [
+                ["Eu preciso", "de ajuda", "por favor"],
+                ["Pode me ajudar", "por favor"]
+            ],
+            opcoes: [
+                "Eu preciso",
+                "de ajuda",
+                "Pode me ajudar",
+                "por favor",
+                "sozinho",
+                "brincar",
+                "de água"
+            ],
             parabens: "Ótimo trabalho! Você mostrou como pedir ajuda."
         },
         {
-            instrucao: "Monte uma frase para dizer que quer brincar.",
-            resposta: ["Eu quero", "brincar"],
-            opcoes: ["parar", "brincar", "Eu quero", "de ajuda"],
-            parabens: "Que legal! Você disse que quer brincar."
+            instrucao: "Monte uma frase para pedir para participar da brincadeira.",
+            respostas: [
+                ["Eu quero", "brincar", "com vocês"],
+                ["Posso", "brincar", "com vocês?"]
+            ],
+            opcoes: [
+                "Eu quero",
+                "Posso",
+                "brincar",
+                "com vocês",
+                "com vocês?",
+                "parar",
+                "sozinho"
+            ],
+            parabens: "Que legal! Você montou uma frase para participar da brincadeira."
         },
         {
-            instrucao: "Monte uma frase para pedir que algo pare.",
-            resposta: ["Eu quero", "parar"],
-            opcoes: ["Eu quero", "ler", "parar", "água"],
-            parabens: "Muito bem! Você conseguiu pedir para parar."
+            instrucao: "Monte uma frase para pedir que uma brincadeira pare.",
+            respostas: [
+                ["Por favor", "pare", "essa brincadeira"],
+                ["Eu quero", "que você pare", "por favor"]
+            ],
+            opcoes: [
+                "Por favor",
+                "por favor",
+                "pare",
+                "essa brincadeira",
+                "Eu quero",
+                "que você pare",
+                "continuar",
+                "água",
+                "de novo"
+            ],
+            parabens: "Muito bem! Você comunicou com clareza que quer parar."
         },
         {
             instrucao: "Monte uma frase sobre algo que você gosta.",
-            resposta: ["Eu gosto", "de ler"],
-            opcoes: ["de ler", "Eu gosto", "parar", "brincar"],
+            respostas: [
+                ["Eu gosto", "de ler", "histórias"],
+                ["Gosto muito", "de ler", "histórias"]
+            ],
+            opcoes: [
+                "Eu gosto",
+                "Gosto muito",
+                "de ler",
+                "histórias",
+                "não quero",
+                "parar",
+                "de ajuda",
+                "agora"
+            ],
             parabens: "Parabéns! Você contou que gosta de ler."
+        },
+        {
+            instrucao: "Monte uma frase para explicar que o barulho está incomodando.",
+            respostas: [
+                ["O barulho", "está muito alto", "para mim.", "Preciso de uma pausa."],
+                ["Eu preciso", "de uma pausa", "porque o barulho", "está muito alto."]
+            ],
+            opcoes: [
+                "O barulho",
+                "está muito alto",
+                "para mim.",
+                "Preciso de uma pausa.",
+                "Eu preciso",
+                "de uma pausa",
+                "porque o barulho",
+                "continuar brincando",
+                "está silencioso",
+                "de um brinquedo",
+                "está muito alto."
+            ],
+            parabens: "Muito bem! Você explicou o incômodo e pediu uma pausa."
+        },
+        {
+            instrucao: "Monte uma frase para pedir que alguém explique uma tarefa novamente.",
+            respostas: [
+                ["Eu não entendi", "a tarefa.", "Pode explicar", "de novo, por favor?"],
+                ["Pode explicar", "o que devo fazer", "mais uma vez,", "por favor?"]
+            ],
+            opcoes: [
+                "Eu não entendi",
+                "a tarefa.",
+                "o que devo fazer",
+                "Pode explicar",
+                "de novo, por favor?",
+                "mais uma vez,",
+                "por favor?",
+                "Eu já terminei",
+                "não precisa",
+                "vamos brincar"
+            ],
+            parabens: "Excelente! Você montou uma frase clara para pedir outra explicação."
         }
     ];
 
@@ -225,13 +323,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function confirmarFrase() {
-        const resposta = frases[rodadaAtual].resposta;
+        const respostas = frases[rodadaAtual].respostas;
 
-        const estaCorreta =
+        const estaCorreta = respostas.some(resposta =>
             palavrasEscolhidas.length === resposta.length &&
             palavrasEscolhidas.every(
                 (palavra, indice) => palavra === resposta[indice]
-            );
+            )
+        );
 
         if (!estaCorreta) {
             elementos.feedback.textContent =
@@ -269,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
         desativarControles(false);
 
         elementos.resultado.textContent =
-            "Você concluiu a atividade Monte a Frase e completou todas as 5 frases.";
+            `Você concluiu a atividade Monte a Frase e completou todas as ${frases.length} frases.`;
 
         trocarTela("jogo", "conclusao", () => {
             elementos.reiniciar.focus();
