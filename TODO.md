@@ -39,7 +39,7 @@ O que Posso Dizer?:
 
 Respire com o Teko:
  - Trabalha: autorregulação e percepção do próprio estado.
- - A criança acompanha cinco ciclos de respiração enquanto ajuda o barco de Teko a chegar até uma ilha. Ao final, ela informa como está se sentindo e pode fazer uma respiração extra ou procurar a ajuda de um adulto. A atividade nunca deve afirmar que a criança obrigatoriamente ficará calma, pois a respiração é apenas uma estratégia possível.
+ - A criança acompanha cinco ciclos de respiração enquanto ajuda o barco de Teko a chegar até uma ilha. Ao final, ela informa como está se sentindo e pode fazer uma respiração extra ou procurar a ajuda de um adulto. A atividade nunca deve afirmar que a criança obrigatoriamente ficará calma, pois a respiração é apenas uma estratégia possível. **Tirar desing genérico**
 
 O que Fazer Agora?:
  - Trabalha: resolução de pequenos conflitos e tomada de decisões.
@@ -55,8 +55,8 @@ O que Pode Me Ajudar?:
 
 O que Vem Depois?:
  - Trabalha: compreensão de sequências, antecipação de acontecimentos e preparação para transições.
- -  A criança organiza cartões visuais para colocar os acontecimentos de uma rotina na ordem correta. Dessa forma, aprende conceitos como “primeiro”, “depois” e “por último”. Essa atividade estará conectada a **Mudou o Plano!**, que utilizará as sequências já aprendidas para apresentar pequenas mudanças.
+ -  A criança organiza cartões visuais para colocar os acontecimentos de uma rotina na ordem correta. Dessa forma, aprende conceitos como “primeiro”, “depois” e “por último”. Essa atividade estará conectada a **Mudou o Plano!**, que utilizará as sequências já aprendidas para apresentar pequenas mudanças. **Tirar desing genérico**
 
 Mudou o Plano!:
  - Trabalha: flexibilidade diante de mudanças, reconhecimento de incômodos e criação de um Plano B.
- - A tela apresenta uma sequência chamada Plano A. Em seguida, um aviso visual indica que algo mudou. O som do aviso será suave e opcional para evitar desconforto sensorial. A criança observa a mudança e reorganiza os cartões para montar o Plano B. A atividade mostra que sentir incômodo diante de uma mudança é válido e que a criança pode pedir explicações, solicitar mais tempo, fazer uma pausa ou procurar ajuda.
+ - A tela apresenta uma sequência chamada Plano A. Em seguida, um aviso visual indica que algo mudou. O som do aviso será suave e opcional para evitar desconforto sensorial. A criança observa a mudança e reorganiza os cartões para montar o Plano B. A atividade mostra que sentir incômodo diante de uma mudança é válido e que a criança pode pedir explicações, solicitar mais tempo, fazer uma pausa ou procurar ajuda. **Tirar desing genérico**
