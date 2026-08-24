@@ -1,0 +1,322 @@
+.mp-stage {
+    min-height: 650px;
+}
+
+.mp-game {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+.mp-round-indicator {
+    align-self: flex-start;
+}
+
+.mp-change-flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+}
+
+.mp-situation-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 19px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+}
+
+.mp-plan-card {
+    background: #f2f8fc;
+}
+
+.mp-change-card {
+    border-color: #ead8a6;
+    background: #fffaf0;
+}
+
+.mp-situation-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 50px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 1.6rem;
+}
+
+.mp-situation-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.mp-situation-label,
+.mp-situation-text {
+    margin: 0;
+}
+
+.mp-situation-label {
+    color: var(--text-soft);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.mp-situation-text {
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.08rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.mp-change-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green-deep);
+    font-size: 1.25rem;
+}
+
+.mp-question {
+    margin: 0;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.38rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.mp-options {
+    display: grid;
+    gap: 11px;
+}
+
+.mp-option {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 64px;
+    padding: 12px 15px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--activity-button-radius);
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+    color: var(--text);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    text-align: left;
+    transition:
+        border-color var(--transition),
+        background var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.mp-option:hover:not(:disabled) {
+    border-color: var(--green);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.mp-option:focus-visible,
+.mp-button:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.mp-option-selected {
+    border-color: #6f96b1;
+    background: #edf5fb;
+    box-shadow: 0 0 0 2px rgba(65, 117, 151, 0.12);
+}
+
+.mp-option-wrong {
+    border-color: #e1aa38;
+    background: #fffaf0;
+    animation: mpShake 360ms ease;
+}
+
+.mp-option:disabled:not(.activity-answer-correct) {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.mp-option-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    font-size: 1.35rem;
+}
+
+.mp-option-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.mp-feedback {
+    min-height: 24px;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.mp-feedback-warn,
+.mp-feedback-retry {
+    color: #8a6718;
+}
+
+.mp-feedback-correct {
+    color: var(--green-deep);
+}
+
+.mp-controls,
+.mp-done-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mp-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 11px 20px;
+    border: 1.5px solid transparent;
+    border-radius: var(--activity-button-radius);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.mp-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.mp-button:disabled {
+    cursor: default;
+    opacity: 0.58;
+}
+
+.mp-button-secondary {
+    border-color: var(--border);
+    background: var(--bg-soft);
+    color: var(--text-mid);
+}
+
+.mp-button-primary {
+    border-color: var(--green-deep);
+    background: var(--green-deep);
+    box-shadow: 0 6px 18px rgba(58, 140, 96, 0.24);
+    color: #ffffff;
+}
+
+.mp-done-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 1.55rem;
+}
+
+@keyframes mpShake {
+    0%, 100% { transform: translateX(0); }
+    30% { transform: translateX(-5px); }
+    70% { transform: translateX(5px); }
+}
+
+@media (max-width: 700px) {
+    .mp-change-flow {
+        grid-template-columns: 1fr;
+    }
+
+    .mp-change-arrow {
+        min-height: 28px;
+        transform: rotate(90deg);
+    }
+}
+
+@media (max-width: 480px) {
+    .mp-stage {
+        min-height: 580px;
+    }
+
+    .mp-situation-card {
+        gap: 11px;
+        padding: 16px;
+    }
+
+    .mp-situation-icon {
+        flex-basis: 42px;
+        width: 42px;
+        height: 42px;
+        font-size: 1.35rem;
+    }
+
+    .mp-situation-text {
+        font-size: 1rem;
+    }
+
+    .mp-question {
+        font-size: 1.2rem;
+    }
+
+    .mp-option {
+        align-items: flex-start;
+        padding: 11px 12px;
+    }
+
+    .mp-controls,
+    .mp-done-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .mp-button {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mp-option,
+    .mp-button {
+        transition: none;
+    }
+
+    .mp-option-wrong {
+        animation: none;
+    }
+}

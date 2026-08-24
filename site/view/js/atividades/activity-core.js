@@ -113,9 +113,76 @@
         return { show, hide };
     }
 
+    function createLevelTransition(options) {
+        const {
+            container,
+            hold = 850,
+            duration = 220
+        } = options;
+
+        let holdTimer = null;
+        let swapTimer = null;
+        let sequence = 0;
+
+        function cancel() {
+            sequence += 1;
+            window.clearTimeout(holdTimer);
+            window.clearTimeout(swapTimer);
+            holdTimer = null;
+            swapTimer = null;
+            container.classList.remove(
+                "activity-level-leaving",
+                "activity-level-entering"
+            );
+        }
+
+        function run(onSwap, onFinish) {
+            cancel();
+            const currentSequence = sequence;
+
+            holdTimer = window.setTimeout(() => {
+                if (currentSequence !== sequence) {
+                    return;
+                }
+
+                container.classList.add("activity-level-leaving");
+
+                swapTimer = window.setTimeout(() => {
+                    if (currentSequence !== sequence) {
+                        return;
+                    }
+
+                    if (typeof onSwap === "function") {
+                        onSwap();
+                    }
+
+                    container.classList.remove("activity-level-leaving");
+                    container.classList.add("activity-level-entering");
+
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            if (currentSequence !== sequence) {
+                                return;
+                            }
+
+                            container.classList.remove("activity-level-entering");
+
+                            if (typeof onFinish === "function") {
+                                onFinish();
+                            }
+                        });
+                    });
+                }, duration);
+            }, hold);
+        }
+
+        return { run, cancel };
+    }
+
     window.TekoActivityCore = Object.freeze({
         shuffle,
         createScreenTransition,
-        createSuccessPopup
+        createSuccessPopup,
+        createLevelTransition
     });
 })();

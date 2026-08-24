@@ -60,4 +60,75 @@ router.get(
     }
 );
 
+
+//QUEBRA-CABEÇA DAS EMOÇÕES
+router.get(
+    "/atividades/quebra-cabeca-emocoes",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/quebra-cabeca-emocoes.html"
+            )
+        );
+    }
+);
+
+//COMO ELE PODE ESTAR
+router.get(
+    "/atividades/como-ele-pode-estar",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/como-ele-pode-estar.html"
+            )
+        );
+    }
+);
+
+//RESPIRE COM O TEKO
+router.get(
+    "/atividades/respire-com-teko",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/respire-com-teko.html"
+            )
+        );
+    }
+);
+
+//O QUE VEM DEPOIS
+router.get(
+    "/atividades/oq-vem-depois",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/oq-vem-depois.html"
+            )
+        );
+    }
+);
+
+//MUDOU O PLANO
+router.get(
+    "/atividades/mudou-o-plano",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/mudou-o-plano.html"
+            )
+        );
+    }
+);
+
 module.exports = router;

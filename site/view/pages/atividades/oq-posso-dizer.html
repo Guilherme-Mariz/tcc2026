@@ -34,6 +34,42 @@
             </div>
         </div>
 
+        <div id="session-switch-overlay" class="session-switch-overlay" aria-hidden="true">
+            <div class="session-switch-modal" role="dialog" aria-modal="true" aria-labelledby="session-switch-title">
+                <button type="button" class="session-switch-close" id="session-switch-close" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="session-switch-icon" aria-hidden="true">
+                    <i class="fa-solid fa-repeat"></i>
+                </div>
+
+                <h2 id="session-switch-title">Trocar sessão</h2>
+                <p class="session-switch-description">Escolha a criança que usará a plataforma.</p>
+                <div class="home-session-options" id="home-session-options"></div>
+
+                <div class="session-password-field">
+                    <label for="session-password">PIN do responsável</label>
+
+                    <div class="session-password-wrap">
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
+                        <input type="password" id="session-password" placeholder="Digite o PIN de 4 números" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" aria-label="PIN de 4 números">
+
+                        <button type="button" id="session-password-toggle" aria-label="Mostrar PIN">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <span class="session-switch-error" id="session-switch-error" aria-live="polite"></span>
+                </div>
+
+                <div class="session-switch-actions">
+                    <button type="button" class="session-switch-cancel" id="session-switch-cancel">Cancelar</button>
+                    <button type="button" class="session-switch-confirm" id="session-switch-confirm">Confirmar troca</button>
+                </div>
+            </div>
+        </div>
+
         <aside id="sidebar" role="navigation" aria-label="Menu principal">
             <a href="/" class="sidebar-logo">
                 <span class="logo-teko">teko</span><span class="logo-dot">.</span>
@@ -51,9 +87,7 @@
                 </a>
 
                 <a href="/tekoia" class="snav-item" data-nav>
-                    <span class="snav-icon snav-icon-ia">
-                        <img src="/img/mascot/teko-icn.png" alt="">
-                    </span>
+                    <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
                     <span class="snav-label">TEKO.IA</span>
                 </a>
 
@@ -64,6 +98,13 @@
             </nav>
 
             <div class="sidebar-bottom">
+                <button type="button" class="snav-item session-switch-button" id="session-switch-button">
+                    <span class="snav-icon"><i class="fa-solid fa-repeat"></i></span>
+                    <span class="snav-label">Trocar sessão</span>
+                </button>
+
+                <span class="sidebar-divider" aria-hidden="true"></span>
+
                 <a href="/configuracoes" class="snav-item snav-config" data-nav>
                     <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
                     <span class="snav-label">Config.</span>
@@ -110,9 +151,7 @@
                 </a>
 
                 <a href="/tekoia" class="snav-item" data-nav>
-                    <span class="snav-icon snav-icon-ia">
-                        <img src="/img/mascot/teko-icn.png" alt="">
-                    </span>
+                    <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
                     <span class="snav-label">TEKO.IA</span>
                 </a>
 
@@ -120,6 +159,11 @@
                     <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
                     <span class="snav-label">Responsável</span>
                 </a>
+
+                <button type="button" class="snav-item drawer-session-switch" id="drawer-session-switch">
+                    <span class="snav-icon"><i class="fa-solid fa-repeat"></i></span>
+                    <span class="snav-label">Trocar sessão</span>
+                </button>
 
                 <a href="/configuracoes" class="snav-item" data-nav>
                     <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
@@ -142,7 +186,7 @@
                     </p>
                 </div>
 
-                <a href="/atividades" class="activity-back" data-nav>
+                <a href="/atividades?modulo=comunicacao" class="activity-back" data-nav>
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Voltar para atividades</span>
                 </a>
@@ -219,25 +263,17 @@
                     <p id="opd-done-text" class="activity-screen-text"></p>
 
                     <div class="opd-done-actions">
-                        <a href="/home" class="opd-btn opd-btn-ghost" data-nav>
-                            Voltar ao início
-                        </a>
+                        <button id="opd-play-again-btn" class="opd-btn opd-btn-ghost" type="button">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            Fazer novamente
+                        </button>
 
-                        <a href="/atividades" class="opd-btn opd-btn-primary" data-nav>
+                        <a href="/atividades?modulo=comunicacao" class="opd-btn opd-btn-primary" data-nav>
                             Voltar para atividades
                         </a>
                     </div>
                 </div>
 
-                <div id="opd-success-popup" class="activity-success-popup" role="status" aria-live="polite" hidden>
-                    <div class="activity-success-popup-card">
-                        <span class="activity-success-icon" aria-hidden="true">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-
-                        <p id="opd-success-message" class="activity-success-message"></p>
-                    </div>
-                </div>
             </section>
         </main>
 

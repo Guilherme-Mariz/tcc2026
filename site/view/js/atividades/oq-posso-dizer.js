@@ -1,13 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const TEMPO_CARREGAMENTO = 1400;
+    const TEMPO_CARREGAMENTO = 3000;
     const DURACAO_FADE_TELA = 220;
-    const DURACAO_TRANSICAO_POPUP = 260;
-    const TEMPO_EXIBICAO_POPUP = 2000;
 
     const fases = [
         {
             instrucao: "Teko chegou à escola e encontrou uma colega. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase1.png",
+            imagem: "/img/atv/oq-posso-dizer/fase1.webp",
             descricaoImagem: "Teko chegando à escola e cumprimentando uma colega",
             resposta: "Oi! Bom dia!",
             opcoes: [
@@ -20,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Uma colega emprestou um lápis ao Teko. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase2.png",
+            imagem: "/img/atv/oq-posso-dizer/fase2.webp",
             descricaoImagem: "Uma pessoa entregando um lápis ao Teko na sala de aula",
             resposta: "Obrigado por me emprestar!",
             opcoes: [
@@ -33,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Teko quer brincar com as crianças no parque. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase3.png",
+            imagem: "/img/atv/oq-posso-dizer/fase3.webp",
             descricaoImagem: "Teko se aproximando de crianças que brincam com uma bola",
             resposta: "Posso brincar com vocês?",
             opcoes: [
@@ -46,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Teko recebeu um recado, mas não entendeu. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase4.png",
+            imagem: "/img/atv/oq-posso-dizer/fase4.webp",
             descricaoImagem: "Teko olhando para um recado com expressão de dúvida",
             resposta: "Não entendi. Pode explicar de novo?",
             opcoes: [
@@ -59,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             instrucao: "Um barulho alto está incomodando o Teko. O que ele pode dizer?",
-            imagem: "/img/atv/oq-posso-dizer/fase5.png",
+            imagem: "/img/atv/oq-posso-dizer/fase5.webp",
             descricaoImagem: "Teko cobrindo os ouvidos por causa de um barulho alto",
             resposta: "O som está muito alto. Pode abaixar, por favor?",
             opcoes: [
@@ -92,8 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ouvir: document.getElementById("opd-listen-btn"),
         confirmar: document.getElementById("opd-confirm-btn"),
         resultado: document.getElementById("opd-done-text"),
-        popup: document.getElementById("opd-success-popup"),
-        popupMensagem: document.getElementById("opd-success-message")
+        reiniciar: document.getElementById("opd-play-again-btn")
     };
 
     let faseAtual = 0;
@@ -110,14 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const embaralhar = TekoActivityCore.shuffle;
 
-    const popupSucesso = TekoActivityCore.createSuccessPopup({
-        popup: elementos.popup,
-        message: elementos.popupMensagem,
-        duration: DURACAO_TRANSICAO_POPUP
+    const transicaoNivel = TekoActivityCore.createLevelTransition({
+        container: telas.jogo
     });
-
-    const exibirPopupSucesso = popupSucesso.show;
-    const esconderPopupSucesso = popupSucesso.hide;
 
     function criarOpcao(frase) {
         const botao = document.createElement("button");
@@ -126,6 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
         botao.className = frase === fraseEscolhida
             ? "opd-option opd-selected"
             : "opd-option";
+
+        if (
+            faseConcluida &&
+            frase === fases[faseAtual].resposta
+        ) {
+            botao.classList.add("activity-answer-correct");
+        }
 
         botao.textContent = frase;
         botao.disabled = faseConcluida;
@@ -240,19 +239,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         faseConcluida = true;
 
-        limparFeedback();
         desativarControles(true);
+        elementos.feedback.textContent = fases[faseAtual].parabens;
+        elementos.feedback.className = "opd-feedback opd-feedback-correct";
         renderizarOpcoes();
 
-        exibirPopupSucesso(
-            fases[faseAtual].parabens
-        );
-
-        setTimeout(() => {
-            esconderPopupSucesso(
-                avancarFaseAutomatico
-            );
-        }, TEMPO_EXIBICAO_POPUP);
+        transicaoNivel.run(avancarFaseAutomatico);
     }
 
     function avancarFaseAutomatico() {
@@ -260,6 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (faseAtual < fases.length) {
             carregarFase();
+            elementos.opcoes.querySelector(".opd-option")?.focus();
             return;
         }
 
@@ -272,7 +265,23 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.resultado.textContent =
             "Você concluiu a atividade O que Posso Dizer e ajudou o Teko nas 5 situações.";
 
-        trocarTela("jogo", "conclusao");
+        trocarTela("jogo", "conclusao", () => {
+            elementos.reiniciar.focus();
+        });
+    }
+
+    function reiniciarAtividade() {
+        clearTimeout(carregamentoId);
+        transicaoNivel.cancel();
+        window.speechSynthesis?.cancel();
+        faseAtual = 0;
+        fraseEscolhida = "";
+        faseConcluida = false;
+        palcoAtividade.classList.remove("activity-stage-revealing");
+
+        trocarTela("conclusao", "inicio", () => {
+            elementos.iniciar.focus();
+        });
     }
 
     function ouvirFrase() {
@@ -336,6 +345,18 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         confirmarResposta
     );
+
+    elementos.reiniciar.addEventListener(
+        "click",
+        reiniciarAtividade
+    );
+
+    window.addEventListener("pagehide", () => {
+        clearTimeout(carregamentoId);
+        transicaoNivel.cancel();
+        window.speechSynthesis?.cancel();
+    });
+
     telas.inicio.hidden = false;
     telas.carregamento.hidden = true;
     telas.jogo.hidden = true;

@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const TEMPO_CARREGAMENTO = 1400;
+    const TEMPO_CARREGAMENTO = 3000;
     const DURACAO_FADE_TELA = 220;
-    const DURACAO_TRANSICAO_POPUP = 260;
-    const TEMPO_EXIBICAO_POPUP = 2000;
 
     const frases = [
         {
@@ -57,8 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ouvir: document.getElementById("mf-listen-btn"),
         confirmar: document.getElementById("mf-confirm-btn"),
         resultado: document.getElementById("mf-done-text"),
-        popup: document.getElementById("mf-success-popup"),
-        popupMensagem: document.getElementById("mf-success-message")
+        reiniciar: document.getElementById("mf-play-again-btn")
     };
 
     let rodadaAtual = 0;
@@ -75,14 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const embaralhar = TekoActivityCore.shuffle;
 
-    const popupSucesso = TekoActivityCore.createSuccessPopup({
-        popup: elementos.popup,
-        message: elementos.popupMensagem,
-        duration: DURACAO_TRANSICAO_POPUP
+    const transicaoNivel = TekoActivityCore.createLevelTransition({
+        container: telas.jogo
     });
-
-    const exibirPopupSucesso = popupSucesso.show;
-    const esconderPopupSucesso = popupSucesso.hide;
 
     function criarCartao(palavra, selecionado) {
         const botao = document.createElement("button");
@@ -194,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         palavrasEscolhidas = [];
         opcoesEmbaralhadas = embaralhar(rodada.opcoes);
         rodadaConcluida = false;
+        elementos.frase.classList.remove("activity-answer-correct");
 
         elementos.indicador.textContent =
             `Frase ${rodadaAtual + 1} de ${frases.length}`;
@@ -252,14 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         rodadaConcluida = true;
 
-        limparFeedback();
         desativarControles(true);
+        elementos.frase.classList.add("activity-answer-correct");
+        elementos.feedback.textContent = frases[rodadaAtual].parabens;
+        elementos.feedback.className = "mf-feedback mf-feedback-correct";
 
-        exibirPopupSucesso(frases[rodadaAtual].parabens);
-
-        setTimeout(() => {
-            esconderPopupSucesso(avancarRodadaAutomatico);
-        }, TEMPO_EXIBICAO_POPUP);
+        transicaoNivel.run(avancarRodadaAutomatico);
     }
 
     function avancarRodadaAutomatico() {
@@ -267,6 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (rodadaAtual < frases.length) {
             carregarRodada();
+            elementos.opcoes.querySelector(".word-card")?.focus();
             return;
         }
 
@@ -279,7 +271,24 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.resultado.textContent =
             "Você concluiu a atividade Monte a Frase e completou todas as 5 frases.";
 
-        trocarTela("jogo", "conclusao");
+        trocarTela("jogo", "conclusao", () => {
+            elementos.reiniciar.focus();
+        });
+    }
+
+    function reiniciarAtividade() {
+        clearTimeout(carregamentoId);
+        transicaoNivel.cancel();
+        window.speechSynthesis?.cancel();
+        rodadaAtual = 0;
+        palavrasEscolhidas = [];
+        rodadaConcluida = false;
+        elementos.frase.classList.remove("activity-answer-correct");
+        palcoAtividade.classList.remove("activity-stage-revealing");
+
+        trocarTela("conclusao", "inicio", () => {
+            elementos.iniciar.focus();
+        });
     }
 
     function ouvirFrase() {
@@ -339,6 +348,18 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         confirmarFrase
     );
+
+    elementos.reiniciar.addEventListener(
+        "click",
+        reiniciarAtividade
+    );
+
+    window.addEventListener("pagehide", () => {
+        clearTimeout(carregamentoId);
+        transicaoNivel.cancel();
+        window.speechSynthesis?.cancel();
+    });
+
     telas.inicio.hidden = false;
     telas.carregamento.hidden = true;
     telas.jogo.hidden = true;

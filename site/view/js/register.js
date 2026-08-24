@@ -533,10 +533,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const relacao = document.querySelector(
             'input[name="relacao"]:checked'
         );
-
-        const termos =
-            document.getElementById("termos");
-
         if (!nome.value.trim()) {
             primeiroCampo = primeiroCampo || nome;
 
@@ -627,16 +623,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             valido = false;
         }
-
-        if (!termos.checked) {
-            mostrarErroNoGrupo(
-                document.getElementById("grupo-termos"),
-                "Você deve aceitar os termos para continuar."
-            );
-
-            valido = false;
-        }
-
         primeiroCampo?.focus();
 
         return valido;

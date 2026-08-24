@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="/css/shell.css">
+        <link rel="stylesheet" href="/css/atividades.css">
+        <link rel="stylesheet" href="/css/atividades/mudou-o-plano.css">
+
+        <script src="/js/site-shell.js" defer></script>
+        <script src="/js/session-switch.js" defer></script>
+
+        <title>teko. — Mudou o Plano!</title>
+    </head>
+
+    <body>
+        <div id="logout-overlay" class="logout-overlay" aria-hidden="true">
+            <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+                <div class="logout-icon">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+
+                <h2 id="logout-title" class="logout-title">Sair da conta?</h2>
+                <p class="logout-desc">Você tem certeza que quer sair?</p>
+
+                <div class="logout-actions">
+                    <button id="logout-cancel" class="logout-btn-cancel" type="button">Cancelar</button>
+                    <button id="logout-confirm" class="logout-btn-confirm" type="button">Sim, sair</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="session-switch-overlay" class="session-switch-overlay" aria-hidden="true">
+            <div class="session-switch-modal" role="dialog" aria-modal="true" aria-labelledby="session-switch-title">
+                <button type="button" class="session-switch-close" id="session-switch-close" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="session-switch-icon" aria-hidden="true">
+                    <i class="fa-solid fa-repeat"></i>
+                </div>
+
+                <h2 id="session-switch-title">Trocar sessão</h2>
+                <p class="session-switch-description">Escolha a criança que usará a plataforma.</p>
+                <div class="home-session-options" id="home-session-options"></div>
+
+                <div class="session-password-field">
+                    <label for="session-password">PIN do responsável</label>
+
+                    <div class="session-password-wrap">
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
+                        <input type="password" id="session-password" placeholder="Digite o PIN de 4 números" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" aria-label="PIN de 4 números">
+
+                        <button type="button" id="session-password-toggle" aria-label="Mostrar PIN">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <span class="session-switch-error" id="session-switch-error" aria-live="polite"></span>
+                </div>
+
+                <div class="session-switch-actions">
+                    <button type="button" class="session-switch-cancel" id="session-switch-cancel">Cancelar</button>
+                    <button type="button" class="session-switch-confirm" id="session-switch-confirm">Confirmar troca</button>
+                </div>
+            </div>
+        </div>
+
+        <aside id="sidebar" role="navigation" aria-label="Menu principal">
+            <a href="/" class="sidebar-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="/home" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                    <span class="snav-label">Início</span>
+                </a>
+
+                <a href="/atividades" class="snav-item active" aria-current="page" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                    <span class="snav-label">Atividades</span>
+                </a>
+
+                <a href="/tekoia" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
+                    <span class="snav-label">TEKO.IA</span>
+                </a>
+
+                <a href="/responsavel" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                    <span class="snav-label">Responsável</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <button type="button" class="snav-item session-switch-button" id="session-switch-button">
+                    <span class="snav-icon"><i class="fa-solid fa-repeat"></i></span>
+                    <span class="snav-label">Trocar sessão</span>
+                </button>
+
+                <span class="sidebar-divider" aria-hidden="true"></span>
+
+                <a href="/configuracoes" class="snav-item snav-config" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="snav-label">Config.</span>
+                </a>
+
+                <button class="sidebar-logout-btn" type="button" data-logout-open aria-label="Sair da conta">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <header id="mobile-header">
+            <a href="/" class="sidebar-logo">
+                <span class="logo-teko">teko</span><span class="logo-dot">.</span>
+            </a>
+
+            <div class="mobile-header-right">
+                <button class="mobile-logout-btn" type="button" data-logout-open aria-label="Sair da conta">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+
+                <button id="mobile_btn" type="button" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="mobile_overlay"></div>
+
+        <div id="mobile_drawer">
+            <button id="mobile_close" type="button" aria-label="Fechar menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <nav class="drawer-nav">
+                <a href="/home" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-house"></i></span>
+                    <span class="snav-label">Início</span>
+                </a>
+
+                <a href="/atividades" class="snav-item active" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-shapes"></i></span>
+                    <span class="snav-label">Atividades</span>
+                </a>
+
+                <a href="/tekoia" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
+                    <span class="snav-label">TEKO.IA</span>
+                </a>
+
+                <a href="/responsavel" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
+                    <span class="snav-label">Responsável</span>
+                </a>
+
+                <button type="button" class="snav-item drawer-session-switch" id="drawer-session-switch">
+                    <span class="snav-icon"><i class="fa-solid fa-repeat"></i></span>
+                    <span class="snav-label">Trocar sessão</span>
+                </button>
+
+                <a href="/configuracoes" class="snav-item" data-nav>
+                    <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="snav-label">Config.</span>
+                </a>
+            </nav>
+        </div>
+
+        <main id="main-content">
+            <section class="activity-page-header" aria-labelledby="activity-title">
+                <div class="activity-header-copy">
+                    <p class="welcome-label">Rotina</p>
+                    <h1 id="activity-title" class="activity-title">Mudou o Plano!</h1>
+
+                    <p class="activity-subtitle">
+                        Observe cada mudança e escolha uma nova opção que ajude a continuar com segurança.
+                    </p>
+                </div>
+
+                <a href="/atividades?modulo=rotina" class="activity-back" data-nav>
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Voltar para atividades</span>
+                </a>
+            </section>
+
+            <section id="activity-stage" class="activity-stage mp-stage" aria-label="Atividade Mudou o Plano">
+                <div id="mp-intro" class="activity-screen activity-center-screen">
+                    <h2 class="activity-screen-title">Às vezes, o plano muda</h2>
+
+                    <p class="activity-screen-text">
+                        Tudo bem não gostar de uma mudança. Vamos praticar escolhas que ajudam quando algo não acontece como esperávamos.
+                    </p>
+
+                    <button id="mp-start-btn" class="activity-start-button" type="button">Iniciar</button>
+                </div>
+
+                <div id="mp-loading" class="activity-screen activity-loading" aria-live="polite" hidden>
+                    <div class="activity-loading-content">
+                        <img src="/img/mascot/teko-andando.gif" alt="Teko andando" class="activity-loading-gif">
+                        <p class="activity-loading-text">Preparando os novos planos...</p>
+                    </div>
+                </div>
+
+                <div id="mp-game" class="activity-screen mp-game" hidden>
+                    <span id="mp-round-indicator" class="atv-card-tag mp-round-indicator"></span>
+
+                    <div class="mp-change-flow" aria-live="polite">
+                        <div class="mp-situation-card mp-plan-card">
+                            <span id="mp-plan-icon" class="mp-situation-icon" aria-hidden="true"></span>
+
+                            <div class="mp-situation-copy">
+                                <p class="mp-situation-label">O plano era</p>
+                                <p id="mp-plan" class="mp-situation-text"></p>
+                            </div>
+                        </div>
+
+                        <span class="mp-change-arrow" aria-hidden="true">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+
+                        <div class="mp-situation-card mp-change-card">
+                            <span id="mp-change-icon" class="mp-situation-icon" aria-hidden="true"></span>
+
+                            <div class="mp-situation-copy">
+                                <p class="mp-situation-label">Mas agora</p>
+                                <p id="mp-change" class="mp-situation-text"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mp-question">O que pode ajudar agora?</p>
+
+                    <div id="mp-options" class="mp-options" role="group" aria-label="Novos planos disponíveis"></div>
+
+                    <p id="mp-feedback" class="mp-feedback" role="status" aria-live="polite"></p>
+
+                    <div class="mp-controls">
+                        <button id="mp-listen-btn" class="mp-button mp-button-secondary" type="button">
+                            <i class="fa-solid fa-volume-high"></i>
+                            Ouvir situação
+                        </button>
+
+                        <button id="mp-confirm-btn" class="mp-button mp-button-primary" type="button">Confirmar</button>
+                    </div>
+                </div>
+
+                <div id="mp-done" class="activity-screen activity-center-screen" hidden>
+                    <span class="mp-done-icon" aria-hidden="true">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </span>
+
+                    <h2 class="activity-screen-title">Parabéns!</h2>
+
+                    <p class="activity-screen-text">
+                        Você encontrou cinco novos caminhos e praticou o que pode fazer quando o plano muda.
+                    </p>
+
+                    <div class="mp-done-actions">
+                        <button id="mp-play-again-btn" class="mp-button mp-button-secondary" type="button">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            Fazer novamente
+                        </button>
+
+                        <a href="/atividades?modulo=rotina" class="mp-button mp-button-primary" data-nav>
+                            Voltar para atividades
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="/js/atividades/activity-core.js" defer></script>
+        <script src="/js/atividades/mudou-o-plano.js" defer></script>
+    </body>
+</html>

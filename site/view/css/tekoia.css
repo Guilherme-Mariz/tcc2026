@@ -6,7 +6,7 @@
 /* ── fade ── */
 body {
     animation: pageFadeIn 0.3s ease both;
-    background-image: url("../img/fundo-teekoia.png");
+    background-image: url("../img/fundo-teekoia.webp");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

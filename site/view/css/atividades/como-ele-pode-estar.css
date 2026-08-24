@@ -1,0 +1,289 @@
+.ce-stage {
+    min-height: 650px;
+}
+
+.ce-game {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+.ce-round-indicator {
+    align-self: flex-start;
+}
+
+.ce-story-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--bg-soft);
+}
+
+.ce-story-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 1.05rem;
+}
+
+.ce-story-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ce-story,
+.ce-question {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.ce-story {
+    color: var(--text-mid);
+    font-size: 0.98rem;
+    font-weight: 500;
+}
+
+.ce-question {
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.32rem;
+    font-weight: 700;
+}
+
+.ce-options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.ce-emotion-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    padding: 10px 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+    color: var(--text);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.ce-emotion-card:hover {
+    border-color: var(--green);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.ce-emotion-card:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.ce-emotion-card:disabled {
+    cursor: default;
+}
+
+.ce-emotion-card.is-wrong {
+    border-color: #e8be50;
+    background: #fffaf0;
+    animation: ce-shake 360ms ease;
+}
+
+.ce-emotion-card.is-correct {
+    border-color: var(--green-deep);
+    box-shadow: 0 0 0 3px rgba(58, 140, 96, 0.12);
+}
+
+.ce-emotion-image-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: #ffffff;
+}
+
+.ce-emotion-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ce-emotion-name {
+    font-family: "Fraunces", serif;
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+}
+
+.ce-feedback {
+    min-height: 24px;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ce-feedback-retry {
+    color: #8a6718;
+}
+
+.ce-feedback-correct {
+    color: var(--green-deep);
+}
+
+.ce-emotion-card:disabled:not(.activity-answer-correct) {
+    opacity: 0.62;
+}
+
+.ce-done-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+    font-size: 1.6rem;
+}
+
+.ce-done-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ce-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 11px 20px;
+    border-radius: var(--activity-button-radius);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.ce-button:hover {
+    transform: translateY(-2px);
+}
+
+.ce-button:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.ce-button-secondary {
+    border: 1.5px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text-mid);
+}
+
+.ce-button-primary {
+    border: 1.5px solid var(--green-deep);
+    background: var(--green-deep);
+    box-shadow: 0 6px 18px rgba(58, 140, 96, 0.24);
+    color: #ffffff;
+}
+
+@keyframes ce-shake {
+    0%, 100% { transform: translateX(0); }
+    30% { transform: translateX(-5px); }
+    70% { transform: translateX(5px); }
+}
+
+@media (max-width: 760px) {
+    .ce-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .ce-stage {
+        min-height: 560px;
+    }
+
+    .ce-story-card {
+        gap: 12px;
+        padding: 18px;
+    }
+
+    .ce-story-icon {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .ce-story {
+        font-size: 0.9rem;
+    }
+
+    .ce-question {
+        font-size: 1.16rem;
+    }
+
+    .ce-options {
+        gap: 10px;
+    }
+
+    .ce-emotion-card {
+        padding: 8px 8px 12px;
+    }
+
+    .ce-done-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .ce-button {
+        width: 100%;
+        max-width: 290px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ce-emotion-card,
+    .ce-button {
+        transition: none;
+    }
+
+    .ce-emotion-card.is-wrong {
+        animation: none;
+    }
+}
