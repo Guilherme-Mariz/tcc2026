@@ -1,0 +1,502 @@
+document.addEventListener("DOMContentLoaded", () => {
+    "use strict";
+
+    const TURN_DURATION = 10000;
+    const LOADING_DURATION = 1400;
+    const TURN_GAP = 650;
+    const WATER_COOLDOWN = 720;
+
+    const turns = [
+        { owner: "child", title: "Agora é a sua vez!", instruction: "Arraste o regador até uma plantinha." },
+        { owner: "teko", title: "Agora é a vez do Teko!", instruction: "Observe o Teko e espere o próximo turno." },
+        { owner: "child", title: "Sua vez novamente!", instruction: "Continue regando as plantinhas." },
+        { owner: "teko", title: "Última vez do Teko!", instruction: "Espere só mais um pouco para ver o jardim." }
+    ];
+
+    const screens = {
+        intro: document.getElementById("mvsv-intro"),
+        loading: document.getElementById("mvsv-loading"),
+        game: document.getElementById("mvsv-game"),
+        done: document.getElementById("mvsv-done")
+    };
+
+    const stage = document.getElementById("activity-stage");
+    const scene = document.getElementById("mvsv-scene");
+    const can = document.getElementById("mvsv-watering-can");
+    const teko = document.getElementById("mvsv-teko");
+    const plants = [...document.querySelectorAll(".mvsv-plant")];
+
+    const elements = {
+        start: document.getElementById("mvsv-start-btn"),
+        restart: document.getElementById("mvsv-restart-btn"),
+        turnCount: document.getElementById("mvsv-turn-count"),
+        turnTitle: document.getElementById("mvsv-turn-title"),
+        instruction: document.getElementById("mvsv-turn-instruction"),
+        seconds: document.getElementById("mvsv-seconds"),
+        progress: document.getElementById("mvsv-progress-bar"),
+        speech: document.getElementById("mvsv-teko-speech"),
+        feedback: document.getElementById("mvsv-feedback")
+    };
+
+    const changeScreen = TekoActivityCore.createScreenTransition({
+        screens,
+        stage,
+        duration: 220,
+        activeScreens: ["game"]
+    });
+
+    let currentScreen = "intro";
+    let currentTurnIndex = -1;
+    let running = false;
+    let timerFrame = null;
+    let loadingTimer = null;
+    let gapTimer = null;
+    let turnTimeouts = [];
+    let dragState = null;
+    let lastDropAt = 0;
+    let childWaterings = 0;
+    let childTurnWaterings = 0;
+    const lastPlantWatering = plants.map(() => 0);
+
+    function switchTo(next, onEnter) {
+        changeScreen(currentScreen, next, () => {
+            currentScreen = next;
+            onEnter?.();
+        });
+    }
+
+    function isChildTurn() {
+        return running && turns[currentTurnIndex]?.owner === "child";
+    }
+
+    function clearTurnWork() {
+        cancelAnimationFrame(timerFrame);
+        timerFrame = null;
+        clearTimeout(gapTimer);
+        gapTimer = null;
+        turnTimeouts.forEach(clearTimeout);
+        turnTimeouts = [];
+        gsap.killTweensOf([can, teko]);
+        stopDragging();
+    }
+
+    function resetCan(animate = false) {
+        const targetLeft = Math.max(22, scene.clientWidth - can.offsetWidth - 30);
+        const targetTop = scene.clientWidth < 600 ? 122 : 96;
+        const properties = {
+            left: targetLeft,
+            top: targetTop,
+            rotation: 0,
+            duration: animate ? 0.45 : 0,
+            ease: "power2.out"
+        };
+
+        gsap.to(can, properties);
+    }
+
+    function resetGarden() {
+        clearTurnWork();
+        running = false;
+        currentTurnIndex = -1;
+        childWaterings = 0;
+        childTurnWaterings = 0;
+        scene.classList.remove("teko-turn", "garden-complete");
+        screens.game.classList.remove("teko-active");
+
+        plants.forEach((plant, index) => {
+            plant.dataset.growth = "0";
+            plant.className = "mvsv-plant growth-0";
+            plant.setAttribute("aria-label", `Planta ${index + 1}, pequena`);
+            lastPlantWatering[index] = 0;
+        });
+
+        elements.progress.style.transform = "scaleX(1)";
+        elements.seconds.textContent = "10";
+        elements.feedback.textContent = "Pegue o regador e leve até uma plantinha.";
+        elements.speech.textContent = "Vamos cuidar juntos!";
+        can.classList.remove("locked", "dragging");
+        can.setAttribute("aria-disabled", "false");
+        resetCan(false);
+        gsap.set(teko, { y: 0, rotation: 0, scale: 1 });
+    }
+
+    function startActivity() {
+        resetGarden();
+        switchTo("loading");
+        clearTimeout(loadingTimer);
+
+        loadingTimer = setTimeout(() => {
+            switchTo("game", () => {
+                resetCan(false);
+                startTurn(0);
+            });
+        }, LOADING_DURATION);
+    }
+
+    function startTurn(index) {
+        clearTurnWork();
+
+        if (index >= turns.length) {
+            finishActivity();
+            return;
+        }
+
+        currentTurnIndex = index;
+        running = true;
+        childTurnWaterings = 0;
+        const turn = turns[index];
+        const child = turn.owner === "child";
+
+        elements.turnCount.textContent = `Turno ${index + 1} de ${turns.length}`;
+        elements.turnTitle.textContent = turn.title;
+        elements.instruction.textContent = turn.instruction;
+        elements.seconds.textContent = "10";
+        elements.progress.style.transform = "scaleX(1)";
+        screens.game.classList.toggle("teko-active", !child);
+        scene.classList.toggle("teko-turn", !child);
+        can.classList.toggle("locked", !child);
+        can.setAttribute("aria-disabled", String(!child));
+
+        if (child) {
+            elements.feedback.textContent = "Arraste o regador ou toque em uma planta para molhar.";
+            elements.speech.textContent = "Agora é a sua vez!";
+            resetCan(true);
+            gsap.fromTo(teko, { scale: 0.97 }, { scale: 1, duration: 0.45, ease: "back.out(1.8)" });
+        } else {
+            elements.feedback.textContent = "Agora é a vez do Teko. Observe e espere.";
+            elements.speech.textContent = "Minha vez! Depois será a sua.";
+            runTekoTurn();
+        }
+
+        const turnStartedAt = performance.now();
+
+        function updateTimer(now) {
+            if (!running || currentTurnIndex !== index) return;
+
+            const elapsed = Math.min(TURN_DURATION, now - turnStartedAt);
+            const remaining = Math.max(0, TURN_DURATION - elapsed);
+            const seconds = Math.max(0, Math.ceil(remaining / 1000));
+            const progress = Math.max(0, 1 - elapsed / TURN_DURATION);
+
+            elements.seconds.textContent = String(seconds);
+            elements.progress.style.transform = `scaleX(${progress})`;
+
+            if (elapsed >= TURN_DURATION) {
+                endTurn(index);
+                return;
+            }
+
+            timerFrame = requestAnimationFrame(updateTimer);
+        }
+
+        timerFrame = requestAnimationFrame(updateTimer);
+    }
+
+    function endTurn(index) {
+        if (!running || currentTurnIndex !== index) return;
+
+        cancelAnimationFrame(timerFrame);
+        timerFrame = null;
+        stopDragging();
+        turnTimeouts.forEach(clearTimeout);
+        turnTimeouts = [];
+
+        const wasChild = turns[index].owner === "child";
+        running = false;
+
+        if (wasChild) {
+            elements.feedback.textContent = childTurnWaterings > 0
+                ? "Muito bem! Agora entregue a vez ao Teko."
+                : "Tudo bem! Agora observe a vez do Teko.";
+        } else {
+            elements.feedback.textContent = index === turns.length - 1
+                ? "Vocês terminaram de cuidar do jardim!"
+                : "O Teko terminou. Prepare-se para a sua vez!";
+        }
+
+        resetCan(true);
+        gapTimer = setTimeout(() => startTurn(index + 1), TURN_GAP);
+    }
+
+    function runTekoTurn() {
+        const moments = [950, 3100, 5250, 7400];
+
+        moments.forEach((delay, position) => {
+            turnTimeouts.push(setTimeout(() => {
+                if (!running || turns[currentTurnIndex]?.owner !== "teko") return;
+
+                const plant = getLeastGrownPlant(position);
+                moveCanToPlant(plant, () => {
+                    createWaterBurst(plant, 5);
+                    growPlant(plant, "teko");
+                    elements.speech.textContent = position % 2 === 0
+                        ? "Um pouco de água aqui!"
+                        : "Esta plantinha também!";
+                });
+
+                gsap.fromTo(teko,
+                    { rotation: -2, y: 0 },
+                    { rotation: 3, y: -7, duration: 0.42, yoyo: true, repeat: 1, ease: "sine.inOut" }
+                );
+            }, delay));
+        });
+    }
+
+    function getLeastGrownPlant(offset = 0) {
+        const ordered = [...plants].sort((a, b) => {
+            const difference = Number(a.dataset.growth) - Number(b.dataset.growth);
+            if (difference !== 0) return difference;
+            return Number(a.dataset.plantIndex) - Number(b.dataset.plantIndex);
+        });
+
+        return ordered[offset % Math.min(ordered.length, 3)];
+    }
+
+    function moveCanToPlant(plant, onArrive) {
+        const sceneRect = scene.getBoundingClientRect();
+        const plantRect = plant.getBoundingClientRect();
+        const left = plantRect.left - sceneRect.left + plantRect.width / 2 + 26;
+        const top = Math.max(82, plantRect.top - sceneRect.top - 70);
+
+        gsap.to(can, {
+            left: Math.min(scene.clientWidth - can.offsetWidth - 10, left),
+            top,
+            rotation: -17,
+            duration: 0.68,
+            ease: "power2.inOut",
+            onComplete: onArrive
+        });
+    }
+
+    function growPlant(plant, owner) {
+        const index = Number(plant.dataset.plantIndex);
+        const current = Number(plant.dataset.growth);
+        const next = Math.min(4, current + 1);
+
+        if (next === current) return;
+
+        plant.dataset.growth = String(next);
+        plant.classList.remove(`growth-${current}`);
+        plant.classList.add(`growth-${next}`);
+        plant.setAttribute(
+            "aria-label",
+            `Planta ${index + 1}, estágio ${next} de crescimento`
+        );
+
+        gsap.fromTo(plant,
+            { scale: 0.94 },
+            { scale: 1, duration: 0.5, ease: "back.out(2)" }
+        );
+
+        if (owner === "child") {
+            childWaterings += 1;
+            childTurnWaterings += 1;
+            elements.feedback.textContent = next >= 4
+                ? "A flor abriu! Você pode cuidar de outra planta."
+                : "A plantinha cresceu! Continue cuidando do jardim.";
+        }
+    }
+
+    function waterPlantFromChild(plant) {
+        if (!isChildTurn()) {
+            remindTekoTurn();
+            return;
+        }
+
+        const index = Number(plant.dataset.plantIndex);
+        const now = performance.now();
+
+        if (now - lastPlantWatering[index] < WATER_COOLDOWN) return;
+
+        lastPlantWatering[index] = now;
+        createWaterBurst(plant, 4);
+        growPlant(plant, "child");
+    }
+
+    function createWaterBurst(plant, amount) {
+        const sceneRect = scene.getBoundingClientRect();
+        const plantRect = plant.getBoundingClientRect();
+        const startX = plantRect.left - sceneRect.left + plantRect.width / 2;
+        const startY = Math.max(60, plantRect.top - sceneRect.top - 42);
+        const distance = Math.max(44, plantRect.bottom - sceneRect.top - startY - 18);
+
+        for (let index = 0; index < amount; index += 1) {
+            turnTimeouts.push(setTimeout(() => {
+                createDrop(
+                    startX + (Math.random() - 0.5) * 22,
+                    startY,
+                    distance + Math.random() * 18
+                );
+            }, index * 90));
+        }
+    }
+
+    function createDrop(x, y, distance = 95) {
+        const drop = document.createElement("span");
+        drop.className = "mvsv-water-drop";
+        drop.style.left = `${x}px`;
+        drop.style.top = `${y}px`;
+        scene.appendChild(drop);
+
+        gsap.to(drop, {
+            x: (Math.random() - 0.5) * 20,
+            y: distance,
+            opacity: 0,
+            duration: 0.58,
+            ease: "power1.in",
+            onComplete: () => drop.remove()
+        });
+    }
+
+    function remindTekoTurn() {
+        elements.feedback.textContent = "Agora é a vez do Teko. Logo será a sua!";
+        elements.speech.textContent = "Espere só um pouquinho!";
+        gsap.fromTo(can, { x: -4 }, { x: 4, duration: 0.08, yoyo: true, repeat: 5, clearProps: "x" });
+    }
+
+    function startDragging(event) {
+        if (!isChildTurn()) {
+            remindTekoTurn();
+            return;
+        }
+
+        event.preventDefault();
+        const canRect = can.getBoundingClientRect();
+        dragState = {
+            pointerId: event.pointerId,
+            offsetX: event.clientX - canRect.left,
+            offsetY: event.clientY - canRect.top
+        };
+
+        can.setPointerCapture?.(event.pointerId);
+        can.classList.add("dragging");
+        gsap.killTweensOf(can);
+    }
+
+    function moveDragging(event) {
+        if (!dragState || dragState.pointerId !== event.pointerId || !isChildTurn()) return;
+
+        event.preventDefault();
+        const sceneRect = scene.getBoundingClientRect();
+        const left = clamp(
+            event.clientX - sceneRect.left - dragState.offsetX,
+            38,
+            scene.clientWidth - can.offsetWidth - 8
+        );
+        const top = clamp(
+            event.clientY - sceneRect.top - dragState.offsetY,
+            68,
+            scene.clientHeight - can.offsetHeight - 72
+        );
+
+        can.style.left = `${left}px`;
+        can.style.top = `${top}px`;
+        gsap.set(can, { rotation: -17 });
+
+        const now = performance.now();
+        if (now - lastDropAt > 135) {
+            const tipX = left - 29;
+            const tipY = top + 46;
+            createDrop(tipX, tipY, 82);
+            lastDropAt = now;
+        }
+
+        const target = findPlantUnderSpout(left - 29, top + 46);
+        if (target) waterPlantFromChild(target);
+    }
+
+    function stopDragging(event) {
+        if (!dragState) return;
+        if (event && dragState.pointerId !== event.pointerId) return;
+
+        try {
+            can.releasePointerCapture?.(dragState.pointerId);
+        } catch (error) {
+            // O ponteiro pode já ter sido liberado pelo navegador.
+        }
+
+        dragState = null;
+        can.classList.remove("dragging");
+        gsap.to(can, { rotation: 0, duration: 0.22, ease: "power2.out" });
+    }
+
+    function findPlantUnderSpout(x, y) {
+        const sceneRect = scene.getBoundingClientRect();
+
+        return plants.find(plant => {
+            const rect = plant.getBoundingClientRect();
+            const centerX = rect.left - sceneRect.left + rect.width / 2;
+            const top = rect.top - sceneRect.top;
+            const bottom = rect.bottom - sceneRect.top;
+
+            return Math.abs(centerX - x) <= 48 && y >= top - 100 && y <= bottom - 18;
+        }) || null;
+    }
+
+    function clamp(value, minimum, maximum) {
+        return Math.min(maximum, Math.max(minimum, value));
+    }
+
+    function finishActivity() {
+        clearTurnWork();
+        running = false;
+        scene.classList.add("garden-complete");
+        can.classList.add("locked");
+        can.setAttribute("aria-disabled", "true");
+        elements.feedback.textContent = "O jardim ficou lindo!";
+        elements.speech.textContent = "Conseguimos juntos!";
+
+        plants.forEach((plant, index) => {
+            turnTimeouts.push(setTimeout(() => {
+                const current = Number(plant.dataset.growth);
+                plant.dataset.growth = "4";
+                plant.classList.remove(`growth-${current}`);
+                plant.classList.add("growth-4");
+                plant.setAttribute("aria-label", `Planta ${index + 1}, florida`);
+                gsap.fromTo(plant, { scale: 0.9 }, { scale: 1, duration: 0.55, ease: "back.out(2.2)" });
+            }, index * 120));
+        });
+
+        gsap.fromTo(teko,
+            { y: 0, rotation: -3 },
+            { y: -14, rotation: 4, duration: 0.32, yoyo: true, repeat: 3, ease: "sine.inOut" }
+        );
+
+        gapTimer = setTimeout(() => {
+            switchTo("done", () => elements.restart.focus());
+        }, 1850);
+    }
+
+    function restartActivity() {
+        clearTimeout(loadingTimer);
+        resetGarden();
+        switchTo("intro", () => elements.start.focus());
+    }
+
+    can.addEventListener("pointerdown", startDragging);
+    can.addEventListener("pointermove", moveDragging);
+    can.addEventListener("pointerup", stopDragging);
+    can.addEventListener("pointercancel", stopDragging);
+
+    plants.forEach(plant => {
+        plant.addEventListener("click", () => waterPlantFromChild(plant));
+    });
+
+    elements.start.addEventListener("click", startActivity);
+    elements.restart.addEventListener("click", restartActivity);
+
+    window.addEventListener("resize", () => {
+        if (!dragState && currentScreen === "game" && isChildTurn()) resetCan(false);
+    });
+
+    window.addEventListener("pagehide", () => {
+        clearTimeout(loadingTimer);
+        clearTurnWork();
+        document.querySelectorAll(".mvsv-water-drop").forEach(drop => drop.remove());
+    });
+
+    screens.intro.hidden = false;
+    screens.loading.hidden = true;
+    screens.game.hidden = true;
+    screens.done.hidden = true;
+});

@@ -103,6 +103,20 @@ router.get(
     }
 );
 
+//MINHA VEZ, SUA VEZ
+router.get(
+    "/atividades/minha-vez-sua-vez",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/minha-vez-sua-vez.html"
+            )
+        );
+    }
+);
+
 //O QUE VEM DEPOIS
 router.get(
     "/atividades/oq-vem-depois",
