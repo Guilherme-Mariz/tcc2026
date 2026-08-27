@@ -114,6 +114,7 @@
     border-radius: 50%;
     background: #ffd96b;
     box-shadow: 0 0 0 13px rgba(255, 217, 107, 0.18);
+    pointer-events: none;
 }
 
 .mvsv-cloud {
@@ -122,6 +123,7 @@
     height: 30px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.78);
+    pointer-events: none;
 }
 
 .mvsv-cloud::before,
@@ -157,6 +159,13 @@
     opacity: 0.72;
 }
 
+.mvsv-cloud-three {
+    top: 172px;
+    left: 8%;
+    transform: scale(0.58);
+    opacity: 0.62;
+}
+
 .mvsv-teko-guide {
     position: absolute;
     top: 18px;
@@ -174,8 +183,8 @@
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    width: 76px;
-    height: 76px;
+    width: 92px;
+    height: 92px;
     overflow: hidden;
     border: 4px solid rgba(255, 255, 255, 0.96);
     border-radius: 50%;
@@ -185,10 +194,12 @@
 
 .mvsv-teko-avatar img {
     display: block;
-    width: 112%;
-    height: 112%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    transform-origin: center;
+    object-position: center 24%;
+    transform: scale(1.7);
+    transform-origin: center 28%;
 }
 
 .mvsv-teko-message {
@@ -243,28 +254,11 @@
     color: #477695;
 }
 
-.mvsv-garden-label {
-    position: absolute;
-    bottom: 127px;
-    left: 50%;
-    z-index: 5;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 11px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.86);
-    color: #47785c;
-    font-size: 0.7rem;
-    font-weight: 700;
-    transform: translateX(-50%);
-}
-
 .mvsv-soil {
     position: absolute;
     right: -5%;
     bottom: -34px;
-    left: 13%;
+    left: -5%;
     z-index: 2;
     height: 150px;
     border-radius: 52% 46% 0 0 / 28% 32% 0 0;
@@ -273,13 +267,40 @@
         radial-gradient(circle at 72% 40%, rgba(255,255,255,0.10) 0 4px, transparent 5px),
         linear-gradient(180deg, #9d714a 0%, #735035 100%);
     box-shadow: 0 -12px 0 #79aa63;
+    pointer-events: none;
+}
+
+.mvsv-grass {
+    position: absolute;
+    bottom: 104px;
+    z-index: 4;
+    width: 150px;
+    height: 34px;
+    background:
+        linear-gradient(72deg, transparent 47%, #5e9453 48% 54%, transparent 55%) 0 100% / 20px 31px repeat-x,
+        linear-gradient(108deg, transparent 47%, #7bad62 48% 54%, transparent 55%) 9px 100% / 22px 25px repeat-x;
+    opacity: 0.88;
+    pointer-events: none;
+}
+
+.mvsv-grass-one {
+    left: 1%;
+}
+
+.mvsv-grass-two {
+    left: 38%;
+    width: 190px;
+}
+
+.mvsv-grass-three {
+    right: 1%;
 }
 
 .mvsv-plants {
     position: absolute;
-    right: 5%;
+    right: 3%;
     bottom: 74px;
-    left: 22%;
+    left: 3%;
     z-index: 6;
     display: flex;
     align-items: flex-end;
@@ -298,8 +319,8 @@
     padding: 0;
     border: 0;
     background: transparent;
-    cursor: pointer;
-    pointer-events: auto;
+    cursor: default;
+    pointer-events: none;
     transform-origin: bottom center;
 }
 
@@ -400,7 +421,7 @@
     position: absolute;
     top: 96px;
     left: calc(100% - 142px);
-    z-index: 14;
+    z-index: 20;
     width: 96px;
     height: 76px;
     padding: 0;
@@ -410,9 +431,15 @@
     touch-action: none;
     transform-origin: center;
     filter: drop-shadow(0 8px 9px rgba(27, 76, 52, 0.2));
+    will-change: left, top, transform;
 }
 
 .mvsv-watering-can.dragging {
+    cursor: grabbing;
+}
+
+.mvsv-scene.is-dragging,
+.mvsv-scene.is-dragging * {
     cursor: grabbing;
 }
 
@@ -557,8 +584,8 @@
     }
 
     .mvsv-plants {
-        right: 2%;
-        left: 18%;
+        right: 1%;
+        left: 1%;
     }
 
     .mvsv-plant {
@@ -595,8 +622,8 @@
     }
 
     .mvsv-teko-avatar {
-        width: 62px;
-        height: 62px;
+        width: 72px;
+        height: 72px;
         border-width: 3px;
     }
 
@@ -609,14 +636,10 @@
         font-size: 0.7rem;
     }
 
-    .mvsv-soil {
-        left: 0;
-    }
-
     .mvsv-plants {
-        right: 0;
+        right: 1%;
         bottom: 72px;
-        left: 15%;
+        left: 1%;
         height: 160px;
     }
 
@@ -624,8 +647,9 @@
         width: 40px;
     }
 
-    .mvsv-garden-label {
-        bottom: 129px;
+    .mvsv-grass {
+        bottom: 102px;
+        transform: scale(0.82);
     }
 
     .mvsv-loading-tips p {

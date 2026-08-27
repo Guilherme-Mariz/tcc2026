@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const stage = document.getElementById("activity-stage");
     const scene = document.getElementById("mvsv-scene");
     const can = document.getElementById("mvsv-watering-can");
-    const teko = document.getElementById("mvsv-teko");
     const plants = [...document.querySelectorAll(".mvsv-plant")];
 
     const elements = {
@@ -51,9 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let gapTimer = null;
     let turnTimeouts = [];
     let dragState = null;
-    let smoothLeft = null;
-    let smoothTop = null;
     let lastDropAt = 0;
+    let lastWaterCheckAt = 0;
     let childWaterings = 0;
     let childTurnWaterings = 0;
     const lastPlantWatering = plants.map(() => 0);
@@ -76,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         gapTimer = null;
         turnTimeouts.forEach(clearTimeout);
         turnTimeouts = [];
-        gsap.killTweensOf([can, teko]);
+        gsap.killTweensOf(can);
         stopDragging();
     }
 
@@ -117,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
         can.classList.remove("locked", "dragging");
         can.setAttribute("aria-disabled", "false");
         resetCan(false);
-        gsap.set(teko, { y: 0, rotation: 0, scale: 1 });
     }
 
     function startActivity() {
@@ -161,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
             elements.speech.textContent = turn.title;
             elements.live.textContent = `${turn.title} ${turn.instruction}`;
             resetCan(true);
-            gsap.fromTo(teko, { scale: 0.97 }, { scale: 1, duration: 0.45, ease: "back.out(1.8)" });
         } else {
             elements.speech.textContent = "Minha vez! Depois será a sua.";
             elements.live.textContent = `${turn.title} ${turn.instruction}`;
@@ -234,10 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         : "Esta plantinha também!";
                 });
 
-                gsap.fromTo(teko,
-                    { rotation: -2, y: 0 },
-                    { rotation: 3, y: -7, duration: 0.42, yoyo: true, repeat: 1, ease: "sine.inOut" }
-                );
             }, delay));
         });
     }
@@ -361,24 +353,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         event.preventDefault();
-        const canRect = can.getBoundingClientRect();
+        event.stopPropagation();
+        gsap.killTweensOf(can);
+
+        const sceneRect = scene.getBoundingClientRect();
+        const pointerX = event.clientX - sceneRect.left;
+        const pointerY = event.clientY - sceneRect.top;
         dragState = {
             pointerId: event.pointerId,
-            offsetX: event.clientX - canRect.left,
-            offsetY: event.clientY - canRect.top
+            offsetX: pointerX - can.offsetLeft,
+            offsetY: pointerY - can.offsetTop
         };
+        lastWaterCheckAt = 0;
 
-        can.setPointerCapture?.(event.pointerId);
+        scene.setPointerCapture?.(event.pointerId);
         can.classList.add("dragging");
-        gsap.killTweensOf(can);
-        smoothLeft = gsap.quickTo(can, "left", {
-            duration: 0.16,
-            ease: "power2.out"
-        });
-        smoothTop = gsap.quickTo(can, "top", {
-            duration: 0.16,
-            ease: "power2.out"
-        });
+        scene.classList.add("is-dragging");
     }
 
     function moveDragging(event) {
@@ -397,9 +387,9 @@ document.addEventListener("DOMContentLoaded", () => {
             scene.clientHeight - can.offsetHeight - 28
         );
 
-        smoothLeft?.(left);
-        smoothTop?.(top);
-        gsap.set(can, { rotation: -17 });
+        // A posição acompanha o ponteiro imediatamente. As plantas apenas são
+        // consultadas depois do movimento e nunca controlam o regador.
+        gsap.set(can, { left, top, rotation: -17 });
 
         const now = performance.now();
         if (now - lastDropAt > 135) {
@@ -409,8 +399,13 @@ document.addEventListener("DOMContentLoaded", () => {
             lastDropAt = now;
         }
 
-        const target = findPlantUnderSpout(left - 29, top + 46);
-        if (target) waterPlantFromChild(target);
+        // A detecção é limitada para não misturar leituras de layout com cada
+        // atualização do ponteiro, especialmente enquanto uma flor cresce.
+        if (now - lastWaterCheckAt > 70) {
+            const target = findPlantUnderSpout(left - 29, top + 46);
+            if (target) waterPlantFromChild(target);
+            lastWaterCheckAt = now;
+        }
     }
 
     function stopDragging(event) {
@@ -418,15 +413,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (event && dragState.pointerId !== event.pointerId) return;
 
         try {
-            can.releasePointerCapture?.(dragState.pointerId);
+            scene.releasePointerCapture?.(dragState.pointerId);
         } catch (error) {
             // O ponteiro pode já ter sido liberado pelo navegador.
         }
 
         dragState = null;
-        smoothLeft = null;
-        smoothTop = null;
         can.classList.remove("dragging");
+        scene.classList.remove("is-dragging");
         gsap.to(can, { rotation: 0, duration: 0.22, ease: "power2.out" });
     }
 
@@ -467,11 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }, index * 120));
         });
 
-        gsap.fromTo(teko,
-            { y: 0, rotation: -3 },
-            { y: -14, rotation: 4, duration: 0.32, yoyo: true, repeat: 3, ease: "sine.inOut" }
-        );
-
         gapTimer = setTimeout(() => {
             switchTo("done", () => elements.restart.focus());
         }, 1850);
@@ -485,9 +474,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     can.addEventListener("pointerdown", startDragging);
-    can.addEventListener("pointermove", moveDragging);
-    can.addEventListener("pointerup", stopDragging);
-    can.addEventListener("pointercancel", stopDragging);
+    window.addEventListener("pointermove", moveDragging, { passive: false });
+    window.addEventListener("pointerup", stopDragging);
+    window.addEventListener("pointercancel", stopDragging);
 
     plants.forEach(plant => {
         plant.addEventListener("click", () => waterPlantFromChild(plant));
