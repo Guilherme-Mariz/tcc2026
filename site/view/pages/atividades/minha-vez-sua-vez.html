@@ -193,52 +193,32 @@
             </section>
 
             <section id="activity-stage" class="activity-stage mvsv-stage" aria-label="Atividade Minha Vez, Sua Vez">
-                <div id="mvsv-intro" class="activity-screen activity-center-screen mvsv-intro">
-                    <span class="mvsv-intro-icon" aria-hidden="true">
-                        <i class="fa-solid fa-seedling"></i>
-                    </span>
-
+                <div id="mvsv-intro" class="activity-screen activity-center-screen">
                     <h2 class="activity-screen-title">Vamos cuidar do jardim juntos?</h2>
 
                     <p class="activity-screen-text">
-                        Serão quatro turnos: dois seus e dois do Teko. Na sua vez, arraste o regador até as plantas. Na vez do Teko, observe e espere.
+                        Cuide das plantas junto com o Teko. Cada um terá sua vez de usar o regador.
                     </p>
 
-                    <div class="mvsv-rules" aria-label="Regras da atividade">
-                        <span><i class="fa-solid fa-hand-pointer"></i> Arraste o regador</span>
-                        <span><i class="fa-solid fa-hourglass-half"></i> Espere a vez do Teko</span>
-                        <span><i class="fa-solid fa-clock"></i> 10 segundos por turno</span>
-                    </div>
-
                     <button id="mvsv-start-btn" class="activity-start-button" type="button">
-                        Começar a cuidar
+                        Iniciar
                     </button>
                 </div>
 
                 <div id="mvsv-loading" class="activity-screen activity-loading mvsv-loading" aria-live="polite" hidden>
                     <div class="activity-loading-content">
-                        <span class="mvsv-loading-sprout" aria-hidden="true">
-                            <i class="fa-solid fa-seedling"></i>
-                        </span>
+                        <img src="/img/mascot/teko-andando.gif" alt="Teko andando" class="activity-loading-gif">
 
-                        <p class="activity-loading-text">Preparando o jardim...</p>
+                        <p class="activity-loading-text">Carregando...</p>
+
+                        <div class="mvsv-loading-tips" aria-label="Como jogar">
+                            <p><i class="fa-solid fa-hand-pointer" aria-hidden="true"></i> Clique e arraste para controlar o regador.</p>
+                            <p><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Quando for a vez do Teko, observe e espere.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div id="mvsv-game" class="activity-screen mvsv-game" hidden>
-                    <div class="mvsv-turn-panel" aria-live="polite">
-                        <div class="mvsv-turn-copy">
-                            <span id="mvsv-turn-count" class="mvsv-turn-count">Turno 1 de 4</span>
-                            <strong id="mvsv-turn-title" class="mvsv-turn-title">Agora é a sua vez!</strong>
-                            <span id="mvsv-turn-instruction" class="mvsv-turn-instruction">Arraste o regador até uma plantinha.</span>
-                        </div>
-
-                        <div class="mvsv-timer" aria-label="Tempo restante">
-                            <span id="mvsv-seconds" class="mvsv-seconds">10</span>
-                            <span class="mvsv-seconds-label">segundos</span>
-                        </div>
-                    </div>
-
                     <div class="mvsv-progress" aria-hidden="true">
                         <span id="mvsv-progress-bar"></span>
                     </div>
@@ -248,9 +228,16 @@
                         <span class="mvsv-cloud mvsv-cloud-one" aria-hidden="true"></span>
                         <span class="mvsv-cloud mvsv-cloud-two" aria-hidden="true"></span>
 
-                        <div class="mvsv-teko-area" aria-hidden="true">
-                            <div id="mvsv-teko-speech" class="mvsv-teko-speech">Vamos cuidar juntos!</div>
-                            <img id="mvsv-teko" src="/img/mascot/teko-apontando.webp" alt="" class="mvsv-teko">
+                        <div class="mvsv-teko-guide" aria-live="polite">
+                            <div class="mvsv-teko-avatar">
+                                <img id="mvsv-teko" src="/img/mascot/teko-regador.webp" onerror="this.onerror=null;this.src='/img/mascot/teko-apontando.webp';" alt="Teko vestido como jardineiro">
+                            </div>
+
+                            <div class="mvsv-teko-message">
+                                <span id="mvsv-turn-count" class="mvsv-turn-count">Turno 1 de 4</span>
+                                <p id="mvsv-teko-speech">Agora é a sua vez!</p>
+                                <span class="mvsv-guide-time"><strong id="mvsv-seconds">10</strong> segundos</span>
+                            </div>
                         </div>
 
                         <div class="mvsv-garden-label" aria-hidden="true">
@@ -288,9 +275,7 @@
                             <span class="mvsv-can-top"></span>
                         </button>
 
-                        <p id="mvsv-feedback" class="mvsv-feedback" role="status" aria-live="polite">
-                            Pegue o regador e leve até uma plantinha.
-                        </p>
+                        <p id="mvsv-turn-live" class="mvsv-visually-hidden" role="status" aria-live="polite"></p>
                     </div>
                 </div>
 

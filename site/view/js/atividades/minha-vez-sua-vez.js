@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
     const TURN_DURATION = 10000;
-    const LOADING_DURATION = 1400;
+    const LOADING_DURATION = 3000;
     const TURN_GAP = 650;
     const WATER_COOLDOWN = 720;
 
@@ -30,12 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
         start: document.getElementById("mvsv-start-btn"),
         restart: document.getElementById("mvsv-restart-btn"),
         turnCount: document.getElementById("mvsv-turn-count"),
-        turnTitle: document.getElementById("mvsv-turn-title"),
-        instruction: document.getElementById("mvsv-turn-instruction"),
         seconds: document.getElementById("mvsv-seconds"),
         progress: document.getElementById("mvsv-progress-bar"),
         speech: document.getElementById("mvsv-teko-speech"),
-        feedback: document.getElementById("mvsv-feedback")
+        live: document.getElementById("mvsv-turn-live")
     };
 
     const changeScreen = TekoActivityCore.createScreenTransition({
@@ -53,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let gapTimer = null;
     let turnTimeouts = [];
     let dragState = null;
+    let smoothLeft = null;
+    let smoothTop = null;
     let lastDropAt = 0;
     let childWaterings = 0;
     let childTurnWaterings = 0;
@@ -112,8 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         elements.progress.style.transform = "scaleX(1)";
         elements.seconds.textContent = "10";
-        elements.feedback.textContent = "Pegue o regador e leve até uma plantinha.";
         elements.speech.textContent = "Vamos cuidar juntos!";
+        elements.live.textContent = "";
         can.classList.remove("locked", "dragging");
         can.setAttribute("aria-disabled", "false");
         resetCan(false);
@@ -122,7 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function startActivity() {
         resetGarden();
-        switchTo("loading");
+        switchTo("loading", () => {
+            stage.classList.add("activity-stage-revealing");
+        });
         clearTimeout(loadingTimer);
 
         loadingTimer = setTimeout(() => {
@@ -148,8 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const child = turn.owner === "child";
 
         elements.turnCount.textContent = `Turno ${index + 1} de ${turns.length}`;
-        elements.turnTitle.textContent = turn.title;
-        elements.instruction.textContent = turn.instruction;
         elements.seconds.textContent = "10";
         elements.progress.style.transform = "scaleX(1)";
         screens.game.classList.toggle("teko-active", !child);
@@ -158,13 +158,13 @@ document.addEventListener("DOMContentLoaded", () => {
         can.setAttribute("aria-disabled", String(!child));
 
         if (child) {
-            elements.feedback.textContent = "Arraste o regador ou toque em uma planta para molhar.";
-            elements.speech.textContent = "Agora é a sua vez!";
+            elements.speech.textContent = turn.title;
+            elements.live.textContent = `${turn.title} ${turn.instruction}`;
             resetCan(true);
             gsap.fromTo(teko, { scale: 0.97 }, { scale: 1, duration: 0.45, ease: "back.out(1.8)" });
         } else {
-            elements.feedback.textContent = "Agora é a vez do Teko. Observe e espere.";
             elements.speech.textContent = "Minha vez! Depois será a sua.";
+            elements.live.textContent = `${turn.title} ${turn.instruction}`;
             runTekoTurn();
         }
 
@@ -205,11 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
         running = false;
 
         if (wasChild) {
-            elements.feedback.textContent = childTurnWaterings > 0
+            elements.speech.textContent = childTurnWaterings > 0
                 ? "Muito bem! Agora entregue a vez ao Teko."
                 : "Tudo bem! Agora observe a vez do Teko.";
         } else {
-            elements.feedback.textContent = index === turns.length - 1
+            elements.speech.textContent = index === turns.length - 1
                 ? "Vocês terminaram de cuidar do jardim!"
                 : "O Teko terminou. Prepare-se para a sua vez!";
         }
@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (owner === "child") {
             childWaterings += 1;
             childTurnWaterings += 1;
-            elements.feedback.textContent = next >= 4
+            elements.speech.textContent = next >= 4
                 ? "A flor abriu! Você pode cuidar de outra planta."
                 : "A plantinha cresceu! Continue cuidando do jardim.";
         }
@@ -349,8 +349,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function remindTekoTurn() {
-        elements.feedback.textContent = "Agora é a vez do Teko. Logo será a sua!";
         elements.speech.textContent = "Espere só um pouquinho!";
+        elements.live.textContent = "Agora é a vez do Teko. Logo será a sua.";
         gsap.fromTo(can, { x: -4 }, { x: 4, duration: 0.08, yoyo: true, repeat: 5, clearProps: "x" });
     }
 
@@ -371,6 +371,14 @@ document.addEventListener("DOMContentLoaded", () => {
         can.setPointerCapture?.(event.pointerId);
         can.classList.add("dragging");
         gsap.killTweensOf(can);
+        smoothLeft = gsap.quickTo(can, "left", {
+            duration: 0.16,
+            ease: "power2.out"
+        });
+        smoothTop = gsap.quickTo(can, "top", {
+            duration: 0.16,
+            ease: "power2.out"
+        });
     }
 
     function moveDragging(event) {
@@ -380,17 +388,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const sceneRect = scene.getBoundingClientRect();
         const left = clamp(
             event.clientX - sceneRect.left - dragState.offsetX,
-            38,
-            scene.clientWidth - can.offsetWidth - 8
+            -8,
+            scene.clientWidth - can.offsetWidth + 8
         );
         const top = clamp(
             event.clientY - sceneRect.top - dragState.offsetY,
-            68,
-            scene.clientHeight - can.offsetHeight - 72
+            34,
+            scene.clientHeight - can.offsetHeight - 28
         );
 
-        can.style.left = `${left}px`;
-        can.style.top = `${top}px`;
+        smoothLeft?.(left);
+        smoothTop?.(top);
         gsap.set(can, { rotation: -17 });
 
         const now = performance.now();
@@ -416,6 +424,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         dragState = null;
+        smoothLeft = null;
+        smoothTop = null;
         can.classList.remove("dragging");
         gsap.to(can, { rotation: 0, duration: 0.22, ease: "power2.out" });
     }
@@ -443,8 +453,8 @@ document.addEventListener("DOMContentLoaded", () => {
         scene.classList.add("garden-complete");
         can.classList.add("locked");
         can.setAttribute("aria-disabled", "true");
-        elements.feedback.textContent = "O jardim ficou lindo!";
         elements.speech.textContent = "Conseguimos juntos!";
+        elements.live.textContent = "O jardim ficou lindo. Você concluiu a atividade.";
 
         plants.forEach((plant, index) => {
             turnTimeouts.push(setTimeout(() => {
@@ -470,6 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function restartActivity() {
         clearTimeout(loadingTimer);
         resetGarden();
+        stage.classList.remove("activity-stage-revealing");
         switchTo("intro", () => elements.start.focus());
     }
 
