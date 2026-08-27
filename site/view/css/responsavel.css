@@ -48,6 +48,36 @@
     z-index: 1;
 }
 
+.pin-back-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 9px 13px;
+    border: 1px solid #d9e5dc;
+    border-radius: 10px;
+    background: #f3f7f4;
+    color: #315f49;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.pin-back-link:hover {
+    background: #e8f2eb;
+    border-color: #b8d0c0;
+    transform: translateX(-2px);
+}
+
+.pin-back-link:focus-visible {
+    outline: 3px solid rgba(58, 140, 96, 0.2);
+    outline-offset: 2px;
+}
+
 .pin-logo {
     font-family: 'Fraunces', serif;
     font-size: 1.5rem;
