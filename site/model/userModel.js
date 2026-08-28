@@ -2,16 +2,24 @@ const supabase = require("../config/supabase");
 
 // CADASTRO ________________________________________________________________________________
 
-async function criarUsuarioEcrianca(
-    nome, cpf, email, senha, telefone, relacao,
-    nomeCrianca, datanasc, cpfcri, genero
+async function criarUsuarioEcriancas(
+    nome,
+    cpf,
+    email,
+    senha,
+    pin,
+    telefone,
+    relacao,
+    criancas
 ) {
-    // 🔥 ALTERAÇÃO AQUI
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: email,
-        password: senha,
-        email_confirm: true
-    });
+
+    // 1. Cria o usuário no Supabase Auth
+    const { data: authData, error: authError } =
+        await supabase.auth.admin.createUser({
+            email: email,
+            password: senha,
+            email_confirm: true
+        });
 
     if (authError) {
         throw authError;
@@ -19,16 +27,20 @@ async function criarUsuarioEcrianca(
 
     const userId = authData.user.id;
 
-    const { data: respData, error: respError } = await supabase
-        .from('responsaveis')
-        .insert([{
-            nome_completo: nome,
-            cpf: cpf,
-            telefone: telefone,
-            relacao: relacao,
-            user_id: userId
-        }])
-        .select();
+
+    // 2. Cria o responsável
+    const { data: respData, error: respError } =
+        await supabase
+            .from("responsaveis")
+            .insert([{
+                nome_completo: nome,
+                cpf: cpf,
+                telefone: telefone || null,
+                relacao: relacao,
+                user_id: userId,
+                pin: pin
+            }])
+            .select();
 
     if (respError) {
         throw respError;
@@ -36,36 +48,47 @@ async function criarUsuarioEcrianca(
 
     const responsavelId = respData[0].id;
 
-    const { data: criancaData, error: criancaError } = await supabase
-        .from('criancas')
-        .insert([{
-            nome: nomeCrianca,
-            responsavel_id: responsavelId,
-            cpf: cpfcri,
-            data_nasc: datanasc,
-            genero: genero
-        }])
-        .select();
+
+    // 3. Prepara as crianças usando os nomes enviados pelo frontend
+    const criancasParaInserir = criancas.map((crianca) => ({
+        nome: crianca.nome,
+        responsavel_id: responsavelId,
+        cpf: crianca.cpf,
+        data_nasc: crianca.dataNascimento,
+        genero: crianca.genero
+    }));
+
+
+    // 4. Cria as crianças
+    const { data: criancaData, error: criancaError } =
+        await supabase
+            .from("criancas")
+            .insert(criancasParaInserir)
+            .select();
 
     if (criancaError) {
         throw criancaError;
     }
 
+
+    // 5. Retorna os dados criados
     return {
         usuario: authData.user,
         responsavel: respData[0],
-        crianca: criancaData[0]
+        criancas: criancaData
     };
 }
 
 
-// LOGIN__________________________________________________________________
+// LOGIN __________________________________________________________________
 
 async function loginUsuario(email, senha) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: senha
-    });
+
+    const { data, error } =
+        await supabase.auth.signInWithPassword({
+            email: email,
+            password: senha
+        });
 
     if (error) {
         throw error;
@@ -74,7 +97,8 @@ async function loginUsuario(email, senha) {
     return data;
 }
 
+
 module.exports = {
-    criarUsuarioEcrianca,
+    criarUsuarioEcriancas,
     loginUsuario
 };

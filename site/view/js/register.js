@@ -351,33 +351,79 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    function finalizarCadastroFrontend(botao) {
-        const criancasParaExibir = dadosCriancas.map(
-            (crianca, indice) => ({
-                id: `crianca-${indice + 1}`,
-                nome: crianca.nome
-            })
-        );
+    async function finalizarCadastroFrontend(botao) {
+        try {
 
-        mostrarSucesso(criancasParaExibir);
+            console.log("===== DADOS ENVIADOS PARA CADASTRO =====");
+            console.log({
+                nome: dadosResponsavel.nome,
+                cpf: dadosResponsavel.cpf,
+                email: dadosResponsavel.email,
+                senha: dadosResponsavel.senha,
+                pin: dadosResponsavel.pin,
+                telefone: dadosResponsavel.telefone,
+                relacao: dadosResponsavel.relacao,
+                criancas: dadosCriancas
+            });
+            console.log("========================================");
 
-        localStorage.setItem(
-            "teko_access_pin",
-            dadosResponsavel.pin
-        );
+            const resposta = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: dadosResponsavel.nome,
+                    cpf: dadosResponsavel.cpf,
+                    email: dadosResponsavel.email,
+                    senha: dadosResponsavel.senha,
+                    pin: dadosResponsavel.pin,
+                    telefone: dadosResponsavel.telefone,
+                    relacao: dadosResponsavel.relacao,
+                    criancas: dadosCriancas
+                })
+            });
 
-        localStorage.setItem(
-            "teko_registered_children",
-            JSON.stringify(criancasParaExibir)
-        );
+            const resultado = await resposta.json();
 
-        botao.disabled = false;
+            if (!resposta.ok) {
+                throw new Error(
+                    resultado.erro || "Erro ao realizar cadastro."
+                );
+            }
 
-        /*
-            Backend depois:
-            enviar dadosResponsavel e dadosCriancas
-            para POST /register.
-        */
+            // Usa as crianças realmente cadastradas pelo backend
+            const criancasCadastradas =
+                resultado.dados.criancas.map((crianca, indice) => ({
+                    id: crianca.id,
+                    nome: crianca.nome
+                }));
+
+            localStorage.setItem(
+                "teko_access_pin",
+                dadosResponsavel.pin
+            );
+
+            localStorage.setItem(
+                "teko_registered_children",
+                JSON.stringify(criancasCadastradas)
+            );
+
+            mostrarSucesso(criancasCadastradas);
+
+            botao.disabled = false;
+
+        } catch (error) {
+
+            console.error("Erro no cadastro:", error);
+
+            botao.disabled = false;
+
+            alert(
+                error.message ||
+                "Não foi possível realizar o cadastro."
+            );
+        }
     }
 
     function mostrarSucesso(criancas) {
