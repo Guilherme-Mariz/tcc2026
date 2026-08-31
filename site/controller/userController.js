@@ -15,7 +15,6 @@ async function registerCompleto(req, res) {
         criancas,
     } = req.body;
 
-    // Validação básica
     if (
         !nome ||
         !cpf ||
@@ -34,6 +33,7 @@ async function registerCompleto(req, res) {
 
     try {
 
+        // Cria o usuário, responsável e crianças
         const resultado =
             await userModel.criarUsuarioEcriancas(
                 nome,
@@ -46,10 +46,26 @@ async function registerCompleto(req, res) {
                 criancas
             );
 
-        res.status(201).json({
-            mensagem: "Cadastro completo realizado com sucesso",
-            dados: resultado,
-        });
+        // Faz login automaticamente após o cadastro
+        const loginResultado =
+            await userModel.loginUsuario(
+                email,
+                senha
+            );
+
+        // Salva o token no cookie
+        res
+            .cookie("token", loginResultado.session.access_token, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "Strict",
+                maxAge: 60 * 60 * 1000,
+            })
+            .status(201)
+            .json({
+                mensagem: "Cadastro completo realizado com sucesso",
+                dados: resultado,
+            });
 
     } catch (error) {
 

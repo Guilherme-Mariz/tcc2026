@@ -82,6 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const resultado = await resposta.json();
 
+            console.log("===== DEBUG TROCA DE SESSÃO =====");
+            console.log("Status:", resposta.status);
+            console.log("OK:", resposta.ok);
+            console.log("Resposta /children:", resultado);
+            console.log("Children:", resultado?.children);
+
             if (!resposta.ok) {
                 throw new Error(
                     resultado.error ||
@@ -145,10 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function obterId(crianca) {
         return (
-            crianca?.id ||
-            crianca?.crianca_id ||
-            crianca?.child_id ||
-            obterNome(crianca)
+            crianca?.id
         );
     }
 
