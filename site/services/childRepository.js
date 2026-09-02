@@ -1,100 +1,99 @@
 const supabase = require("../config/supabase");
 
 class ChildRepository {
+  constructor() {
+    this.table = "criancas";
+    this.responsibleTable = "responsaveis";
+  }
 
-    constructor() {
-        this.table = "criancas";
-        this.responsibleTable = "responsaveis";
+  async findResponsibleIdByUserId(userId) {
+    if (!userId) {
+      return null;
     }
 
-    async findResponsibleIdByUserId(userId) {
+    console.log("\n===== BUSCA RESPONSÁVEL =====");
+    console.log("userId recebido:", userId);
 
-        if (!userId) {
-            return null;
-        }
+    const { data, error } = await supabase
+      .from(this.responsibleTable)
+      .select("id, user_id, nome_completo, pin")
+      .eq("user_id", userId)
+      .maybeSingle();
 
-        const { data, error } = await supabase
-            .from(this.responsibleTable)
-            .select("id")
-            .eq("user_id", userId)
-            .single();
+    console.log("responsável encontrado:", data);
+    console.log("erro Supabase:", error);
 
-        if (error) {
-
-            if (error.code === "PGRST116") {
-                return null;
-            }
-
-            throw error;
-        }
-
-        return data?.id || null;
+    if (error) {
+      throw error;
     }
 
-    async findById(childId, responsavelId) {
+    return data?.id || null;
+  }
 
-        if (!childId || !responsavelId) {
-            return null;
-        }
-
-        const { data, error } = await supabase
-            .from(this.table)
-            .select("id, nome")
-            .eq("id", childId)
-            .eq("responsavel_id", responsavelId)
-            .single();
-
-        if (error) {
-
-            if (error.code === "PGRST116") {
-                return null;
-            }
-
-            throw error;
-        }
-
-        if (!data) {
-            return null;
-        }
-
-        return {
-            id: data.id,
-            firstName: data.nome.trim().split(" ")[0]
-        };
+  async findById(childId, responsavelId) {
+    if (!childId || !responsavelId) {
+      return null;
     }
 
-    async findByResponsibleId(responsavelId) {
+    const { data, error } = await supabase
+      .from(this.table)
+      .select("id, nome")
+      .eq("id", childId)
+      .eq("responsavel_id", responsavelId)
+      .single();
 
-        if (!responsavelId) {
-            return [];
-        }
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null;
+      }
 
-        const { data, error } = await supabase
-            .from(this.table)
-            .select("id, nome")
-            .eq("responsavel_id", responsavelId);
-
-        if (error) {
-            throw error;
-        }
-
-        return (data || []).map(child => ({
-            id: child.id,
-            firstName: child.nome.trim().split(" ")[0]
-        }));
+      throw error;
     }
 
-    async findByUserId(userId) {
-
-        const responsavelId =
-            await this.findResponsibleIdByUserId(userId);
-
-        if (!responsavelId) {
-            return [];
-        }
-
-        return this.findByResponsibleId(responsavelId);
+    if (!data) {
+      return null;
     }
+
+    return {
+      id: data.id,
+      firstName: data.nome.trim().split(" ")[0],
+    };
+  }
+
+  async findByResponsibleId(responsavelId) {
+    console.log("Buscando crianças do responsável:", responsavelId);
+
+    if (!responsavelId) {
+      return [];
+    }
+
+    const { data, error } = await supabase
+      .from(this.table)
+      .select("id, nome")
+      .eq("responsavel_id", responsavelId);
+
+    console.log("Resultado crianças:", data);
+    console.log("Erro crianças:", error);
+
+    if (error) {
+      throw error;
+    }
+
+    return (data || []).map((child) => ({
+      id: child.id,
+      firstName: child.nome.trim().split(" ")[0],
+    }));
+  }
+
+  async findByUserId(userId) {
+    const responsavelId = await this.findResponsibleIdByUserId(userId);
+
+    if (!responsavelId) {
+      return [];
+    }
+
+    return this.findByResponsibleId(responsavelId);
+  }
 }
 
 module.exports = new ChildRepository();
