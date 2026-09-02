@@ -9,12 +9,6 @@
 const chatInput = document.getElementById("chat-input");
 const sendBtn = document.getElementById("send-btn");
 
-const btnSessao =
-    document.getElementById("btn-sessao");
-
-const listaSessao =
-    document.getElementById("chat-session-list");
-
 const chatDisplay =
     document.getElementById("chat-display-text");
 
@@ -25,7 +19,6 @@ const micBtn =
 /* ── estado da sessão ── */
 
 let childIdSelecionado = null;
-let criancaAtiva = null;
 
 let typingTimer = null;
 let gravando = false;
@@ -97,473 +90,33 @@ function obterCriancaAtivaLocal() {
 }
 
 
-/* ── atualizar nome exibido no botão de sessão ── */
+/* ── carregar exclusivamente a sessão global ativa ── */
 
-function atualizarNomeSessao(child) {
+function carregarSessaoAtiva(child = obterCriancaAtivaLocal()) {
 
-    if (!btnSessao) return;
+    const id = obterIdCrianca(child);
+    const nome = obterNomeCrianca(child);
 
-    const textoSessao =
-        btnSessao.querySelector("span");
+    // O TEKO.IA não escolhe nem altera sessões; apenas consome a sessão global.
+    childIdSelecionado = id || null;
 
-    if (!textoSessao) return;
-
-    const nome =
-        obterNomeCrianca(child);
-
-    textoSessao.textContent =
-        nome || "Sessão";
-}
-
-
-/* =========================================================
-   CARREGAR CRIANÇAS
-   ========================================================= */
-
-async function carregarCriancas() {
-
-    try {
-
-        const resposta = await fetch(
-            "/children",
-            {
-                method: "GET",
-                credentials: "include"
-            }
-        );
-
-        const dados = await resposta.json();
-
-        if (!resposta.ok || !dados.success) {
-
-            throw new Error(
-                dados.error ||
-                "Não foi possível carregar as crianças."
-            );
-        }
-
-
-        /* ── lista retornada pelo backend ── */
-
-        const children =
-            Array.isArray(dados.children)
-                ? dados.children
-                : [];
-
-
-        listaSessao.innerHTML = "";
-
-
-        /* ── nenhuma criança ── */
-
-        if (children.length === 0) {
-
-            listaSessao.innerHTML = `
-                <li class="chat-session-empty">
-                    Nenhuma criança cadastrada
-                </li>
-            `;
-
-            childIdSelecionado = null;
-            criancaAtiva = null;
-
-            atualizarNomeSessao(null);
-
-            return;
-        }
-
-
-        /* =================================================
-           LER SESSÃO ATUAL DO LOCALSTORAGE
-           ================================================= */
-
-        const sessaoLocal =
-            obterCriancaAtivaLocal();
-
-        const idSessao =
-            obterIdCrianca(sessaoLocal);
-
-
-        console.log(
-            "===== TEKOIA - SESSÃO LOCAL ====="
-        );
-
-        console.log(
-            "Criança salva no teko_session:",
-            sessaoLocal
-        );
-
-        console.log(
-            "ID salvo no teko_session:",
-            idSessao
-        );
-
-
-        /* =================================================
-           LOCALIZAR A CRIANÇA ATIVA
-           ================================================= */
-
-        let criancaSelecionada = null;
-
-
-        if (idSessao) {
-
-            criancaSelecionada =
-                children.find(child =>
-                    String(obterIdCrianca(child)) ===
-                    String(idSessao)
-                ) || null;
-        }
-
-
-        /*
-         * Se não existir uma criança válida no
-         * teko_session, não força uma sessão.
-         *
-         * Isso evita mandar mensagem para uma
-         * criança errada.
-         */
-
-        if (criancaSelecionada) {
-
-            selecionarCrianca(
-                criancaSelecionada,
-                false
-            );
-
-        } else {
-
-            childIdSelecionado = null;
-            criancaAtiva = null;
-
-            atualizarNomeSessao(null);
-        }
-
-
-        /* =================================================
-           MONTAR LISTA DE CRIANÇAS
-           ================================================= */
-
-        children.forEach(child => {
-
-            const item =
-                document.createElement("li");
-
-            const nome =
-                obterNomeCrianca(child);
-
-            const id =
-                obterIdCrianca(child);
-
-
-            item.textContent =
-                nome || "Criança";
-
-
-            item.dataset.childId =
-                id || "";
-
-
-            item.setAttribute(
-                "role",
-                "option"
-            );
-
-
-            item.tabIndex = 0;
-
-
-            /*
-             * Marcar visualmente a criança
-             * atualmente selecionada.
-             */
-
-            if (
-                criancaSelecionada &&
-                String(id) ===
-                String(obterIdCrianca(criancaSelecionada))
-            ) {
-
-                item.classList.add("selected");
-
-                item.setAttribute(
-                    "aria-selected",
-                    "true"
-                );
-
-            } else {
-
-                item.setAttribute(
-                    "aria-selected",
-                    "false"
-                );
-            }
-
-
-            /* ── clique ── */
-
-            item.addEventListener(
-                "click",
-                () => {
-
-                    selecionarCrianca(
-                        child,
-                        true
-                    );
-
-                }
-            );
-
-
-            /* ── teclado ── */
-
-            item.addEventListener(
-                "keydown",
-                evento => {
-
-                    if (
-                        evento.key === "Enter" ||
-                        evento.key === " "
-                    ) {
-
-                        evento.preventDefault();
-
-                        selecionarCrianca(
-                            child,
-                            true
-                        );
-                    }
-                }
-            );
-
-
-            listaSessao.appendChild(item);
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao carregar crianças:",
-            error
-        );
-
-
-        listaSessao.innerHTML = `
-            <li class="chat-session-empty">
-                Erro ao carregar crianças
-            </li>
-        `;
-
-    }
-
-}
-
-
-/* =========================================================
-   SELECIONAR CRIANÇA
-   ========================================================= */
-
-function selecionarCrianca(
-    child,
-    mostrarMensagem = true
-) {
-
-    if (!child) return;
-
-
-    const id =
-        obterIdCrianca(child);
-
-    const nome =
-        obterNomeCrianca(child);
-
-
-    /*
-     * O ID utilizado pelo TEKOIA para conversar
-     * com o backend é SEMPRE o ID da tabela criancas.
-     */
-
-    childIdSelecionado =
-        id || null;
-
-
-    criancaAtiva =
-        child;
-
-
-    console.log(
-        "===== TEKOIA - CRIANÇA SELECIONADA ====="
-    );
-
-    console.log(
-        "Nome:",
-        nome
-    );
-
-    console.log(
-        "childId:",
-        childIdSelecionado
-    );
-
-
-    /* ── atualizar botão ── */
-
-    atualizarNomeSessao(child);
-
-
-    /* ── fechar lista ── */
-
-    if (listaSessao) {
-
-        listaSessao.hidden = true;
-    }
-
-
-    if (btnSessao) {
-
-        btnSessao.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-    }
-
-
-    /* =================================================
-       ATUALIZAR VISUAL DA LISTA
-       ================================================= */
-
-    if (listaSessao) {
-
-        listaSessao
-            .querySelectorAll(".chat-session-option, li")
-            .forEach(opcao => {
-
-                opcao.classList.remove(
-                    "selected"
-                );
-
-                opcao.setAttribute(
-                    "aria-selected",
-                    "false"
-                );
-            });
-
-
-        const opcaoSelecionada =
-            listaSessao.querySelector(
-                `[data-child-id="${CSS.escape(String(id))}"]`
-            );
-
-
-        if (opcaoSelecionada) {
-
-            opcaoSelecionada.classList.add(
-                "selected"
-            );
-
-            opcaoSelecionada.setAttribute(
-                "aria-selected",
-                "true"
-            );
-        }
-    }
-
-
-    /* =================================================
-       MANTER teko_session SINCRONIZADO
-       ================================================= */
-
-    try {
-
-        const sessao =
-            obterSessaoLocal();
-
-
-        sessao.crianca = {
-
-            ...child,
-
-            id: id,
-
-            nome: nome
-        };
-
-
-        localStorage.setItem(
-            "teko_session",
-            JSON.stringify(sessao)
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao atualizar teko_session:",
-            error
-        );
-    }
-
-
-    /* ── mensagem inicial ── */
-
-    if (mostrarMensagem && nome) {
+    if (!childIdSelecionado) {
+        chatInput.disabled = true;
+        sendBtn.disabled = true;
 
         digitarMensagem(
-            `Oi, ${nome}! 👋 Como você está se sentindo hoje? 😊`
+            "Nenhuma sessão está ativa. Use “Trocar sessão” no menu para escolher uma criança."
         );
+
+        return;
     }
 
-}
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
 
-
-/* =========================================================
-   MENU DE SESSÃO
-   ========================================================= */
-
-if (btnSessao && listaSessao) {
-
-    btnSessao.addEventListener(
-        "click",
-        evento => {
-
-            evento.stopPropagation();
-
-
-            const aberto =
-                !listaSessao.hidden;
-
-
-            listaSessao.hidden =
-                aberto;
-
-
-            btnSessao.setAttribute(
-                "aria-expanded",
-                String(!aberto)
-            );
-
-        }
+    digitarMensagem(
+        `Oi, ${nome || "amigo"}! 👋 Como você está se sentindo hoje? 😊`
     );
-
-
-    document.addEventListener(
-        "click",
-        () => {
-
-            listaSessao.hidden =
-                true;
-
-
-            btnSessao.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-        }
-    );
-
 }
 
 
@@ -708,7 +261,7 @@ async function enviarMensagem() {
     if (!childIdSelecionado) {
 
         digitarMensagem(
-            'Primeiro escolha uma criança na opção "Sessão". 😊'
+            'Use “Trocar sessão” no menu para escolher uma criança antes de conversar. 😊'
         );
 
         return;
@@ -890,19 +443,7 @@ window.addEventListener(
             obterCriancaAtivaLocal();
 
 
-        if (!child) return;
-
-
-        console.log(
-            "TEKOIA recebeu troca de sessão:",
-            child
-        );
-
-
-        selecionarCrianca(
-            child,
-            true
-        );
+        carregarSessaoAtiva(child);
 
     }
 );
@@ -915,46 +456,6 @@ window.addEventListener(
 document.addEventListener(
     "DOMContentLoaded",
     () => {
-
-        /*
-         * Primeiro tenta carregar a sessão salva.
-         * Depois busca as crianças no backend.
-         */
-
-        const sessao =
-            obterCriancaAtivaLocal();
-
-
-        if (sessao) {
-
-            const id =
-                obterIdCrianca(sessao);
-
-
-            if (id) {
-
-                childIdSelecionado =
-                    id;
-
-                criancaAtiva =
-                    sessao;
-
-
-                atualizarNomeSessao(
-                    sessao
-                );
-
-
-                console.log(
-                    "TEKOIA iniciou com sessão salva:",
-                    sessao
-                );
-
-            }
-
-        }
-
-
         /* ── avatar ── */
 
         if (
@@ -967,24 +468,8 @@ document.addEventListener(
         }
 
 
-        /* ── carregar crianças ── */
-
-        carregarCriancas();
-
-
-        /*
-         * Mensagem padrão somente quando
-         * ainda não existe uma criança ativa.
-         */
-
-        if (!sessao) {
-
-            digitarMensagem(
-                "Oi! 👋 Eu sou o Teko, seu amigo virtual! Como você está se sentindo hoje? 😊"
-            );
-
-        }
+        // A criança já foi definida no login ou no fluxo global de troca de sessão.
+        carregarSessaoAtiva();
 
     }
 );
-

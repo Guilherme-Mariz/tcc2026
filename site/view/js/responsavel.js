@@ -22,7 +22,7 @@
         pinInput.value = pinInput.value.replace(/\D/g, '').slice(0, 4);
     });
 
-    function verificarPin() {
+    async function verificarPin() {
         const val = pinInput.value.trim();
         if (val.length < 4) {
             pinInput.classList.add('error');
@@ -31,43 +31,45 @@
             return;
         }
 
-        const pinCadastrado = obterPinCadastrado();
-
-        if (!pinCadastrado) {
-            pinInput.classList.add('error');
-            pinError.textContent = 'Nenhum PIN foi configurado para esta conta.';
-            setTimeout(() => pinInput.classList.remove('error'), 600);
-            return;
-        }
-
-        if (val === pinCadastrado) {
-            sucesso();
-        } else {
-            erroPin();
-        }
-    }
-
-    function obterPinCadastrado() {
-        const pinLocal = localStorage.getItem('teko_access_pin');
-
-        if (/^\d{4}$/.test(pinLocal || '')) {
-            return pinLocal;
-        }
-
         try {
-            const sessao = JSON.parse(
-                localStorage.getItem('teko_session') || '{}'
-            );
+            btnPin.disabled = true;
+            pinError.textContent = '';
 
-            const pinSessao = String(
-                sessao?.responsavel?.pin || ''
-            );
+            // O PIN é validado no responsável ligado ao cookie autenticado.
+            const resposta = await fetch('/verify-pin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ pin: val })
+            });
 
-            return /^\d{4}$/.test(pinSessao)
-                ? pinSessao
-                : '';
+            const resultado = await resposta.json().catch(() => ({}));
+
+            if (!resposta.ok || resultado.valid !== true) {
+                if (resposta.status === 401) {
+                    pinError.textContent = 'Sua sessão expirou. Entre novamente.';
+                    setTimeout(() => { window.location.href = '/login'; }, 1200);
+                    return;
+                }
+
+                if (resposta.status === 429) {
+                    pinError.textContent = 'Muitas tentativas. Aguarde alguns minutos.';
+                    pinInput.value = '';
+                    return;
+                }
+
+                erroPin(resultado.error || 'PIN incorreto. Tente novamente.');
+                return;
+            }
+
+            sucesso();
         } catch (erro) {
-            return '';
+            console.error('Erro ao validar PIN:', erro);
+            erroPin('Não foi possível validar o PIN. Tente novamente.');
+        } finally {
+            btnPin.disabled = false;
         }
     }
 
@@ -89,9 +91,9 @@
         }, 1250);
     }
 
-    function erroPin() {
+    function erroPin(mensagem = 'PIN incorreto. Tente novamente.') {
         pinInput.classList.add('error');
-        pinError.textContent = 'PIN incorreto. Tente novamente.';
+        pinError.textContent = mensagem;
         pinInput.value = '';
         setTimeout(() => {
             pinInput.classList.remove('error');
