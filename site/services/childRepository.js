@@ -1,4 +1,4 @@
-const supabase = require("../config/supabase");
+const supabaseAdmin = require("../config/supabase");
 
 class ChildRepository {
   constructor() {
@@ -7,26 +7,30 @@ class ChildRepository {
   }
 
   async findResponsibleIdByUserId(userId) {
+    if (!userId) {
+      return null;
+    }
 
-    console.log("\n===== TESTE SUPABASE =====");
-    console.log("userId procurado:", userId);
+    // Relaciona o ID do Supabase Auth ao responsável cadastrado na aplicação.
+    const { data, error } = await supabaseAdmin
+      .from(this.responsibleTable)
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
 
-    const { data, error } = await supabase
-        .from("responsaveis")
-        .select("id, user_id, nome_completo, pin");
+    if (error) {
+      throw error;
+    }
 
-    console.log("TODOS OS RESPONSÁVEIS:", data);
-    console.log("ERRO:", error);
-
-    return null;
-}
+    return data?.id || null;
+  }
 
   async findById(childId, responsavelId) {
     if (!childId || !responsavelId) {
       return null;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(this.table)
       .select("id, nome")
       .eq("id", childId)
@@ -52,19 +56,14 @@ class ChildRepository {
   }
 
   async findByResponsibleId(responsavelId) {
-    console.log("Buscando crianças do responsável:", responsavelId);
-
     if (!responsavelId) {
       return [];
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(this.table)
       .select("id, nome")
       .eq("responsavel_id", responsavelId);
-
-    console.log("Resultado crianças:", data);
-    console.log("Erro crianças:", error);
 
     if (error) {
       throw error;
@@ -74,6 +73,29 @@ class ChildRepository {
       id: child.id,
       firstName: child.nome.trim().split(" ")[0],
     }));
+  }
+
+  async verifyPinByUserId(userId, pin) {
+    if (!userId || !/^\d{4}$/.test(pin)) {
+      return false;
+    }
+
+    // Como a coluna é bigint, Number também valida corretamente PINs como "0123".
+    const numericPin = Number(pin);
+
+    // Retorna somente o ID correspondente; o PIN armazenado não sai do Supabase.
+    const { data, error } = await supabaseAdmin
+      .from(this.responsibleTable)
+      .select("id")
+      .eq("user_id", userId)
+      .eq("pin", numericPin)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    return Boolean(data);
   }
 
   async findByUserId(userId) {
@@ -88,3 +110,4 @@ class ChildRepository {
 }
 
 module.exports = new ChildRepository();
+

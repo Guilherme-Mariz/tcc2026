@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     garantirInterface();
     adaptarInterfaceParaPin();
+    limparPinLegado();
 
     const elementos = {
         abrir: document.getElementById("session-switch-button"),
@@ -73,6 +74,34 @@ document.addEventListener("DOMContentLoaded", () => {
             fecharModal();
         }
     });
+
+    function limparPinLegado() {
+        // Remove PINs deixados por versões antigas: o navegador não deve guardar esse dado.
+        localStorage.removeItem("teko_access_pin");
+
+        try {
+            const sessao = JSON.parse(
+                localStorage.getItem("teko_session") || "{}"
+            );
+
+            if (
+                sessao?.responsavel &&
+                Object.prototype.hasOwnProperty.call(
+                    sessao.responsavel,
+                    "pin"
+                )
+            ) {
+                delete sessao.responsavel.pin;
+
+                localStorage.setItem(
+                    "teko_session",
+                    JSON.stringify(sessao)
+                );
+            }
+        } catch (erro) {
+            console.warn("Não foi possível limpar o PIN legado:", erro);
+        }
+    }
 
     async function carregarCriancas() {
         try {
@@ -164,30 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return sessao?.crianca || null;
         } catch (erro) {
             return null;
-        }
-    }
-
-    function obterPinCadastrado() {
-        const pinLocal = localStorage.getItem("teko_access_pin");
-
-        if (/^\d{4}$/.test(pinLocal || "")) {
-            return pinLocal;
-        }
-
-        try {
-            const sessao = JSON.parse(
-                localStorage.getItem("teko_session") || "{}"
-            );
-
-            const pinSessao = String(
-                sessao?.responsavel?.pin || ""
-            );
-
-            return /^\d{4}$/.test(pinSessao)
-                ? pinSessao
-                : "";
-        } catch (erro) {
-            return "";
         }
     }
 
@@ -361,7 +366,45 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    function confirmarTroca() {
+    async function validarPinNoServidor(pin) {
+        const resposta = await fetch("/verify-pin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ pin })
+        });
+
+        const resultado = await resposta
+            .json()
+            .catch(() => ({}));
+
+        if (!resposta.ok) {
+            let mensagem =
+                resultado.error ||
+                resultado.erro ||
+                "Não foi possível validar o PIN.";
+
+            if (resposta.status === 401) {
+                mensagem =
+                    "Sua sessão expirou. Entre novamente.";
+            }
+
+            if (resposta.status === 429) {
+                mensagem =
+                    "Muitas tentativas. Aguarde alguns minutos.";
+            }
+
+            const erro = new Error(mensagem);
+            erro.status = resposta.status;
+            throw erro;
+        }
+
+        return resultado.valid === true;
+    }
+
+    async function confirmarTroca() {
         if (!criancaSelecionada) {
             elementos.erro.textContent = "Escolha uma criança.";
             return;
@@ -378,21 +421,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const pinCadastrado = obterPinCadastrado();
+            elementos.confirmar.disabled = true;
+            elementos.confirmar.textContent = "Verificando...";
 
-            if (!pinCadastrado) {
-                elementos.erro.textContent =
-                    "Nenhum PIN foi configurado para esta conta.";
-                return;
-            }
+            try {
+                // O backend relaciona o usuário autenticado ao PIN salvo no Supabase.
+                const pinValido =
+                    await validarPinNoServidor(pinDigitado);
 
-            if (pinDigitado !== pinCadastrado) {
+                if (!pinValido) {
+                    throw new Error("PIN incorreto. Tente novamente.");
+                }
+            } catch (erro) {
+                console.error("Erro ao validar PIN:", erro);
+
                 elementos.erro.textContent =
-                    "PIN incorreto. Tente novamente.";
+                    erro.message ||
+                    "Não foi possível validar o PIN.";
 
                 elementos.pin.value = "";
                 elementos.pin.focus();
                 return;
+            } finally {
+                elementos.confirmar.disabled = false;
+                elementos.confirmar.textContent = "Confirmar troca";
             }
         }
 
@@ -533,3 +585,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+

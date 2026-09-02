@@ -1,7 +1,6 @@
-const supabase = require("../config/supabase");
+const supabaseAdmin = require("../config/supabase");
 
 async function verificarAuth(req, res, next) {
-    console.log("Middleware rodando");
     const token = req.cookies.token;
 
     if (!token) {
@@ -9,22 +8,25 @@ async function verificarAuth(req, res, next) {
     }
 
     try {
-        const { data, error } = await supabase.auth.getUser(token);
+        // getUser(token) valida o JWT recebido sem iniciar uma sessão no cliente global.
+        const { data, error } = await supabaseAdmin.auth.getUser(token);
 
         if (error || !data.user) {
             return res.status(401).json({ erro: "Token inválido" });
         }
 
-        // 🔥 salva usuário na requisição (muito útil)
+        // Disponibiliza o usuário validado para os controllers protegidos.
         req.user = data.user;
 
-        next(); // continua para a rota
+        return next();
 
-    } catch (err) {
-        return res.status(500).json({ erro: "Erro ao verificar autenticação" });
+    } catch (error) {
+        console.error("Erro ao verificar autenticação:", error);
+
+        return res.status(500).json({
+            erro: "Erro ao verificar autenticação"
+        });
     }
 }
-
-
 
 module.exports = verificarAuth;

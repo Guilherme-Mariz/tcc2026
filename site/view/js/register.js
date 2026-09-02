@@ -399,10 +399,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     nome: crianca.nome
                 }));
 
-            localStorage.setItem(
-                "teko_access_pin",
-                dadosResponsavel.pin
-            );
+            // O PIN agora é validado pelo backend e não fica salvo no navegador.
+            localStorage.removeItem("teko_access_pin");
 
             localStorage.setItem(
                 "teko_registered_children",
@@ -947,3 +945,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
