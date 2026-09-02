@@ -10,15 +10,6 @@ class ChildController {
             console.log("req.user:", req.user);
             console.log("user.id:", req.user?.id);
 
-            if (!req.user?.id) {
-
-                return res.status(401).json({
-                    success: false,
-                    error: "Usuário não autenticado."
-                });
-
-            }
-
             const children =
                 await childRepository.findByUserId(
                     req.user.id

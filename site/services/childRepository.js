@@ -7,28 +7,19 @@ class ChildRepository {
   }
 
   async findResponsibleIdByUserId(userId) {
-    if (!userId) {
-      return null;
-    }
 
-    console.log("\n===== BUSCA RESPONSÁVEL =====");
-    console.log("userId recebido:", userId);
+    console.log("\n===== TESTE SUPABASE =====");
+    console.log("userId procurado:", userId);
 
     const { data, error } = await supabase
-      .from(this.responsibleTable)
-      .select("id, user_id, nome_completo, pin")
-      .eq("user_id", userId)
-      .maybeSingle();
+        .from("responsaveis")
+        .select("id, user_id, nome_completo, pin");
 
-    console.log("responsável encontrado:", data);
-    console.log("erro Supabase:", error);
+    console.log("TODOS OS RESPONSÁVEIS:", data);
+    console.log("ERRO:", error);
 
-    if (error) {
-      throw error;
-    }
-
-    return data?.id || null;
-  }
+    return null;
+}
 
   async findById(childId, responsavelId) {
     if (!childId || !responsavelId) {

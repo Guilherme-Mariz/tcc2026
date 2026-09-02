@@ -12,8 +12,6 @@ set PATH=%PATH%;C:\Users\195172024\Documents\PROJETOTCC\node\nodejs\node-v24.14.
 npm start
 */
 
-require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
