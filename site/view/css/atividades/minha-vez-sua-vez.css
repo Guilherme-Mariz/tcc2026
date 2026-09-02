@@ -91,18 +91,55 @@
     background: linear-gradient(90deg, #8ab6d0, #477695);
 }
 
+/* Jardim ilustrado: as camadas decorativas não participam do arraste. */
+.mvsv-art-defs {
+    position: absolute;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 .mvsv-scene {
     position: relative;
     min-height: 500px;
     overflow: hidden;
+    isolation: isolate;
     border: 1.5px solid #cbded1;
     border-radius: 24px;
     background:
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.08), transparent 48%),
-        linear-gradient(180deg, #cdeeff 0%, #eef9f0 72%);
-    box-shadow: inset 0 -18px 34px rgba(45, 104, 64, 0.08);
+        radial-gradient(ellipse at 86% 8%, #fff7d9 0, transparent 38%),
+        linear-gradient(180deg, #dcf0ed 0%, #f4f7df 70%, #d4e4b5 100%);
+    box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.24);
     user-select: none;
     touch-action: none;
+}
+
+.mvsv-scene::before,
+.mvsv-scene::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Colinas ao fundo e gramado contínuo, sem alterar a área das plantas. */
+.mvsv-scene::before {
+    inset: 35% -14% 0;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse at 15% 100%, #c3d9ad 0 56%, transparent 56.3%) 0 100% / 58% 83% no-repeat,
+        radial-gradient(ellipse at 74% 100%, #d0e1b9 0 64%, transparent 64.3%) 100% 100% / 66% 100% no-repeat;
+}
+
+.mvsv-scene::after {
+    right: -8%;
+    bottom: -10%;
+    left: -8%;
+    z-index: 1;
+    height: 46%;
+    border-radius: 48% 58% 0 0 / 15% 23% 0 0;
+    background:
+        radial-gradient(ellipse at 25% 8%, #dfebbc 0, transparent 54%),
+        linear-gradient(180deg, #b5d294, #94b979);
+    box-shadow: inset 0 4px 0 rgba(243, 249, 216, 0.42);
 }
 
 .mvsv-sun {
@@ -111,60 +148,26 @@
     right: 48px;
     width: 66px;
     height: 66px;
-    border-radius: 50%;
-    background: #ffd96b;
-    box-shadow: 0 0 0 13px rgba(255, 217, 107, 0.18);
+    border: 3px solid #fae4a5;
+    border-radius: 48% 52% 49% 51%;
+    background: radial-gradient(circle at 35% 28%, #fff0b6, #edc775);
+    box-shadow: 0 0 0 12px #f7e7b54d, 0 0 0 25px #f7e7b526;
     pointer-events: none;
 }
 
 .mvsv-cloud {
     position: absolute;
-    width: 100px;
-    height: 30px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.78);
+    width: 118px;
+    height: 49px;
+    /* Uma silhueta única evita emendas entre os volumes da nuvem. */
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 58'%3E%3Cpath d='M21 51C-2 51 0 25 21 26C17 9 41 1 52 16C65-7 101 1 102 23C132 15 145 49 117 51Z' fill='%23fffdf3'/%3E%3Cpath d='M15 43Q65 50 125 41' fill='none' stroke='%23e5eee5' stroke-width='3' stroke-linecap='round' opacity='.65'/%3E%3C/svg%3E") center / contain no-repeat;
+    opacity: 0.9;
     pointer-events: none;
 }
 
-.mvsv-cloud::before,
-.mvsv-cloud::after {
-    content: "";
-    position: absolute;
-    bottom: 4px;
-    border-radius: 50%;
-    background: inherit;
-}
-
-.mvsv-cloud::before {
-    left: 18px;
-    width: 42px;
-    height: 42px;
-}
-
-.mvsv-cloud::after {
-    right: 17px;
-    width: 54px;
-    height: 54px;
-}
-
-.mvsv-cloud-one {
-    top: 56px;
-    left: 28%;
-}
-
-.mvsv-cloud-two {
-    top: 120px;
-    right: 22%;
-    transform: scale(0.72);
-    opacity: 0.72;
-}
-
-.mvsv-cloud-three {
-    top: 172px;
-    left: 8%;
-    transform: scale(0.58);
-    opacity: 0.62;
-}
+.mvsv-cloud-one { top: 142px; left: 32%; }
+.mvsv-cloud-two { top: 114px; right: 19%; transform: scale(0.74); opacity: 0.65; }
+.mvsv-cloud-three { top: 211px; left: 5%; transform: scale(0.62); opacity: 0.72; }
 
 .mvsv-teko-guide {
     position: absolute;
@@ -189,7 +192,7 @@
     border: 4px solid rgba(255, 255, 255, 0.96);
     border-radius: 50%;
     background: #e5f2e9;
-    box-shadow: 0 8px 22px rgba(31, 82, 55, 0.18);
+    box-shadow: 0 0 0 2px #b9d5b8, 0 6px 12px rgba(67, 92, 51, 0.12);
 }
 
 .mvsv-teko-avatar img {
@@ -198,7 +201,7 @@
     height: 100%;
     object-fit: cover;
     object-position: center 24%;
-    transform: scale(1.7);
+    transform: translateY(0.05%) scale(1.3);
     transform-origin: center 28%;
 }
 
@@ -208,12 +211,11 @@
     gap: 2px;
     min-width: 190px;
     padding: 10px 14px;
-    border: 1px solid #d5e5da;
-    border-radius: 8px 15px 15px 15px;
-    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid #d2dfc1;
+    border-radius: 8px 18px 18px 18px;
+    background: #fffef6;
     color: var(--text-mid);
-    box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 0 #c5d7b52e, 0 7px 18px #48623d0a;
 }
 
 .mvsv-teko-message::before {
@@ -223,9 +225,9 @@
     left: -8px;
     width: 14px;
     height: 14px;
-    border-bottom: 1px solid #d5e5da;
-    border-left: 1px solid #d5e5da;
-    background: rgba(255, 255, 255, 0.94);
+    border-bottom: 1px solid #d2dfc1;
+    border-left: 1px solid #d2dfc1;
+    background: #fffef6;
     transform: rotate(45deg);
 }
 
@@ -261,13 +263,26 @@
     left: -5%;
     z-index: 2;
     height: 150px;
+    border: 2px solid #b68e62;
     border-radius: 52% 46% 0 0 / 28% 32% 0 0;
     background:
-        radial-gradient(circle at 18% 28%, rgba(255,255,255,0.11) 0 3px, transparent 4px),
-        radial-gradient(circle at 72% 40%, rgba(255,255,255,0.10) 0 4px, transparent 5px),
-        linear-gradient(180deg, #9d714a 0%, #735035 100%);
-    box-shadow: 0 -12px 0 #79aa63;
+        radial-gradient(ellipse 4px 2px at 12% 29%, #eed3a4 95%, transparent),
+        radial-gradient(ellipse 5px 3px at 83% 43%, #b79065 95%, transparent),
+        radial-gradient(ellipse 3px 2px at 64% 67%, #eed3a4 95%, transparent),
+        radial-gradient(ellipse 4px 2px at 33% 49%, #b79065 95%, transparent),
+        radial-gradient(ellipse 3px 2px at 48% 31%, #f0d8b1 95%, transparent),
+        linear-gradient(180deg, #d2ae7e, #bf966b);
+    box-shadow: 0 -7px 0 #769d5d, 0 -12px 0 #a4c47e, inset 0 5px 0 #e5c798;
     pointer-events: none;
+}
+
+.mvsv-soil::after {
+    content: "";
+    position: absolute;
+    inset: 25% 7% 28%;
+    border-bottom: 2px dashed #9f785b;
+    border-radius: 50%;
+    opacity: 0.14;
 }
 
 .mvsv-grass {
@@ -276,24 +291,24 @@
     z-index: 4;
     width: 150px;
     height: 34px;
-    background:
-        linear-gradient(72deg, transparent 47%, #5e9453 48% 54%, transparent 55%) 0 100% / 20px 31px repeat-x,
-        linear-gradient(108deg, transparent 47%, #7bad62 48% 54%, transparent 55%) 9px 100% / 22px 25px repeat-x;
-    opacity: 0.88;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 34'%3E%3Cg fill='%236e9856'%3E%3Cpath d='M14 34Q11 18 4 18Q15 18 19 34M18 34Q18 13 26 6Q22 23 23 34M23 34Q31 17 37 21Q30 24 29 34M66 34Q60 19 55 21Q65 21 70 34M69 34Q71 16 77 12Q73 29 74 34'/%3E%3C/g%3E%3Cg fill='none' stroke='%23c2d897' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M41 30L44 25M47 30L49 27M82 32L84 28'/%3E%3C/g%3E%3C/svg%3E") left bottom / 90px 34px repeat-x;
     pointer-events: none;
 }
 
-.mvsv-grass-one {
-    left: 1%;
-}
+.mvsv-grass-one { left: 1%; }
+.mvsv-grass-two { left: 38%; width: 190px; }
+.mvsv-grass-three { right: 1%; }
 
-.mvsv-grass-two {
-    left: 38%;
-    width: 190px;
-}
-
-.mvsv-grass-three {
-    right: 1%;
+/* Folhagens baixas nas bordas, sem esconder as plantas interativas. */
+.mvsv-garden-edge {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 7;
+    width: 100%;
+    height: 63px;
+    pointer-events: none;
 }
 
 .mvsv-plants {
@@ -330,87 +345,141 @@
     border-radius: 14px;
 }
 
+/* Os botões mantêm as dimensões e posições originais. */
+.mvsv-plant::before {
+    content: "";
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    width: 43px;
+    height: 12px;
+    border-radius: 50%;
+    background: #98714e;
+    box-shadow: 0 2px 0 #ead0a1;
+    opacity: 0.55;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.mvsv-plant::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: calc(50% - 5px);
+    width: 10px;
+    height: 6px;
+    border-radius: 60% 40% 35% 65%;
+    background: #cea66e;
+    pointer-events: none;
+}
+
 .mvsv-stem {
     position: absolute;
     bottom: 0;
     left: 50%;
-    width: 8px;
+    width: 7px;
     height: var(--stem-height);
-    border-radius: 999px;
-    background: linear-gradient(90deg, #428a4f, #6ab26c);
-    transform: translateX(-50%) scaleY(var(--plant-scale));
+    border: 1px solid #578451;
+    border-radius: 70% 30% 3px 3px;
+    background: linear-gradient(90deg, #689455, #a4c47a 55%, #7da363);
+    transform: translateX(-50%);
     transform-origin: bottom;
-    transition: height 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: height 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .mvsv-leaf {
     position: absolute;
     bottom: calc(var(--stem-height) * 0.38);
     left: 50%;
-    width: 29px;
-    height: 16px;
-    border-radius: 100% 0 100% 0;
-    border: 1px solid rgba(47, 119, 61, 0.2);
-    background: linear-gradient(145deg, #78c77d, #429553);
-    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.2);
+    width: 31px;
+    height: 17px;
+    border: 1px solid #5e8d50;
+    border-radius: 85% 5% 85% 5%;
+    background: linear-gradient(160deg, #b0ce88, #78a465 75%);
+    box-shadow: inset 0 2px 0 #d5e6b24d;
     opacity: var(--plant-scale);
     transition: bottom 0.65s, opacity 0.5s, transform 0.65s;
 }
 
+.mvsv-leaf::after {
+    content: "";
+    position: absolute;
+    inset: 7px 4px auto;
+    height: 1px;
+    background: #59875180;
+    transform: rotate(-19deg);
+}
+
 .leaf-left {
-    transform: translateX(-100%) rotate(17deg) scale(var(--plant-scale));
+    transform: translateX(-100%) rotate(24deg) scale(var(--plant-scale));
     transform-origin: right bottom;
 }
 
 .leaf-right {
-    border-radius: 0 100% 0 100%;
-    transform: rotate(-17deg) scale(var(--plant-scale));
+    bottom: calc(var(--stem-height) * 0.55);
+    border-radius: 5% 85% 5% 85%;
+    transform: rotate(-24deg) scale(var(--plant-scale));
     transform-origin: left bottom;
+}
+
+.leaf-right::after { transform: rotate(19deg); }
+
+.mvsv-bud {
+    position: absolute;
+    bottom: calc(var(--stem-height) - 8px);
+    left: 50%;
+    width: 15px;
+    height: 21px;
+    border: 1px solid #7a9d60;
+    border-radius: 65% 55% 45% 45%;
+    background: linear-gradient(90deg, #91b56e, #ccda9b 52%, #83a763);
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+    transition: bottom 0.65s, opacity 0.35s, transform 0.5s;
+    pointer-events: none;
+}
+
+.mvsv-bud::after {
+    content: "";
+    position: absolute;
+    inset: 3px 4px 5px;
+    border-left: 1px solid #6e905570;
+    border-radius: 50%;
+}
+
+.mvsv-plant.growth-2 .mvsv-bud {
+    opacity: 1;
+    transform: translateX(-50%) scale(0.85);
 }
 
 .mvsv-bloom {
     position: absolute;
-    bottom: calc(var(--stem-height) - 8px);
+    bottom: calc(var(--stem-height) - 24px);
     left: 50%;
     z-index: 2;
-    width: 18px;
-    height: 18px;
-    border: 0;
-    border-radius: 50%;
-    background: var(--flower-color, #f3a7b9);
-    box-shadow:
-        0 -16px 0 var(--flower-color, #f3a7b9),
-        12px -11px 0 var(--flower-color, #f3a7b9),
-        16px 1px 0 var(--flower-color, #f3a7b9),
-        10px 13px 0 var(--flower-color, #f3a7b9),
-        -3px 16px 0 var(--flower-color, #f3a7b9),
-        -14px 9px 0 var(--flower-color, #f3a7b9),
-        -15px -5px 0 var(--flower-color, #f3a7b9),
-        -7px -15px 0 var(--flower-color, #f3a7b9),
-        0 6px 13px rgba(53, 95, 57, 0.13);
+    width: 68px;
+    height: 68px;
+    color: var(--flower-color, #e9a2ad);
     opacity: var(--bloom-scale);
     transform: translateX(-50%) scale(var(--bloom-scale));
     transition: bottom 0.65s, opacity 0.45s, transform 0.7s cubic-bezier(0.34, 1.55, 0.64, 1);
+    pointer-events: none;
 }
 
-.mvsv-bloom::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 13px;
-    height: 13px;
-    border: 3px solid #e4a72e;
-    border-radius: 50%;
-    background: #754923;
-    box-shadow: inset 0 0 0 2px #f1c855;
-    transform: translate(-50%, -50%);
+.mvsv-flower-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform: rotate(var(--flower-tilt, -8deg));
+    filter: drop-shadow(0 2px 1px #5d67441c);
 }
 
-.mvsv-plant:nth-child(2n) { --flower-color: #86b9ea; }
-.mvsv-plant:nth-child(3n) { --flower-color: #f09a60; }
-.mvsv-plant:nth-child(4n) { --flower-color: #b892df; }
-.mvsv-plant:nth-child(5n) { --flower-color: #f2cf58; }
+.mvsv-plant:nth-child(2) { --flower-color: #eec19a; --flower-tilt: 9deg; }
+.mvsv-plant:nth-child(3) { --flower-color: #c0aedb; --flower-tilt: -15deg; }
+.mvsv-plant:nth-child(4) { --flower-color: #f5e9c5; --flower-tilt: 5deg; }
+.mvsv-plant:nth-child(5) { --flower-color: #e8c46e; --flower-tilt: -12deg; }
+.mvsv-plant:nth-child(6) { --flower-color: #9dc5d9; --flower-tilt: 13deg; }
 
 .mvsv-plant.growth-1 { --stem-height: 52px; --plant-scale: 0.76; }
 .mvsv-plant.growth-2 { --stem-height: 78px; --plant-scale: 0.9; }
@@ -453,6 +522,7 @@
     border-radius: 18px;
 }
 
+/* Dimensões e bico preservados: o JS controla o botão externo. */
 .mvsv-can-body {
     position: absolute;
     right: 0;
@@ -462,11 +532,31 @@
     justify-content: center;
     width: 66px;
     height: 52px;
-    border-radius: 13px 13px 18px 18px;
-    background: linear-gradient(145deg, #73b8d2, #3d87a8);
-    color: rgba(255, 255, 255, 0.86);
-    font-size: 1rem;
-    box-shadow: inset 0 3px 0 rgba(255,255,255,0.24);
+    border: 2px solid #497f91;
+    border-radius: 12px 11px 23px 19px / 10px 10px 15px 15px;
+    background: linear-gradient(105deg, #a1ced5, #7bb6c4 45%, #5e9eaf);
+    box-shadow: inset 3px 3px 0 #c8e5e46b, inset -3px -4px 0 #427f942e;
+}
+
+.mvsv-can-body i { display: none; }
+
+.mvsv-can-body::before {
+    content: "";
+    width: 25px;
+    height: 28px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 32'%3E%3Cpath d='M15 28V12' stroke='%23edf5da' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M15 21C4 23 2 17 3 11C11 10 16 14 15 21ZM15 16C15 6 21 3 27 4C28 11 23 17 15 16Z' fill='%23edf5da'/%3E%3C/svg%3E") center / contain no-repeat;
+    opacity: 0.93;
+}
+
+.mvsv-can-body::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    width: 3px;
+    height: 18px;
+    border-radius: 50%;
+    background: #deefec73;
 }
 
 .mvsv-can-handle {
@@ -475,9 +565,10 @@
     right: 7px;
     width: 55px;
     height: 42px;
-    border: 8px solid #4d97b5;
+    border: 8px solid #6b9faf;
     border-bottom: 0;
     border-radius: 32px 32px 0 0;
+    box-shadow: inset 0 2px 0 #487c90, 0 -2px 0 #accfd3;
 }
 
 .mvsv-can-spout {
@@ -487,7 +578,8 @@
     width: 68px;
     height: 17px;
     border-radius: 999px 0 0 999px;
-    background: linear-gradient(180deg, #6eb0c9, #438daa);
+    background: linear-gradient(180deg, #afd2d5, #74aabb 45%, #578fa4);
+    box-shadow: inset 0 -2px 0 #487e934d;
     transform: rotate(-17deg);
     transform-origin: right center;
 }
@@ -499,8 +591,11 @@
     left: -2px;
     width: 14px;
     height: 29px;
-    border-radius: 7px;
-    background: #4d97b5;
+    border: 1px solid #568899;
+    border-radius: 45% 30% 30% 45%;
+    background:
+        radial-gradient(circle, #e4f0e7 0 1px, transparent 1.4px) 2px 1px / 5px 6px,
+        linear-gradient(90deg, #4e8297, #8bb9c4);
 }
 
 .mvsv-can-top {
@@ -509,20 +604,43 @@
     right: 19px;
     width: 29px;
     height: 10px;
-    border-radius: 999px;
-    background: #2f7393;
+    border: 2px solid #93bdc6;
+    border-radius: 50%;
+    background: #487b8e;
+    box-shadow: inset 0 2px 2px #2f566b4d;
 }
 
+/* Só o GSAP controla a trajetória, a opacidade e a duração das gotas. */
 .mvsv-water-drop {
     position: absolute;
     z-index: 13;
     width: 10px;
     height: 14px;
-    border-radius: 50% 50% 55% 45%;
-    background: #68c7ed;
+    background: transparent;
     pointer-events: none;
     transform: rotate(42deg);
-    box-shadow: 0 2px 4px rgba(36, 130, 170, 0.18);
+}
+
+.mvsv-water-drop::before,
+.mvsv-water-drop::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    border: 1px solid #4a9bb65c;
+    border-radius: 12% 65% 58% 65%;
+    background:
+        radial-gradient(ellipse at 34% 32%, #ffffffed 0 11%, transparent 22%),
+        linear-gradient(135deg, #d6f4f5b3, #83cbdcc9 62%, #56a9c3d9);
+    box-shadow: inset -1px -1px 1px #4096b04d, 0 1px 2px #3b879229;
+}
+
+.mvsv-water-drop::before { inset: 0; }
+.mvsv-water-drop::after {
+    top: -6px;
+    left: -7px;
+    width: 4px;
+    height: 6px;
+    opacity: 0.65;
 }
 
 .mvsv-visually-hidden {
@@ -536,7 +654,7 @@
 }
 
 .mvsv-scene.garden-complete .mvsv-bloom {
-    filter: drop-shadow(0 0 8px rgba(255, 220, 95, 0.52));
+    filter: drop-shadow(0 2px 5px rgba(230, 197, 103, 0.3));
 }
 
 .mvsv-done {
@@ -647,6 +765,17 @@
         width: 40px;
     }
 
+    .mvsv-bloom {
+        width: 50px;
+        height: 50px;
+        bottom: calc(var(--stem-height) - 17px);
+    }
+
+    .mvsv-leaf {
+        width: 24px;
+        height: 14px;
+    }
+
     .mvsv-grass {
         bottom: 102px;
         transform: scale(0.82);
@@ -665,6 +794,7 @@
 @media (prefers-reduced-motion: reduce) {
     .mvsv-stem,
     .mvsv-leaf,
+    .mvsv-bud,
     .mvsv-bloom {
         animation: none;
         transition-duration: 0.01ms;

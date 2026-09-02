@@ -193,7 +193,7 @@
             </section>
 
             <section id="activity-stage" class="activity-stage mvsv-stage" aria-label="Atividade Minha Vez, Sua Vez">
-                <div id="mvsv-intro" class="activity-screen activity-center-screen">
+                <div id="mvsv-intro" class="activity-screen activity-center-screen" hidden>
                     <h2 class="activity-screen-title">Vamos cuidar do jardim juntos?</h2>
 
                     <p class="activity-screen-text">
@@ -205,7 +205,7 @@
                     </button>
                 </div>
 
-                <div id="mvsv-loading" class="activity-screen activity-loading mvsv-loading" aria-live="polite" hidden>
+                <div id="mvsv-loading" class="activity-screen activity-loading mvsv-loading" aria-live="polite">
                     <div class="activity-loading-content">
                         <img src="/img/mascot/teko-andando.gif" alt="Teko andando" class="activity-loading-gif">
 
@@ -224,6 +224,42 @@
                     </div>
 
                     <div id="mvsv-scene" class="mvsv-scene child-turn">
+                        <svg class="mvsv-art-defs" width="0" height="0" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="mvsv-petal-light" x1="0" y1="0" x2="0.7" y2="1">
+                                    <stop offset="0" stop-color="#ffffff" stop-opacity=".42"/>
+                                    <stop offset=".55" stop-color="#ffffff" stop-opacity="0"/>
+                                    <stop offset="1" stop-color="#785d53" stop-opacity=".14"/>
+                                </linearGradient>
+                                <radialGradient id="mvsv-flower-heart" cx=".35" cy=".3" r=".75">
+                                    <stop offset="0" stop-color="#fbe6a0"/>
+                                    <stop offset="1" stop-color="#d6a950"/>
+                                </radialGradient>
+                                <g id="mvsv-petal">
+                                    <path d="M33 34C27 28 21 15 27 8C33 1 43 3 44 11C45 19 40 28 38 34Z" fill="currentColor"/>
+                                    <path d="M33 34C27 28 21 15 27 8C33 1 43 3 44 11C45 19 40 28 38 34Z" fill="url(#mvsv-petal-light)" stroke="#916e66" stroke-opacity=".13" stroke-width=".8"/>
+                                    <path d="M35 29Q32 20 34 13" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="1.2" stroke-linecap="round"/>
+                                </g>
+                                <symbol id="mvsv-flower-shape" viewBox="0 0 72 72">
+                                    <use href="#mvsv-petal"/>
+                                    <use href="#mvsv-petal" transform="rotate(45 36 36)"/>
+                                    <use href="#mvsv-petal" transform="rotate(90 36 36)"/>
+                                    <use href="#mvsv-petal" transform="rotate(135 36 36)"/>
+                                    <use href="#mvsv-petal" transform="rotate(180 36 36)"/>
+                                    <use href="#mvsv-petal" transform="rotate(225 36 36)"/>
+                                    <use href="#mvsv-petal" transform="rotate(270 36 36)"/>
+                                    <use href="#mvsv-petal" transform="rotate(315 36 36)"/>
+                                    <circle cx="36" cy="37" r="10" fill="#b58a4c" opacity=".2"/>
+                                    <circle cx="36" cy="36" r="9" fill="url(#mvsv-flower-heart)" stroke="#b99150" stroke-width=".8"/>
+                                    <g fill="#ae813c" opacity=".6">
+                                        <circle cx="33" cy="32" r="1"/><circle cx="38" cy="32" r=".9"/>
+                                        <circle cx="36" cy="36" r="1.1"/><circle cx="31" cy="37" r=".8"/>
+                                        <circle cx="40" cy="37" r=".9"/><circle cx="35" cy="41" r=".9"/>
+                                    </g>
+                                </symbol>
+                            </defs>
+                        </svg>
+
                         <span class="mvsv-sun" aria-hidden="true"></span>
                         <span class="mvsv-cloud mvsv-cloud-one" aria-hidden="true"></span>
                         <span class="mvsv-cloud mvsv-cloud-two" aria-hidden="true"></span>
@@ -243,22 +279,22 @@
 
                         <div class="mvsv-plants" role="group" aria-label="Plantas do jardim">
                             <button class="mvsv-plant growth-0" type="button" data-plant-index="0" data-growth="0" aria-label="Planta 1, pequena">
-                                <span class="mvsv-bloom"></span><span class="mvsv-stem"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
+                                <span class="mvsv-bloom"><svg class="mvsv-flower-art" viewBox="0 0 72 72" aria-hidden="true" focusable="false"><use href="#mvsv-flower-shape"/></svg></span><span class="mvsv-stem"></span><span class="mvsv-bud" aria-hidden="true"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
                             </button>
                             <button class="mvsv-plant growth-0" type="button" data-plant-index="1" data-growth="0" aria-label="Planta 2, pequena">
-                                <span class="mvsv-bloom"></span><span class="mvsv-stem"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
+                                <span class="mvsv-bloom"><svg class="mvsv-flower-art" viewBox="0 0 72 72" aria-hidden="true" focusable="false"><use href="#mvsv-flower-shape"/></svg></span><span class="mvsv-stem"></span><span class="mvsv-bud" aria-hidden="true"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
                             </button>
                             <button class="mvsv-plant growth-0" type="button" data-plant-index="2" data-growth="0" aria-label="Planta 3, pequena">
-                                <span class="mvsv-bloom"></span><span class="mvsv-stem"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
+                                <span class="mvsv-bloom"><svg class="mvsv-flower-art" viewBox="0 0 72 72" aria-hidden="true" focusable="false"><use href="#mvsv-flower-shape"/></svg></span><span class="mvsv-stem"></span><span class="mvsv-bud" aria-hidden="true"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
                             </button>
                             <button class="mvsv-plant growth-0" type="button" data-plant-index="3" data-growth="0" aria-label="Planta 4, pequena">
-                                <span class="mvsv-bloom"></span><span class="mvsv-stem"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
+                                <span class="mvsv-bloom"><svg class="mvsv-flower-art" viewBox="0 0 72 72" aria-hidden="true" focusable="false"><use href="#mvsv-flower-shape"/></svg></span><span class="mvsv-stem"></span><span class="mvsv-bud" aria-hidden="true"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
                             </button>
                             <button class="mvsv-plant growth-0" type="button" data-plant-index="4" data-growth="0" aria-label="Planta 5, pequena">
-                                <span class="mvsv-bloom"></span><span class="mvsv-stem"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
+                                <span class="mvsv-bloom"><svg class="mvsv-flower-art" viewBox="0 0 72 72" aria-hidden="true" focusable="false"><use href="#mvsv-flower-shape"/></svg></span><span class="mvsv-stem"></span><span class="mvsv-bud" aria-hidden="true"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
                             </button>
                             <button class="mvsv-plant growth-0" type="button" data-plant-index="5" data-growth="0" aria-label="Planta 6, pequena">
-                                <span class="mvsv-bloom"></span><span class="mvsv-stem"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
+                                <span class="mvsv-bloom"><svg class="mvsv-flower-art" viewBox="0 0 72 72" aria-hidden="true" focusable="false"><use href="#mvsv-flower-shape"/></svg></span><span class="mvsv-stem"></span><span class="mvsv-bud" aria-hidden="true"></span><span class="mvsv-leaf leaf-left"></span><span class="mvsv-leaf leaf-right"></span>
                             </button>
                         </div>
 
@@ -266,6 +302,26 @@
                         <span class="mvsv-grass mvsv-grass-two" aria-hidden="true"></span>
                         <span class="mvsv-grass mvsv-grass-three" aria-hidden="true"></span>
                         <div class="mvsv-soil" aria-hidden="true"></div>
+                        <svg class="mvsv-garden-edge" viewBox="0 0 1000 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                            <g fill="#6f9560">
+                                <path d="M0 70V23C24 25 31 45 31 70Z"/>
+                                <path d="M15 70C8 41 18 17 34 13C43 33 40 50 30 70Z"/>
+                                <path d="M27 70C36 40 56 36 67 41C62 58 50 65 41 70Z"/>
+                                <path d="M1000 70V30C980 30 969 49 970 70Z"/>
+                                <path d="M980 70C977 46 960 23 950 26C946 47 955 63 966 70Z"/>
+                                <path d="M960 70C948 47 930 43 920 49C928 64 936 69 948 70Z"/>
+                            </g>
+                            <g fill="none" stroke="#abc588" stroke-width="1.6" stroke-linecap="round">
+                                <path d="M25 68Q31 42 31 25M35 69L57 49M972 69L956 37M965 69L985 44M6 69L6 44"/>
+                                <path d="M116 56l-3-8m6 8 5-11M340 60l-4-7m8 7 2-9M716 54l-2-8m6 8 5-12M862 58l-4-9m9 9 2-6"/>
+                            </g>
+                            <g stroke="#b79a75" stroke-width="1">
+                                <path d="M204 54Q210 43 219 49L223 55Q213 59 204 54Z" fill="#e9d6b5"/>
+                                <path d="M601 61Q607 48 618 55L621 61Q611 64 601 61Z" fill="#c3b7a0"/>
+                                <path d="M800 36Q805 30 811 35L812 38Q805 41 800 36Z" fill="#ecd9b7"/>
+                            </g>
+                        </svg>
+
 
                         <button id="mvsv-watering-can" class="mvsv-watering-can" type="button" aria-label="Regador. Arraste até uma planta para molhar" aria-disabled="false">
                             <span class="mvsv-can-handle"></span>

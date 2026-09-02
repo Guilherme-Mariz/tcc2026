@@ -193,7 +193,7 @@
             </section>
 
             <section id="activity-stage" class="activity-stage rt-stage" aria-label="Atividade Respire com o Teko">
-                <div id="rt-intro" class="activity-screen activity-center-screen">
+                <div id="rt-intro" class="activity-screen activity-center-screen" hidden>
                     <h2 class="activity-screen-title">
                         Vamos respirar com o Teko?
                     </h2>
@@ -207,7 +207,7 @@
                     </button>
                 </div>
 
-                <div id="rt-loading" class="activity-screen activity-loading" aria-live="polite" hidden>
+                <div id="rt-loading" class="activity-screen activity-loading" aria-live="polite">
                     <div class="activity-loading-content">
                         <img
                             src="/img/mascot/teko-andando.gif"
@@ -219,22 +219,18 @@
                 </div>
 
                 <div id="rt-game" class="activity-screen rt-game" hidden>
-                    <div class="rt-game-topbar">
-                        <div class="rt-progress-copy">
-                            <span id="rt-progress-label">Respiração 1 de 5</span>
-                            <div id="rt-progress-dots" class="rt-progress-dots" aria-label="Progresso: nenhuma de cinco respirações concluída">
-                                <span class="rt-progress-dot" aria-hidden="true"></span>
-                                <span class="rt-progress-dot" aria-hidden="true"></span>
-                                <span class="rt-progress-dot" aria-hidden="true"></span>
-                                <span class="rt-progress-dot" aria-hidden="true"></span>
-                                <span class="rt-progress-dot" aria-hidden="true"></span>
-                            </div>
+                    <div class="rt-guide-panel">
+                        <div class="rt-breath-visual" aria-hidden="true">
+                            <span class="rt-breath-ring rt-breath-ring-outer"></span>
+                            <span class="rt-breath-ring rt-breath-ring-middle"></span>
+                            <span id="rt-breath-orb" class="rt-breath-orb"></span>
                         </div>
 
-                        <button id="rt-sound-btn" class="rt-icon-button" type="button" aria-pressed="false" aria-label="Ativar narração">
-                            <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
-                            <span>Narração desligada</span>
-                        </button>
+                        <div class="rt-guide-copy" aria-live="polite" aria-atomic="true">
+                            <span id="rt-phase-kicker">Vamos começar</span>
+                            <strong id="rt-phase-text">Encontre uma posição confortável</strong>
+                            <p id="rt-phase-help">Você pode pausar quando quiser.</p>
+                        </div>
                     </div>
 
                     <div id="rt-scene" class="rt-scene" data-moment="0">
@@ -271,7 +267,6 @@
 
                         <div id="rt-scene-start" class="rt-scene-start">
                             <div class="rt-scene-start-card">
-                                <span class="rt-scene-start-icon"><i class="fa-solid fa-wind"></i></span>
                                 <strong>Quando estiver pronto...</strong>
                                 <p>Vamos respirar juntos cinco vezes.</p>
                                 <button id="rt-journey-btn" type="button">Estou pronto</button>
@@ -279,33 +274,34 @@
                         </div>
                     </div>
 
-                    <div class="rt-guide-panel">
-                        <div class="rt-breath-visual" aria-hidden="true">
-                            <span class="rt-breath-ring rt-breath-ring-outer"></span>
-                            <span class="rt-breath-ring rt-breath-ring-middle"></span>
-                            <span id="rt-breath-orb" class="rt-breath-orb"><i class="fa-solid fa-wind"></i></span>
+                    <div class="rt-session-panel">
+                        <div class="rt-progress-copy">
+                            <span id="rt-progress-label">Respiração 1 de 5</span>
+                            <div id="rt-progress-dots" class="rt-progress-dots" aria-label="Progresso: nenhuma de cinco respirações concluída">
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                                <span class="rt-progress-dot" aria-hidden="true"></span>
+                            </div>
                         </div>
 
-                        <div class="rt-guide-copy" aria-live="polite" aria-atomic="true">
-                            <span id="rt-phase-kicker">Vamos começar</span>
-                            <strong id="rt-phase-text">Encontre uma posição confortável</strong>
-                            <p id="rt-phase-help">Você pode pausar quando quiser.</p>
-                        </div>
+                        <div class="rt-session-controls">
+                            <div class="rt-countdown-wrap" aria-hidden="true">
+                                <span id="rt-countdown">—</span>
+                                <small>segundos</small>
+                            </div>
 
-                        <div class="rt-countdown-wrap" aria-hidden="true">
-                            <span id="rt-countdown">—</span>
-                            <small>segundos</small>
-                        </div>
-
-                        <div class="rt-controls">
-                            <button id="rt-pause-btn" class="rt-control-button" type="button" disabled>
-                                <i class="fa-solid fa-pause" aria-hidden="true"></i>
-                                <span>Pausar</span>
-                            </button>
-                            <button id="rt-restart-btn" class="rt-control-button" type="button">
-                                <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-                                <span>Recomeçar</span>
-                            </button>
+                            <div class="rt-controls">
+                                <button id="rt-pause-btn" class="rt-control-button" type="button" disabled>
+                                    <i class="fa-solid fa-pause" aria-hidden="true"></i>
+                                    <span>Pausar</span>
+                                </button>
+                                <button id="rt-stop-btn" class="rt-control-button" type="button">
+                                    <i class="fa-solid fa-stop" aria-hidden="true"></i>
+                                    <span>Parar</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -314,32 +310,27 @@
                     <div class="rt-checkin-visual" aria-hidden="true">
                         <span class="rt-checkin-halo"></span>
                         <img src="/img/atv/respire-com-teko/teko-barco.webp" alt="">
-                        <i class="fa-solid fa-location-dot"></i>
                     </div>
 
-                    <span class="rt-eyebrow"><i class="fa-solid fa-seedling"></i> Você chegou</span>
+                    <span class="rt-eyebrow">Você chegou</span>
                     <h2 class="activity-screen-title">Como você está agora?</h2>
                     <p class="activity-screen-text">Não existe resposta certa. Escolha o que mais combina com este momento.</p>
 
                     <div id="rt-feeling-options" class="rt-feeling-options" role="group" aria-label="Como você está agora?">
                         <button class="rt-feeling-button rt-feeling-calm" type="button" data-feeling="calm">
-                            <span class="rt-feeling-icon">☀️</span>
                             <span><strong>Mais tranquilo</strong><small>Meu corpo acalmou um pouco</small></span>
                         </button>
 
                         <button class="rt-feeling-button rt-feeling-same" type="button" data-feeling="same">
-                            <span class="rt-feeling-icon">🌤️</span>
                             <span><strong>Mais ou menos igual</strong><small>Ainda estou percebendo como me sinto</small></span>
                         </button>
 
                         <button class="rt-feeling-button rt-feeling-bothered" type="button" data-feeling="bothered">
-                            <span class="rt-feeling-icon">🌧️</span>
                             <span><strong>Ainda incomodado</strong><small>Quero um pouco mais de apoio</small></span>
                         </button>
                     </div>
 
                     <div id="rt-checkin-response" class="rt-checkin-response" role="status" aria-live="polite" hidden>
-                        <span id="rt-response-icon" class="rt-response-icon" aria-hidden="true"></span>
                         <div>
                             <strong id="rt-response-title"></strong>
                             <p id="rt-response-text"></p>
@@ -359,7 +350,7 @@
 
                 <div id="rt-done" class="activity-screen rt-done" hidden>
                     <div class="rt-done-icon" aria-hidden="true">
-                        <i class="fa-solid fa-sailboat"></i>
+                        <img src="/img/atv/respire-com-teko/teko-barco.webp" alt="">
                     </div>
                     <p class="welcome-label">Viagem concluída</p>
                     <h2 class="activity-screen-title">Você cuidou de si por alguns minutos.</h2>

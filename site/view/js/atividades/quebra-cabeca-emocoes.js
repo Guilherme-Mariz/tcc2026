@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const GRID_SIZE = 3;
     const PIECE_COUNT = GRID_SIZE * GRID_SIZE;
-    const MINIMUM_LOADING_TIME = 3000;
+    const MINIMUM_LOADING_TIME = 2000;
     const PREVIEW_TIME = 2600;
 
     const phases = [
@@ -400,7 +400,17 @@ document.addEventListener("DOMContentLoaded", () => {
         clearSelection();
     }
 
+    const activityEntry = TekoActivityCore.createEntryGate({
+        stage: elements.stage,
+        game: screens.game,
+        instruction: "Monte a imagem trocando as peças de lugar. Depois, escolha o que pode ter acontecido.",
+        onStart: () => {
+            elements.board.querySelector(".qe-piece")?.focus();
+        }
+    });
+
     async function startActivity() {
+        activityEntry.cancel();
         const token = ++activityToken;
         currentPhase = 0;
         switchScreen("loading");
@@ -420,9 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         preparePhase();
-        switchScreen("game", () => {
-            elements.board.querySelector(".qe-piece")?.focus();
-        });
+        switchScreen("game", () => activityEntry.show());
     }
 
     function restartPhase() {
@@ -445,9 +453,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elements.board.replaceChildren();
         elements.stage.classList.remove("activity-stage-revealing");
 
-        switchScreen("intro", () => {
-            elements.start.focus();
-        });
+        startActivity();
     }
 
     function showPreview() {
@@ -579,4 +585,5 @@ document.addEventListener("DOMContentLoaded", () => {
         hidePreview();
         levelTransition.cancel();
     });
+    startActivity();
 });

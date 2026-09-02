@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const TEMPO_CARREGAMENTO = 3000;
+    const TEMPO_CARREGAMENTO = 2000;
     const DURACAO_FADE_TELA = 220;
 
     const frases = [
@@ -284,7 +284,17 @@ document.addEventListener("DOMContentLoaded", () => {
         renderizarJogo();
     }
 
+    const activityEntry = TekoActivityCore.createEntryGate({
+        stage: palcoAtividade,
+        game: telas.jogo,
+        instruction: "Leia o pedido e escolha os blocos na ordem para montar a frase. Depois, confirme.",
+        onStart: () => {
+            elementos.opcoes.querySelector(".word-card")?.focus();
+        }
+    });
+
     function iniciarAtividade() {
+        activityEntry.cancel();
         trocarTela("inicio", "carregamento", () => {
             palcoAtividade.classList.add("activity-stage-revealing");
         });
@@ -295,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
             rodadaAtual = 0;
 
             carregarRodada();
-            trocarTela("carregamento", "jogo");
+            trocarTela("carregamento", "jogo", () => activityEntry.show());
         }, TEMPO_CARREGAMENTO);
     }
 
@@ -373,9 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.frase.classList.remove("activity-answer-correct");
         palcoAtividade.classList.remove("activity-stage-revealing");
 
-        trocarTela("conclusao", "inicio", () => {
-            elementos.iniciar.focus();
-        });
+        iniciarAtividade();
     }
 
     function ouvirFrase() {
@@ -447,8 +455,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.speechSynthesis?.cancel();
     });
 
-    telas.inicio.hidden = false;
+    telas.inicio.hidden = true;
     telas.carregamento.hidden = true;
     telas.jogo.hidden = true;
     telas.conclusao.hidden = true;
+    iniciarAtividade();
 });

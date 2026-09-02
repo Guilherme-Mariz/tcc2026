@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const LOADING_TIME = 3000;
+    const LOADING_TIME = 2000;
 
     const phases = [
         {
@@ -268,7 +268,17 @@ document.addEventListener("DOMContentLoaded", () => {
         window.speechSynthesis.speak(speech);
     }
 
+    const activityEntry = TekoActivityCore.createEntryGate({
+        stage: elements.stage,
+        game: screens.game,
+        instruction: "Leia o que mudou no plano do Teko. Escolha uma ideia para ajudar e confirme.",
+        onStart: () => {
+            elements.options.querySelector(".mp-option")?.focus();
+        }
+    });
+
     function startActivity() {
+        activityEntry.cancel();
         const token = ++activityToken;
         window.clearTimeout(loadingTimer);
         levelTransition.cancel();
@@ -282,9 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             currentPhase = 0;
             loadPhase();
-            switchScreen("game", () => {
-                elements.options.querySelector(".mp-option")?.focus();
-            });
+            switchScreen("game", () => activityEntry.show());
         }, LOADING_TIME);
     }
 
@@ -299,9 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
         phaseCompleted = false;
         elements.stage.classList.remove("activity-stage-revealing");
 
-        switchScreen("intro", () => {
-            elements.start.focus();
-        });
+        startActivity();
     }
 
     elements.start.addEventListener("click", startActivity);
@@ -315,4 +321,5 @@ document.addEventListener("DOMContentLoaded", () => {
         levelTransition.cancel();
         window.speechSynthesis?.cancel();
     });
+    startActivity();
 });

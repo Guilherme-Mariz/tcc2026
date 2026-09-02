@@ -173,6 +173,9 @@ body.page-leaving {
 .activity-stage {
     display: flex;
     position: relative;
+    /* Mantém todos os efeitos na camada da atividade, abaixo da navegação. */
+    isolation: isolate;
+    z-index: 0;
     overflow: hidden;
     min-height: 480px;
     padding: 32px;
@@ -418,6 +421,115 @@ body.page-leaving {
     line-height: 1.5;
 }
 
+
+/* Entrada guiada compartilhada, restrita ao palco da atividade.
+   Ajuste a sombra aqui para todas as atividades, sem alterar os jogos. */
+.activity-entry-blocked {
+    filter: blur(7px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.activity-stage > .activity-entry-overlay {
+    --activity-entry-shade: rgba(18, 31, 25, 0.54);
+    /* Presa ao palco, não à janela. O z-index é apenas local. */
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    padding: clamp(16px, 4vw, 36px);
+    background: var(--activity-entry-shade);
+}
+
+.activity-entry-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    width: min(100%, 620px);
+    padding: clamp(8px, 2vw, 20px);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    text-align: center;
+}
+
+/* Destino de foco da instrução/contagem, não um controle interativo. */
+.activity-entry-card:focus {
+    outline: none;
+}
+
+.activity-entry-instruction {
+    margin: 0;
+    color: #ffffff;
+    font-family: "Fraunces", serif;
+    font-size: clamp(1.35rem, 3.4vw, 2rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: balance;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+    animation: activityEntryReveal 420ms ease-out both;
+}
+
+.activity-entry-start {
+    background: var(--green-deep);
+    color: #ffffff;
+    border: 0;
+    box-shadow: 0 6px 20px rgba(9, 31, 18, 0.22);
+    animation: activityEntryReveal 420ms 80ms ease-out both;
+}
+
+.activity-entry-start:focus-visible {
+    outline: none;
+    /* Indica o foco do teclado sem desenhar um contorno no botão. */
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+
+.activity-entry-card.is-counting {
+    width: min(100%, 230px);
+}
+
+.activity-entry-countdown {
+    margin: 0;
+    color: #ffffff;
+    font-family: "Fraunces", serif;
+    font-size: clamp(4.5rem, 14vw, 7rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.24);
+}
+
+/* Cada número recebe sua própria entrada; não há animação infinita. */
+.activity-entry-number {
+    display: inline-block;
+    min-width: 1ch;
+    animation: activityEntryNumber 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes activityEntryReveal {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes activityEntryNumber {
+    from { opacity: 0; transform: translateY(10px) scale(0.86); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .activity-entry-instruction,
+    .activity-entry-start,
+    .activity-entry-number {
+        animation: none;
+    }
+}
 
 /*card das atividades*/
 .atv-card {

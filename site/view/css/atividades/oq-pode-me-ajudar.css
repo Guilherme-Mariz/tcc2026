@@ -1,0 +1,722 @@
+.opma-stage {
+    min-height: 720px;
+}
+
+.opma-game {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.opma-round-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.opma-scene {
+    position: relative;
+    overflow: hidden;
+
+    width: min(100%, 400px);
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+
+    margin: 0 auto;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: #eef2e9;
+    box-shadow: var(--shadow-sm);
+}
+
+.opma-background,
+.opma-scene-shade {
+    position: absolute;
+    inset: -8px;
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
+}
+
+.opma-background {
+    object-fit: cover;
+    filter: blur(2.6px) saturate(0.9);
+    transform: scale(1.025);
+}
+
+.opma-scene-shade {
+    background: linear-gradient(180deg, rgba(28, 39, 31, 0.05), rgba(20, 35, 26, 0.2));
+}
+
+.opma-teko {
+    position: absolute;
+    right: 50%;
+    bottom: -32%;
+    z-index: 1;
+
+    width: 88%;
+    height: 110%;
+    object-fit: contain;
+    object-position: center bottom;
+
+    filter: drop-shadow(0 12px 12px rgba(29, 47, 36, 0.2));
+    transform: translateX(50%);
+}
+
+.opma-choice-area {
+    width: min(100%, 780px);
+    margin: 0 auto;
+}
+
+.opma-question {
+    margin: 0 0 18px;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1.35rem;
+    text-align: center;
+}
+
+.opma-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.opma-option {
+    display: grid;
+    grid-template-columns: 42px 1fr 18px;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--activity-button-radius);
+    background: #ffffff;
+    color: var(--text);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: left;
+    transition: border-color var(--transition), background var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.opma-option:nth-child(2) { background: #fffaf0; }
+.opma-option:nth-child(3) { background: #f2f7fb; }
+.opma-option:nth-child(4) { background: #fbf4f7; }
+
+.opma-option-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(58, 140, 96, 0.1);
+    color: var(--green-deep);
+    font-size: 1rem;
+}
+
+.opma-option-check {
+    color: transparent;
+    font-size: 0.9rem;
+}
+
+.opma-option:hover {
+    border-color: rgba(58, 140, 96, 0.55);
+    box-shadow: 0 6px 16px rgba(30, 78, 53, 0.08);
+    transform: translateY(-1px);
+}
+
+.opma-option.is-selected {
+    border-color: var(--green-deep);
+    background: #e9f7ee;
+    box-shadow: 0 0 0 3px rgba(58, 140, 96, 0.1);
+}
+
+.opma-option.is-selected .opma-option-check {
+    color: var(--green-deep);
+}
+
+.opma-option:focus-visible,
+.opma-btn:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.opma-feedback {
+    display: grid;
+    grid-template-columns: 46px 1fr auto;
+    align-items: center;
+    gap: 15px;
+    width: min(100%, 780px);
+    margin: 0 auto;
+    padding: 16px 18px;
+    border: 1.5px solid rgba(168, 213, 186, 0.85);
+    border-radius: var(--radius-lg);
+    background: #f1faf4;
+    animation: opmaFeedbackIn 240ms ease both;
+}
+
+.opma-feedback-icon {
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(58, 140, 96, 0.12);
+    color: var(--green-deep);
+}
+
+.opma-feedback-icon {
+    width: 46px;
+    height: 46px;
+}
+
+.opma-feedback-copy h3 {
+    margin: 0 0 3px;
+    color: var(--text);
+    font-family: "Fraunces", serif;
+    font-size: 1rem;
+}
+
+.opma-feedback-copy p {
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.opma-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1.5px solid transparent;
+    border-radius: var(--activity-button-radius);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.opma-btn-primary {
+    background: var(--green-deep);
+    box-shadow: 0 5px 14px rgba(58, 140, 96, 0.22);
+    color: #ffffff;
+}
+
+.opma-btn-secondary {
+    border-color: var(--border);
+    background: #ffffff;
+    color: var(--text-mid);
+}
+
+.opma-btn:hover { transform: translateY(-1px); }
+
+.opma-done {
+    max-width: 760px;
+    padding-top: 26px;
+    padding-bottom: 28px;
+}
+
+.opma-backpack-instruction {
+    margin-bottom: 18px;
+}
+
+.opma-loose-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.opma-loose-item.opma-option {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transform: translate3d(0, 0, 0);
+}
+
+.opma-loose-item:nth-child(5) {
+    grid-column: 1 / -1;
+    width: calc(50% - 6.5px);
+    justify-self: center;
+}
+
+.opma-loose-item:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+}
+
+.opma-loose-item.is-dragging {
+    z-index: 20;
+    border-color: var(--green-deep);
+    box-shadow: 0 14px 30px rgba(29, 73, 48, 0.22);
+    cursor: grabbing;
+}
+
+.opma-loose-item.is-returning {
+    transition: transform 280ms ease;
+}
+
+.opma-loose-item.is-packing {
+    z-index: 21;
+    pointer-events: none;
+    opacity: 0;
+    filter: blur(1px);
+    transition:
+        transform 430ms cubic-bezier(0.32, 0, 0.16, 1),
+        opacity 380ms 80ms ease,
+        filter 380ms ease;
+}
+
+.opma-backpack-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0;
+}
+
+.opma-backpack {
+    position: relative;
+    width: 282px;
+    height: 264px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: default;
+    font-family: "Poppins", sans-serif;
+    perspective: 500px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.opma-backpack:focus-visible {
+    outline: 3px solid var(--green-deep);
+    outline-offset: 3px;
+    border-radius: 48px;
+}
+
+.opma-backpack-handle {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    z-index: 0;
+    width: 76px;
+    height: 66px;
+    border: 13px solid #376b53;
+    border-bottom: 0;
+    border-radius: 34px 34px 0 0;
+    box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.16),
+        0 3px 0 #28553f;
+    transform: translateX(-50%);
+}
+
+.opma-backpack-strap {
+    position: absolute;
+    bottom: 25px;
+    z-index: 0;
+    width: 64px;
+    height: 162px;
+    border: 17px solid #477d61;
+    border-top: 0;
+    border-radius: 0 0 36px 36px;
+    box-shadow: inset 4px -2px 0 rgba(31, 75, 52, 0.22);
+    opacity: 0.82;
+}
+
+.opma-backpack-strap-left { left: 23px; transform: rotate(5deg); }
+.opma-backpack-strap-right { right: 23px; transform: rotate(-5deg); }
+
+.opma-backpack-side-pocket {
+    position: absolute;
+    bottom: 38px;
+    z-index: 1;
+    width: 54px;
+    height: 82px;
+    border: 3px solid #356a50;
+    border-radius: 18px 18px 24px 24px;
+    background:
+        repeating-linear-gradient(105deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 6px),
+        #639c79;
+    box-shadow: inset 0 7px 0 rgba(255, 255, 255, 0.1);
+}
+
+.opma-backpack-side-pocket::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    left: 7px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(40, 85, 63, 0.6);
+    box-shadow: 0 2px 0 rgba(255, 255, 255, 0.12);
+}
+
+.opma-backpack-side-pocket-left { left: 5px; transform: rotate(-4deg); }
+.opma-backpack-side-pocket-right { right: 5px; transform: rotate(4deg); }
+
+.opma-backpack-body {
+    position: absolute;
+    right: 31px;
+    bottom: 11px;
+    z-index: 2;
+    width: 220px;
+    height: 194px;
+    border: 4px solid #32684e;
+    border-radius: 50px 50px 38px 38px;
+    background:
+        linear-gradient(118deg, rgba(255, 255, 255, 0.2), transparent 35%),
+        repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 7px),
+        #69a681;
+    box-shadow:
+        inset -14px -12px 0 rgba(36, 83, 57, 0.1),
+        inset 6px 7px 0 rgba(255, 255, 255, 0.08),
+        0 16px 26px rgba(29, 70, 46, 0.22);
+}
+
+.opma-backpack-body::before {
+    content: "";
+    position: absolute;
+    inset: 12px 15px 13px;
+    border: 2px dashed rgba(230, 244, 232, 0.35);
+    border-radius: 38px 38px 28px 28px;
+    pointer-events: none;
+}
+
+.opma-backpack-body::after {
+    content: "";
+    position: absolute;
+    top: 31px;
+    bottom: 30px;
+    left: 50%;
+    width: 1px;
+    background: linear-gradient(transparent, rgba(45, 103, 76, 0.18), transparent);
+}
+
+.opma-backpack-opening {
+    position: absolute;
+    top: -15px;
+    left: 19px;
+    z-index: 6;
+    width: 174px;
+    height: 46px;
+    border: 4px solid #2b5a43;
+    border-radius: 50%;
+    background: #18362a;
+    box-shadow:
+        inset 0 9px 12px rgba(0, 0, 0, 0.34),
+        0 3px 0 rgba(228, 241, 230, 0.2);
+    transition: opacity 220ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.opma-backpack-opening::before {
+    content: "";
+    position: absolute;
+    inset: -7px 8px auto;
+    height: 8px;
+    border-top: 3px dashed #e7d9a7;
+    border-radius: 50%;
+}
+
+.opma-backpack-lining {
+    position: absolute;
+    top: 9px;
+    left: 13px;
+    width: 140px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, #284f3d 0 45%, #1d3c2f 72%);
+    opacity: 0.72;
+}
+
+.opma-backpack-flap {
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    z-index: 5;
+    width: 182px;
+    height: 76px;
+    border: 4px solid #32684e;
+    border-radius: 54% 54% 27px 27px;
+    background:
+        linear-gradient(125deg, rgba(255, 255, 255, 0.16), transparent 45%),
+        repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 7px),
+        #79b18e;
+    box-shadow:
+        inset 0 -9px 0 rgba(42, 97, 65, 0.08),
+        0 5px 8px rgba(27, 67, 44, 0.12);
+    transform-origin: 50% 5px;
+    transition: transform 620ms cubic-bezier(0.34, 1.4, 0.64, 1), background 220ms ease;
+}
+
+.opma-backpack.is-open .opma-backpack-flap {
+    transform: translateY(-34px) rotateX(70deg);
+}
+
+.opma-backpack-top-seam {
+    position: absolute;
+    inset: 8px 10px;
+    border: 2px dashed rgba(236, 247, 238, 0.38);
+    border-radius: 50% 50% 20px 20px;
+}
+
+.opma-backpack-top-zipper {
+    position: absolute;
+    right: 18px;
+    bottom: 13px;
+    left: 18px;
+    height: 5px;
+    border-radius: 999px;
+    background: repeating-linear-gradient(90deg, #e6d49d 0 4px, #9a8451 4px 6px);
+    box-shadow: 0 2px 0 rgba(39, 86, 61, 0.28);
+}
+
+.opma-backpack-zipper-pull {
+    position: absolute;
+    top: -5px;
+    right: -1px;
+    width: 8px;
+    height: 14px;
+    border: 2px solid #826d3f;
+    border-radius: 5px;
+    background: #ead9a4;
+    transform: rotate(-12deg);
+}
+
+.opma-backpack-front-panel {
+    position: absolute;
+    top: 31px;
+    left: 24px;
+    z-index: 2;
+    width: 164px;
+    height: 119px;
+    border: 2px solid rgba(49, 103, 76, 0.35);
+    border-radius: 36px 36px 31px 31px;
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.06), rgba(38, 88, 60, 0.06));
+}
+
+.opma-backpack-pocket {
+    display: grid;
+    position: absolute;
+    right: 34px;
+    bottom: 16px;
+    z-index: 4;
+    place-items: end center;
+    width: 144px;
+    height: 78px;
+    padding-bottom: 10px;
+    border: 3px solid rgba(49, 105, 75, 0.72);
+    border-radius: 21px 21px 29px 29px;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.12), transparent 50%),
+        #85ba97;
+    box-shadow:
+        inset 0 8px 0 rgba(255, 255, 255, 0.1),
+        0 4px 7px rgba(39, 86, 60, 0.1);
+}
+
+.opma-backpack-pocket-zipper {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    height: 4px;
+    border-radius: 999px;
+    background: repeating-linear-gradient(90deg, #e8d69f 0 4px, #9e8959 4px 6px);
+}
+
+.opma-backpack-pocket-zipper::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: 7px;
+    width: 7px;
+    height: 11px;
+    border: 2px solid #826d3f;
+    border-radius: 4px;
+    background: #ead9a4;
+}
+
+.opma-backpack-flower {
+    display: grid;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    border: 2px solid rgba(171, 127, 32, 0.22);
+    border-radius: 50%;
+    background: #fff0a9;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45);
+    color: #d99f25;
+    font-size: 1.08rem;
+}
+
+.opma-backpack-buckle {
+    position: absolute;
+    top: 75px;
+    z-index: 5;
+    width: 20px;
+    height: 30px;
+    border: 3px solid #315f49;
+    border-radius: 7px;
+    background: #d8c58d;
+    box-shadow: inset 0 0 0 3px #6e9f7e;
+}
+
+.opma-backpack-buckle::before {
+    content: "";
+    position: absolute;
+    top: -28px;
+    left: 4px;
+    width: 6px;
+    height: 27px;
+    border-radius: 4px;
+    background: #3f785a;
+}
+
+.opma-backpack-buckle-left { left: 30px; }
+.opma-backpack-buckle-right { right: 30px; }
+
+.opma-backpack.is-drag-active .opma-backpack-opening {
+    box-shadow:
+        inset 0 9px 12px rgba(0, 0, 0, 0.3),
+        0 0 0 5px rgba(87, 166, 113, 0.14);
+}
+
+.opma-backpack.is-drop-hover .opma-backpack-opening {
+    box-shadow:
+        inset 0 9px 12px rgba(0, 0, 0, 0.24),
+        0 0 0 8px rgba(87, 166, 113, 0.24),
+        0 7px 16px rgba(35, 92, 61, 0.2);
+    transform: scale(1.07);
+}
+
+.opma-backpack.is-receiving .opma-backpack-body {
+    animation: opmaBackpackReceive 360ms ease;
+}
+
+.opma-backpack.is-ready {
+    cursor: pointer;
+    animation: opmaBackpackReady 1250ms ease-in-out infinite;
+}
+
+.opma-backpack.is-not-ready {
+    animation: opmaBackpackShake 360ms ease;
+}
+
+.opma-backpack.is-ready .opma-backpack-body {
+    box-shadow:
+        inset -14px -12px 0 rgba(36, 83, 57, 0.1),
+        inset 6px 7px 0 rgba(255, 255, 255, 0.08),
+        0 16px 29px rgba(29, 70, 46, 0.27),
+        0 0 0 7px rgba(91, 165, 115, 0.1);
+}
+
+.opma-backpack.is-closing,
+.opma-backpack.is-closed {
+    cursor: default;
+    animation: none;
+}
+
+.opma-backpack.is-closing .opma-backpack-flap,
+.opma-backpack.is-closed .opma-backpack-flap {
+    background:
+        linear-gradient(125deg, rgba(255, 255, 255, 0.16), transparent 45%),
+        repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 7px),
+        #72aa87;
+    transform: translateY(0) rotateX(0deg);
+}
+
+.opma-backpack.is-closing .opma-backpack-opening,
+.opma-backpack.is-closed .opma-backpack-opening {
+    opacity: 0;
+}
+
+.opma-backpack.is-closed .opma-backpack-body {
+    animation: opmaBackpackClosed 480ms ease both;
+}
+
+.opma-pack-status {
+    min-height: 22px;
+    margin: 2px 0 18px;
+    color: var(--text-soft);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.opma-pack-status.is-ready {
+    color: var(--green-deep);
+}
+
+.opma-done-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    animation: opmaFeedbackIn 300ms ease both;
+}
+
+@keyframes opmaBackpackReceive {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.035); }
+}
+
+@keyframes opmaBackpackReady {
+    0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 0 rgba(58, 140, 96, 0)); }
+    50% { transform: translateY(-5px); filter: drop-shadow(0 8px 8px rgba(58, 140, 96, 0.2)); }
+}
+
+@keyframes opmaBackpackShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes opmaBackpackClosed {
+    0% { transform: scale(0.96); }
+    60% { transform: scale(1.025); }
+    100% { transform: scale(1); }
+}
+
+@keyframes opmaFeedbackIn {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+    .opma-stage { min-height: 650px; }
+    .opma-options { grid-template-columns: 1fr; }
+    .opma-feedback { grid-template-columns: 42px 1fr; }
+    .opma-feedback .opma-btn { grid-column: 1 / -1; }
+}
+
+@media (max-width: 480px) {
+    .opma-option { min-height: 64px; }
+    .opma-loose-items { gap: 10px; }
+    .opma-loose-item:nth-child(5) { width: calc(50% - 5px); }
+    .opma-loose-item.opma-option { padding: 11px 12px; }
+    .opma-done-actions, .opma-done-actions .opma-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .opma-feedback,
+    .opma-backpack,
+    .opma-backpack-body,
+    .opma-done-actions {
+        animation: none !important;
+    }
+
+    .opma-loose-item,
+    .opma-backpack-flap {
+        transition-duration: 1ms !important;
+    }
+}

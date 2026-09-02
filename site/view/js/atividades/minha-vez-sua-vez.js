@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
     const TURN_DURATION = 10000;
-    const LOADING_DURATION = 3000;
+    const LOADING_DURATION = 2000;
     const TURN_GAP = 650;
     const WATER_COOLDOWN = 720;
 
@@ -117,7 +117,18 @@ document.addEventListener("DOMContentLoaded", () => {
         resetCan(false);
     }
 
+    const activityEntry = TekoActivityCore.createEntryGate({
+        stage,
+        game: screens.game,
+        instruction: "Arraste o regador para molhar as plantas. Quando for a vez do Teko, observe e espere.",
+        onStart: () => {
+            startTurn(0);
+            can.focus();
+        }
+    });
+
     function startActivity() {
+        activityEntry.cancel();
         resetGarden();
         switchTo("loading", () => {
             stage.classList.add("activity-stage-revealing");
@@ -127,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loadingTimer = setTimeout(() => {
             switchTo("game", () => {
                 resetCan(false);
-                startTurn(0);
+                activityEntry.show();
             });
         }, LOADING_DURATION);
     }
@@ -470,7 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(loadingTimer);
         resetGarden();
         stage.classList.remove("activity-stage-revealing");
-        switchTo("intro", () => elements.start.focus());
+        startActivity();
     }
 
     can.addEventListener("pointerdown", startDragging);
@@ -495,8 +506,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".mvsv-water-drop").forEach(drop => drop.remove());
     });
 
-    screens.intro.hidden = false;
+    screens.intro.hidden = true;
     screens.loading.hidden = true;
     screens.game.hidden = true;
     screens.done.hidden = true;
+    startActivity();
 });

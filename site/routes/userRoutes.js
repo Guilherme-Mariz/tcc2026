@@ -117,6 +117,34 @@ router.get(
     }
 );
 
+//O QUE FAZER AGORA
+router.get(
+    "/atividades/oq-fazer-agora",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/oq-fazer-agora.html"
+            )
+        );
+    }
+);
+
+//O QUE PODE ME AJUDAR
+router.get(
+    "/atividades/oq-pode-me-ajudar",
+    verificarAuth,
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../view/pages/atividades/oq-pode-me-ajudar.html"
+            )
+        );
+    }
+);
+
 //O QUE VEM DEPOIS
 router.get(
     "/atividades/oq-vem-depois",

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const TOTAL_RESPIRACOES = 5;
     const DURACAO_INSPIRAR = 4000;
     const DURACAO_EXPIRAR = 5000;
-    const DURACAO_CARREGAMENTO = 3000;
+    const DURACAO_CARREGAMENTO = 2000;
 
     const telas = {
         inicio: document.getElementById("rt-intro"),
@@ -29,11 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
         contagem: document.getElementById("rt-countdown"),
         orbe: document.getElementById("rt-breath-orb"),
         pausar: document.getElementById("rt-pause-btn"),
-        reiniciar: document.getElementById("rt-restart-btn"),
-        som: document.getElementById("rt-sound-btn"),
+        parar: document.getElementById("rt-stop-btn"),
         opcoesSentimento: [...document.querySelectorAll("[data-feeling]")],
         resposta: document.getElementById("rt-checkin-response"),
-        respostaIcone: document.getElementById("rt-response-icon"),
         respostaTitulo: document.getElementById("rt-response-title"),
         respostaTexto: document.getElementById("rt-response-text"),
         acoesCheckin: document.getElementById("rt-checkin-actions"),
@@ -52,17 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const respostasCheckin = {
         calm: {
-            icone: "🌱",
             titulo: "Que bom perceber essa mudança.",
             texto: "Mesmo uma pequena sensação de calma já é um jeito de cuidar de você."
         },
         same: {
-            icone: "💛",
             titulo: "Tudo bem continuar parecido.",
             texto: "Às vezes o corpo precisa de mais tempo. O importante é que você tentou."
         },
         bothered: {
-            icone: "🤝",
             titulo: "Obrigado por perceber e contar.",
             texto: "Você pode fazer só mais uma respiração. Se continuar difícil, chame um adulto em quem confia."
         }
@@ -72,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let tokenExecucao = 0;
     let pausado = false;
     let executando = false;
-    let narracaoAtiva = false;
     let guiaAtual = {
         kicker: "Vamos começar",
         texto: "Encontre uma posição confortável",
@@ -86,11 +80,11 @@ document.addEventListener("DOMContentLoaded", () => {
         activeScreens: ["jogo", "checkin", "conclusao"]
     });
 
-    function trocarTela(nome) {
+    function trocarTela(nome, onEnter) {
         const telaAnterior = telaAtual;
 
         telaAtual = nome;
-        executarTrocaTela(telaAnterior, nome);
+        executarTrocaTela(telaAnterior, nome, onEnter);
     }
 
     function atualizarGuia(kicker, texto, ajuda) {
@@ -155,28 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
         telas.jogo.classList.toggle("is-paused", pausado);
     }
 
-    function cancelarFala() {
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
-    }
-
-    function narrar(texto) {
-        if (!narracaoAtiva || !("speechSynthesis" in window)) {
-            return;
-        }
-
-        cancelarFala();
-
-        const fala = new SpeechSynthesisUtterance(texto);
-        fala.lang = "pt-BR";
-        fala.rate = 0.86;
-        fala.pitch = 1.04;
-        fala.volume = 0.9;
-
-        window.speechSynthesis.speak(fala);
-    }
-
     function animarDuracao(duracao, token, aCadaQuadro = () => {}) {
         return new Promise(resolve => {
             let tempoDecorrido = 0;
@@ -236,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "Puxe o ar devagar...",
             "Deixe o ar entrar como o vento enchendo a vela."
         );
-        narrar("Puxe o ar devagar");
 
         const inspirou = await animarDuracao(DURACAO_INSPIRAR, token, (progresso, restante) => {
             const escala = 0.76 + progresso * 0.62;
@@ -266,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 ? "O vento está levando o Teko mais perto da ilha."
                 : "Deixe os ombros ficarem mais leves."
         );
-        narrar("Agora solte o ar bem devagar");
 
         const expirou = await animarDuracao(DURACAO_EXPIRAR, token, (progresso, restante) => {
             const escala = 1.38 - progresso * 0.62;
@@ -342,7 +312,6 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.pausar.disabled = true;
         elementos.progressoTexto.textContent = "5 de 5 concluídas";
         elementos.brilhos.classList.add("is-visible");
-        narrar("Chegamos à ilha. Muito bem.");
 
         if (!(await esperar(1050, token))) {
             return;
@@ -389,13 +358,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function prepararJogo() {
         tokenExecucao += 1;
-        cancelarFala();
         executando = false;
         pausado = false;
         atualizarBotaoPausa();
 
         elementos.pausar.disabled = true;
-        elementos.telaComeco.classList.remove("is-hidden");
+        elementos.telaComeco.classList.add("is-hidden");
         elementos.cena.dataset.moment = "0";
         elementos.brilhos.classList.remove("is-visible");
         elementos.orbe.style.transform = "scale(0.76)";
@@ -411,7 +379,18 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+    const activityEntry = TekoActivityCore.createEntryGate({
+        stage: elementos.palco,
+        game: telas.jogo,
+        instruction: "Respire acompanhando o círculo: puxe o ar quando ele crescer e solte quando diminuir. Você pode pausar.",
+        onStart: () => {
+            iniciarCiclos();
+            elementos.pausar.focus();
+        }
+    });
+
     function iniciarAtividade() {
+        activityEntry.cancel();
         const tokenAtual = ++tokenExecucao;
         trocarTela("carregamento");
         elementos.palco.classList.add("activity-stage-revealing");
@@ -422,31 +401,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             prepararJogo();
-            trocarTela("jogo");
+            trocarTela("jogo", () => activityEntry.show());
         }, DURACAO_CARREGAMENTO);
-    }
-
-    function reiniciarJogo() {
-        const jogoJaEstaVisivel = telaAtual === "jogo";
-
-        prepararJogo();
-
-        if (!jogoJaEstaVisivel) {
-            trocarTela("jogo");
-        }
-
-        requestAnimationFrame(() => {
-            elementos.iniciarViagem.focus();
-        });
     }
 
     function reiniciarAtividade() {
         prepararJogo();
-        trocarTela("inicio");
-
-        requestAnimationFrame(() => {
-            elementos.iniciar.focus();
-        });
+        iniciarAtividade();
     }
 
     function alternarPausa() {
@@ -458,38 +419,11 @@ document.addEventListener("DOMContentLoaded", () => {
         atualizarBotaoPausa();
 
         if (pausado) {
-            cancelarFala();
             elementos.faseKicker.textContent = "Pausa";
             elementos.faseTexto.textContent = "Tudo bem parar um pouco";
             elementos.faseAjuda.textContent = "Continue somente quando se sentir pronto."
         } else {
             restaurarGuia();
-            narrar(guiaAtual.texto.replaceAll(".", ""));
-        }
-    }
-
-    function alternarNarracao() {
-        narracaoAtiva = !narracaoAtiva;
-
-        const icone = elementos.som.querySelector("i");
-        const texto = elementos.som.querySelector("span");
-
-        elementos.som.setAttribute("aria-pressed", String(narracaoAtiva));
-        elementos.som.setAttribute(
-            "aria-label",
-            narracaoAtiva ? "Desativar narração" : "Ativar narração"
-        );
-        icone.className = narracaoAtiva
-            ? "fa-solid fa-volume-high"
-            : "fa-solid fa-volume-xmark";
-        texto.textContent = narracaoAtiva
-            ? "Narração ligada"
-            : "Narração desligada";
-
-        if (narracaoAtiva) {
-            narrar(guiaAtual.texto.replaceAll(".", ""));
-        } else {
-            cancelarFala();
         }
     }
 
@@ -514,7 +448,6 @@ document.addEventListener("DOMContentLoaded", () => {
             botao.setAttribute("aria-pressed", String(selecionado));
         });
 
-        elementos.respostaIcone.textContent = resposta.icone;
         elementos.respostaTitulo.textContent = resposta.titulo;
         elementos.respostaTexto.textContent = resposta.texto;
         elementos.resposta.hidden = false;
@@ -524,7 +457,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function finalizarAtividade() {
         tokenExecucao += 1;
-        cancelarFala();
         executando = false;
         pausado = false;
         trocarTela("conclusao");
@@ -533,8 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
     elementos.iniciar.addEventListener("click", iniciarAtividade);
     elementos.iniciarViagem.addEventListener("click", iniciarCiclos);
     elementos.pausar.addEventListener("click", alternarPausa);
-    elementos.reiniciar.addEventListener("click", reiniciarJogo);
-    elementos.som.addEventListener("click", alternarNarracao);
+    elementos.parar.addEventListener("click", reiniciarAtividade);
     elementos.respirarExtra.addEventListener("click", fazerRespiracaoExtra);
     elementos.finalizar.addEventListener("click", finalizarAtividade);
     elementos.jogarNovamente.addEventListener("click", reiniciarAtividade);
@@ -554,9 +485,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("pagehide", () => {
         tokenExecucao += 1;
-        cancelarFala();
     });
 
     prepararJogo();
-    trocarTela("inicio");
+    iniciarAtividade();
 });

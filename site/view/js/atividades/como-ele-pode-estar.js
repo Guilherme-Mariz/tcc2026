@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const MINIMUM_LOADING_TIME = 3000;
+    const MINIMUM_LOADING_TIME = 2000;
 
     const emotions = [
         {
@@ -225,7 +225,17 @@ document.addEventListener("DOMContentLoaded", () => {
         levelTransition.run(advancePhase);
     }
 
+    const activityEntry = TekoActivityCore.createEntryGate({
+        stage: elements.stage,
+        game: screens.game,
+        instruction: "Leia a história e escolha uma emoção que o Teko pode estar sentindo.",
+        onStart: () => {
+            elements.options.querySelector(".ce-emotion-card")?.focus();
+        }
+    });
+
     async function startActivity() {
+        activityEntry.cancel();
         const token = ++activityToken;
         currentPhase = 0;
         switchScreen("loading");
@@ -245,9 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         renderPhase();
-        switchScreen("game", () => {
-            elements.options.querySelector(".ce-emotion-card")?.focus();
-        });
+        switchScreen("game", () => activityEntry.show());
     }
 
     function resetActivity() {
@@ -258,9 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elements.options.replaceChildren();
         elements.stage.classList.remove("activity-stage-revealing");
 
-        switchScreen("intro", () => {
-            elements.start.focus();
-        });
+        startActivity();
     }
 
     elements.options.addEventListener("click", event => {
@@ -278,4 +284,5 @@ document.addEventListener("DOMContentLoaded", () => {
         activityToken += 1;
         levelTransition.cancel();
     });
+    startActivity();
 });
