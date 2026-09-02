@@ -86,7 +86,13 @@ formularioLogin.addEventListener("submit", async (evento) => {
 });
 
 botaoGoogle.addEventListener("click", () => {
-    // Backend do login com Google depois
+    esconderAlerta();
+    botaoGoogle.disabled = true;
+    botaoGoogle.setAttribute("aria-busy", "true");
+
+    // O redirecionamento começa no backend para manter o fluxo PKCE
+    // e os tokens fora do localStorage.
+    window.location.assign("/auth/google");
 });
 
 function validarLogin() {
@@ -240,3 +246,57 @@ window.addEventListener(
     "pageshow",
     limparCarregamentoLogin
 );
+
+
+function processarRetornoGoogle() {
+    const parametros = new URLSearchParams(window.location.search);
+    const sucessoGoogle = parametros.get("google") === "success";
+    const erroGoogle = parametros.get("google_error");
+
+    if (!sucessoGoogle && !erroGoogle) {
+        return;
+    }
+
+    window.history.replaceState({}, document.title, "/login");
+
+    if (erroGoogle) {
+        const mensagens = {
+            cancelled: "O login com Google foi cancelado.",
+            unavailable: "O login com Google ainda não está disponível.",
+            invalid_callback: "O retorno do Google não pôde ser validado.",
+            callback_failed: "Não foi possível concluir o login com Google.",
+            session_expired: "A sessão do Google expirou. Tente novamente.",
+            profile_failed: "Não foi possível abrir o cadastro da conta Google."
+        };
+
+        mostrarAlerta(
+            mensagens[erroGoogle] ||
+            "Não foi possível entrar com Google.",
+            "erro"
+        );
+
+        botaoGoogle.disabled = false;
+        botaoGoogle.removeAttribute("aria-busy");
+        return;
+    }
+
+    mostrarAlerta(
+        "Login com Google realizado com sucesso!",
+        "sucesso"
+    );
+
+    localStorage.removeItem("teko_session");
+    sessionStorage.setItem("teko_iniciar_sessao", "true");
+
+    window.setTimeout(() => {
+        const carregamento = document.getElementById("loading-screen");
+
+        carregamento?.classList.add("ativo");
+
+        window.setTimeout(() => {
+            window.location.href = "/home";
+        }, 600);
+    }, 500);
+}
+
+processarRetornoGoogle();

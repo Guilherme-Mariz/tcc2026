@@ -101,7 +101,120 @@ async function loginUsuario(email, senha) {
 }
 
 
+// PERFIL DO RESPONSÁVEL ______________________________________________________
+
+async function buscarResponsavelPorUsuario(userId) {
+    const { data, error } = await supabaseAdmin
+        .from("responsaveis")
+        .select("id, nome_completo, user_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}
+
+async function buscarCriancasPorResponsavel(responsavelId) {
+    const { data, error } = await supabaseAdmin
+        .from("criancas")
+        .select("id, nome, data_nasc, cpf, genero, responsavel_id")
+        .eq("responsavel_id", responsavelId)
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        throw error;
+    }
+
+    return data || [];
+}
+
+async function completarCadastroGoogle(
+    userId,
+    nome,
+    cpf,
+    pin,
+    telefone,
+    relacao,
+    criancas
+) {
+    let responsavel = await buscarResponsavelPorUsuario(userId);
+    let criouResponsavel = false;
+
+    // Uma repetição do callback ou do envio do formulário não pode criar
+    // outro responsável para o mesmo usuário autenticado.
+    if (responsavel) {
+        const criancasExistentes =
+            await buscarCriancasPorResponsavel(responsavel.id);
+
+        if (criancasExistentes.length > 0) {
+            return {
+                responsavel,
+                criancas: criancasExistentes,
+                cadastroExistente: true
+            };
+        }
+    } else {
+        const { data, error } = await supabaseAdmin
+            .from("responsaveis")
+            .insert([{
+                nome_completo: nome,
+                cpf,
+                telefone: telefone || null,
+                relacao,
+                user_id: userId,
+                pin
+            }])
+            .select("id, nome_completo, user_id")
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        responsavel = data;
+        criouResponsavel = true;
+    }
+
+    const criancasParaInserir = criancas.map((crianca) => ({
+        nome: crianca.nome,
+        responsavel_id: responsavel.id,
+        cpf: crianca.cpf,
+        data_nasc: crianca.dataNascimento,
+        genero: crianca.genero
+    }));
+
+    const { data: criancasCriadas, error: criancasError } =
+        await supabaseAdmin
+            .from("criancas")
+            .insert(criancasParaInserir)
+            .select();
+
+    if (criancasError) {
+        // Evita deixar um perfil vazio quando a criação das crianças falha.
+        if (criouResponsavel) {
+            await supabaseAdmin
+                .from("responsaveis")
+                .delete()
+                .eq("id", responsavel.id);
+        }
+
+        throw criancasError;
+    }
+
+    return {
+        responsavel,
+        criancas: criancasCriadas,
+        cadastroExistente: false
+    };
+}
+
+
 module.exports = {
     criarUsuarioEcriancas,
-    loginUsuario
+    loginUsuario,
+    buscarResponsavelPorUsuario,
+    completarCadastroGoogle
 };

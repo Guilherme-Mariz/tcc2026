@@ -10,12 +10,103 @@ document.addEventListener("DOMContentLoaded", () => {
     let quantidadeCriancas = 1;
     let criancaSelecionada = null;
 
+    const modoCadastroGoogle =
+        new URLSearchParams(window.location.search)
+            .get("google") === "complete";
+
+    let perfilGoogle = null;
+
+    configurarModoGoogle();
     configurarIntroducao();
     configurarSenhas();
     configurarMascaras();
     configurarFormularios();
     configurarBotoesDeVoltar();
     configurarBotaoDeSessao();
+
+    function configurarModoGoogle() {
+        if (!modoCadastroGoogle) {
+            return;
+        }
+
+        const campoEmail = document.getElementById("reg-email");
+        const campoSenha = document.getElementById("reg-senha");
+        const confirmarSenha =
+            document.getElementById("confirmar-senha");
+
+        const linhaSenhas = campoSenha.closest(".field-row");
+        const botaoContinuar =
+            formularios.responsavel.querySelector(
+                'button[type="submit"]'
+            );
+
+        campoEmail.readOnly = true;
+        campoEmail.setAttribute("aria-readonly", "true");
+        linhaSenhas.hidden = true;
+        linhaSenhas.style.display = "none";
+        campoSenha.required = false;
+        confirmarSenha.required = false;
+        botaoContinuar.disabled = true;
+
+        const aviso = document.createElement("p");
+        aviso.className = "field-hint";
+        aviso.textContent =
+            "Conta Google confirmada. Complete apenas os dados do responsável e das crianças.";
+
+        formularios.responsavel
+            .querySelector(".form-head")
+            .appendChild(aviso);
+
+        carregarPerfilGoogle(botaoContinuar);
+    }
+
+    async function carregarPerfilGoogle(botaoContinuar) {
+        try {
+            const resposta = await fetch("/auth/google/profile", {
+                credentials: "include",
+                cache: "no-store"
+            });
+
+            const resultado = await resposta.json().catch(() => ({}));
+
+            if (resposta.status === 401) {
+                window.location.replace(
+                    "/login?google_error=session_expired"
+                );
+                return;
+            }
+
+            if (!resposta.ok) {
+                throw new Error(
+                    resultado.erro ||
+                    "Não foi possível carregar a conta Google."
+                );
+            }
+
+            if (resultado.cadastroCompleto) {
+                window.location.replace("/login?google=success");
+                return;
+            }
+
+            perfilGoogle = resultado;
+
+            document.getElementById("reg-email").value =
+                resultado.email || "";
+
+            if (resultado.nome) {
+                document.getElementById("nome").value =
+                    resultado.nome;
+            }
+
+            botaoContinuar.disabled = false;
+        } catch (error) {
+            console.error("Erro ao carregar perfil Google:", error);
+            alert(error.message);
+            window.location.replace(
+                "/login?google_error=profile_failed"
+            );
+        }
+    }
 
     function configurarIntroducao() {
         const navegacao = performance.getEntriesByType("navigation")[0];
@@ -142,8 +233,12 @@ document.addEventListener("DOMContentLoaded", () => {
             dadosResponsavel = {
                 nome: dados.get("nome"),
                 cpf: dados.get("cpf_responsavel"),
-                email: dados.get("email"),
-                senha: dados.get("senha"),
+                email: modoCadastroGoogle
+                    ? perfilGoogle?.email
+                    : dados.get("email"),
+                senha: modoCadastroGoogle
+                    ? null
+                    : dados.get("senha"),
                 pin: dados.get("pin"),
                 telefone: dados.get("telefone"),
                 relacao: dados.get("relacao")
@@ -354,24 +449,16 @@ document.addEventListener("DOMContentLoaded", () => {
     async function finalizarCadastroFrontend(botao) {
         try {
 
-            console.log("===== DADOS ENVIADOS PARA CADASTRO =====");
-            console.log({
-                nome: dadosResponsavel.nome,
-                cpf: dadosResponsavel.cpf,
-                email: dadosResponsavel.email,
-                senha: dadosResponsavel.senha,
-                pin: dadosResponsavel.pin,
-                telefone: dadosResponsavel.telefone,
-                relacao: dadosResponsavel.relacao,
-                criancas: dadosCriancas
-            });
-            console.log("========================================");
+            const endpoint = modoCadastroGoogle
+                ? "/register/google"
+                : "/register";
 
-            const resposta = await fetch("/register", {
+            const resposta = await fetch(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     nome: dadosResponsavel.nome,
                     cpf: dadosResponsavel.cpf,
@@ -599,40 +686,44 @@ document.addEventListener("DOMContentLoaded", () => {
             valido = false;
         }
 
-        if (
-            !email.value.trim() ||
-            !email.value.includes("@")
-        ) {
-            primeiroCampo = primeiroCampo || email;
+        if (!modoCadastroGoogle) {
+            if (
+                !email.value.trim() ||
+                !email.value.includes("@")
+            ) {
+                primeiroCampo = primeiroCampo || email;
 
-            marcarErro(
-                email,
-                "Informe um e-mail válido."
-            );
+                marcarErro(
+                    email,
+                    "Informe um e-mail válido."
+                );
 
-            valido = false;
-        }
+                valido = false;
+            }
 
-        if (senha.value.length < 8) {
-            primeiroCampo = primeiroCampo || senha;
+            if (senha.value.length < 8) {
+                primeiroCampo = primeiroCampo || senha;
 
-            marcarErro(
-                senha,
-                "A senha deve ter no mínimo 8 caracteres."
-            );
+                marcarErro(
+                    senha,
+                    "A senha deve ter no mínimo 8 caracteres."
+                );
 
-            valido = false;
-        }
+                valido = false;
+            }
 
-        if (confirmarSenha.value !== senha.value) {
-            primeiroCampo =
-                primeiroCampo || confirmarSenha;
+            if (confirmarSenha.value !== senha.value) {
+                primeiroCampo =
+                    primeiroCampo || confirmarSenha;
 
-            marcarErro(
-                confirmarSenha,
-                "As senhas não coincidem."
-            );
+                marcarErro(
+                    confirmarSenha,
+                    "As senhas não coincidem."
+                );
 
+                valido = false;
+            }
+        } else if (!perfilGoogle?.email) {
             valido = false;
         }
 
