@@ -428,3 +428,21 @@ async function logout(req, res) {
             }
         }
     } catch (error) {
+        console.error("Erro ao encerrar sessão no Supabase:", error);
+    } finally {
+        clearAuthCookie(res);
+        setNoStore(res);
+    }
+
+    return res.status(204).send();
+}
+
+module.exports = {
+    registerCompleto,
+    login,
+    iniciarLoginGoogle,
+    finalizarLoginGoogle,
+    obterPerfilGoogle,
+    completarCadastroGoogle,
+    logout
+};
