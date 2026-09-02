@@ -209,6 +209,7 @@ async function iniciarLoginGoogle(req, res) {
         const oauthStorage = createOAuthPkceStorage();
         const supabaseAuth = createAuthClient({
             flowType: "pkce",
+            persistSession: true,
             storage: oauthStorage.storage
         });
 
@@ -228,9 +229,20 @@ async function iniciarLoginGoogle(req, res) {
             throw error || new Error("URL OAuth não gerada.");
         }
 
-        const serializedStorage = serializeOAuthStorage(
-            oauthStorage.snapshot()
-        );
+        const storedValues = oauthStorage.snapshot();
+
+        // Evita iniciar um fluxo que inevitavelmente falharia no callback.
+        // O supabase-js só grava o code_verifier quando a persistência do
+        // cliente PKCE está habilitada, mesmo usando um storage personalizado.
+        if (
+            !Object.keys(storedValues).some((key) =>
+                key.endsWith("-code-verifier")
+            )
+        ) {
+            throw new Error("Code verifier PKCE não foi criado.");
+        }
+
+        const serializedStorage = serializeOAuthStorage(storedValues);
 
         setOAuthPkceCookie(res, serializedStorage);
 
@@ -273,6 +285,7 @@ async function finalizarLoginGoogle(req, res) {
         const oauthStorage = createOAuthPkceStorage(storedValues);
         const supabaseAuth = createAuthClient({
             flowType: "pkce",
+            persistSession: true,
             storage: oauthStorage.storage
         });
 
@@ -415,21 +428,3 @@ async function logout(req, res) {
             }
         }
     } catch (error) {
-        console.error("Erro ao encerrar sessão no Supabase:", error);
-    } finally {
-        clearAuthCookie(res);
-        setNoStore(res);
-    }
-
-    return res.status(204).send();
-}
-
-module.exports = {
-    registerCompleto,
-    login,
-    iniciarLoginGoogle,
-    finalizarLoginGoogle,
-    obterPerfilGoogle,
-    completarCadastroGoogle,
-    logout
-};

@@ -18,7 +18,9 @@ function createAuthClient(options = {}) {
 
     const authOptions = {
         autoRefreshToken: false,
-        persistSession: false,
+        // O PKCE precisa persistir temporariamente o code_verifier no storage
+        // isolado da requisição. Os demais fluxos continuam sem persistência.
+        persistSession: options.persistSession === true,
         detectSessionInUrl: false,
         flowType: options.flowType || "implicit"
     };
