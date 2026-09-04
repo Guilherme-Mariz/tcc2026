@@ -118,16 +118,16 @@ function bloquearDashboard() {
 ════════════════════════════════════════ */
 async function carregarDados() {
     const sessao = lerJsonLocal("teko_session", {});
-    const responsavel = sessao?.responsavel;
-
-    if (responsavel?.nome_completo) {
-        document.getElementById("resp-nome").textContent =
-            responsavel.nome_completo.trim().split(/\s+/)[0];
-    }
+    atualizarNomeResponsavel(sessao?.responsavel);
 
     const criancaAtiva = sessao?.crianca || null;
     const criancasLocais = lerJsonLocal("teko_registered_children", []);
-    const criancasRemotas = await buscarCriancas();
+    const [criancasRemotas, responsavelRemoto] = await Promise.all([
+        buscarCriancas(),
+        buscarPerfilResponsavel()
+    ]);
+
+    atualizarNomeResponsavel(responsavelRemoto);
 
     criancasDashboard = fundirCriancas(
         Array.isArray(criancasRemotas) ? criancasRemotas : [],
@@ -143,6 +143,46 @@ async function carregarDados() {
 
     renderizarSeletor();
     renderizarPainel(criancaSelecionada);
+}
+
+function atualizarNomeResponsavel(responsavel) {
+    const nomeCompleto = String(
+        responsavel?.nome_completo ||
+        responsavel?.nome ||
+        ""
+    ).trim();
+
+    if (!nomeCompleto) return;
+
+    atualizarTexto("resp-nome", nomeCompleto.split(/\s+/)[0]);
+}
+
+async function buscarPerfilResponsavel() {
+    try {
+        const resposta = await fetch("/auth/profile", {
+            credentials: "include",
+            cache: "no-store"
+        });
+
+        const resultado = await resposta.json().catch(() => ({}));
+
+        if (resposta.status === 401) {
+            window.location.href = "/login";
+            return null;
+        }
+
+        if (!resposta.ok) {
+            throw new Error(
+                resultado.erro ||
+                "Não foi possível buscar o perfil do responsável."
+            );
+        }
+
+        return resultado.responsavel || null;
+    } catch (erro) {
+        console.warn("Não foi possível atualizar o nome do responsável:", erro);
+        return null;
+    }
 }
 
 async function buscarCriancas() {
@@ -293,30 +333,19 @@ function selecionarCrianca(crianca) {
 }
 
 function renderizarPainel(crianca) {
-    const status = document.getElementById("data-status");
-
     if (!crianca) {
         atualizarTexto("resp-crianca-nome-sub", "sua criança");
         atualizarTexto("dado-nome", "Nenhuma criança cadastrada");
         atualizarTexto("dado-inicial", "—");
-        atualizarTexto("dado-nasc", "—");
-        atualizarTexto("dado-idade", "—");
-        atualizarTexto("dado-genero", "—");
-        status.lastChild.textContent = " Nenhum perfil";
         renderizarProgresso(criarProgressoVazio(), "");
         return;
     }
 
     const nome = obterNome(crianca) || "Criança";
-    const nascimento = obterDataNascimento(crianca);
 
     atualizarTexto("resp-crianca-nome-sub", nome);
     atualizarTexto("dado-nome", nome);
     atualizarTexto("dado-inicial", obterInicial(nome));
-    atualizarTexto("dado-nasc", nascimento ? formatarData(nascimento) : "Não informado");
-    atualizarTexto("dado-idade", nascimento ? calcularIdade(nascimento) : "Não informada");
-    atualizarTexto("dado-genero", formatarGenero(crianca.genero));
-    status.lastChild.textContent = " Perfil selecionado";
 
     renderizarProgresso(obterProgresso(crianca), nome);
 }
@@ -328,69 +357,6 @@ function atualizarTexto(id, texto) {
 
 function obterInicial(nome) {
     return nome?.trim().charAt(0).toLocaleUpperCase("pt-BR") || "—";
-}
-
-function obterDataNascimento(crianca) {
-    return crianca?.data_nasc ||
-        crianca?.dataNascimento ||
-        crianca?.nascimento ||
-        null;
-}
-
-function converterDataLocal(valor) {
-    if (!valor) return null;
-
-    if (valor instanceof Date) return valor;
-
-    const iso = String(valor).slice(0, 10);
-    const partes = iso.split("-").map(Number);
-
-    if (partes.length === 3 && partes.every(Number.isFinite)) {
-        return new Date(partes[0], partes[1] - 1, partes[2]);
-    }
-
-    const data = new Date(valor);
-    return Number.isNaN(data.getTime()) ? null : data;
-}
-
-function formatarData(valor) {
-    const data = converterDataLocal(valor);
-    return data
-        ? data.toLocaleDateString("pt-BR")
-        : "Não informado";
-}
-
-function calcularIdade(valor) {
-    const nascimento = converterDataLocal(valor);
-    if (!nascimento) return "Não informada";
-
-    const hoje = new Date();
-    let idade = hoje.getFullYear() - nascimento.getFullYear();
-    const diferencaMes = hoje.getMonth() - nascimento.getMonth();
-
-    if (
-        diferencaMes < 0 ||
-        (diferencaMes === 0 && hoje.getDate() < nascimento.getDate())
-    ) {
-        idade--;
-    }
-
-    return idade >= 0 ? `${idade} anos` : "Não informada";
-}
-
-function formatarGenero(genero) {
-    if (!genero) return "Não informado";
-
-    const mapa = {
-        M: "Masculino",
-        F: "Feminino",
-        O: "Outro",
-        masculino: "Masculino",
-        feminino: "Feminino",
-        outro: "Outro"
-    };
-
-    return mapa[String(genero)] || String(genero);
 }
 
 /* ════════════════════════════════════════
@@ -418,7 +384,10 @@ function criarProgressoVazio() {
     return {
         dias: criarDiasPadrao(),
         total: 0,
+        modulosConcluidos: 0,
         diasAtivos: 0,
+        tentativas: 0,
+        erros: 0,
         taxaAcerto: 0,
         areas: {
             emocoes: 0,
@@ -451,6 +420,16 @@ function obterProgresso(crianca) {
 
     const somaPeriodo = dias.reduce((total, dia) => total + dia.value, 0);
     const areasOrigem = origem.areas || {};
+    const tentativas = Math.max(
+        0,
+        Number(origem.tentativas ?? origem.totalTentativas ?? 0) || 0
+    );
+    const erros = Math.min(
+        tentativas,
+        Math.max(0, Number(origem.erros ?? origem.totalErros ?? 0) || 0)
+    );
+    const taxaAcertoInformada =
+        origem.taxaAcerto ?? origem.taxa_acerto ?? origem.acertos;
 
     return {
         dias,
@@ -463,6 +442,14 @@ function obterProgresso(crianca) {
                 somaPeriodo
             ) || 0
         ),
+        modulosConcluidos: Math.max(
+            0,
+            Number(
+                origem.modulosConcluidos ??
+                origem.modulos_concluidos ??
+                0
+            ) || 0
+        ),
         diasAtivos: Math.max(
             0,
             Number(
@@ -473,11 +460,13 @@ function obterProgresso(crianca) {
                 dias.filter(dia => dia.value > 0).length
             ) || 0
         ),
+        tentativas,
+        erros,
         taxaAcerto: limitarPercentual(
-            origem.taxaAcerto ??
-            origem.taxa_acerto ??
-            origem.acertos ??
-            0
+            taxaAcertoInformada ??
+            (tentativas > 0
+                ? ((tentativas - erros) / tentativas) * 100
+                : 0)
         ),
         areas: {
             emocoes: limitarPercentual(areasOrigem.emocoes ?? 0),
@@ -491,15 +480,28 @@ function limitarPercentual(valor) {
     return Math.min(100, Math.max(0, Number(valor) || 0));
 }
 
+function calcularDificuldade(erros, tentativas) {
+    if (!tentativas) return "Sem dados";
+
+    const taxaDeErro = erros / tentativas;
+
+    if (taxaDeErro <= 0.2) return "Baixa";
+    if (taxaDeErro <= 0.5) return "Moderada";
+    return "Alta";
+}
+
 function renderizarProgresso(progresso, nomeCrianca) {
     const totalPeriodo = progresso.dias.reduce(
         (total, dia) => total + dia.value,
         0
     );
 
+    atualizarTexto("stat-modulos", progresso.modulosConcluidos);
     atualizarTexto("stat-atividades", progresso.total);
-    atualizarTexto("stat-sequencia", progresso.diasAtivos);
-    atualizarTexto("stat-acertos", `${Math.round(progresso.taxaAcerto)}%`);
+    atualizarTexto(
+        "stat-dificuldade",
+        calcularDificuldade(progresso.erros, progresso.tentativas)
+    );
     atualizarTexto(
         "chart-total",
         `${totalPeriodo} ${totalPeriodo === 1 ? "atividade" : "atividades"}`

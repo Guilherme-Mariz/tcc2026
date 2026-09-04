@@ -219,9 +219,6 @@
                 </div>
                 <div class="resp-header-actions">
                     <div class="child-selector" id="child-selector" aria-label="Selecionar criança" hidden></div>
-                    <button class="resp-header-lock" onclick="bloquearDashboard()" aria-label="Bloquear área">
-                        <i class="fa-solid fa-lock"></i> Bloquear
-                    </button>
                 </div>
             </div>
 
@@ -229,12 +226,9 @@
 
                 <!-- dados da criança -->
                 <section class="resp-card child-overview resp-grid-full" aria-labelledby="child-data-title">
-                    <div class="resp-card-heading">
-                        <div class="resp-card-title" id="child-data-title">
-                            <i class="fa-solid fa-child-reaching icon-blue"></i>
-                            Dados da criança
-                        </div>
-                        <span class="data-status" id="data-status"><span></span> Perfil selecionado</span>
+                    <div class="resp-card-title" id="child-data-title">
+                        <i class="fa-solid fa-child-reaching icon-blue"></i>
+                        Dados da criança
                     </div>
 
                     <div class="child-overview-content">
@@ -246,42 +240,18 @@
                             </div>
                         </div>
 
-                        <div class="child-data-grid">
-                            <div class="crianca-field">
-                                <div class="crianca-field-icon"><i class="fa-solid fa-cake-candles"></i></div>
-                                <div>
-                                    <span class="crianca-field-label">Nascimento</span>
-                                    <span class="crianca-field-value" id="dado-nasc">—</span>
-                                </div>
+                        <div class="child-progress-details" aria-label="Resumo do progresso">
+                            <div class="child-progress-detail">
+                                <span>Módulos concluídos</span>
+                                <strong id="stat-modulos">0</strong>
                             </div>
-                            <div class="crianca-field">
-                                <div class="crianca-field-icon"><i class="fa-solid fa-calendar-days"></i></div>
-                                <div>
-                                    <span class="crianca-field-label">Idade</span>
-                                    <span class="crianca-field-value" id="dado-idade">—</span>
-                                </div>
-                            </div>
-                            <div class="crianca-field">
-                                <div class="crianca-field-icon"><i class="fa-solid fa-venus-mars"></i></div>
-                                <div>
-                                    <span class="crianca-field-label">Gênero</span>
-                                    <span class="crianca-field-value" id="dado-genero">—</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="child-quick-stats" aria-label="Resumo do progresso">
-                            <div class="child-stat">
+                            <div class="child-progress-detail">
+                                <span>Atividades realizadas</span>
                                 <strong id="stat-atividades">0</strong>
-                                <span>Atividades</span>
                             </div>
-                            <div class="child-stat">
-                                <strong id="stat-sequencia">0</strong>
-                                <span>Dias ativos</span>
-                            </div>
-                            <div class="child-stat">
-                                <strong id="stat-acertos">0%</strong>
-                                <span>Acertos</span>
+                            <div class="child-progress-detail">
+                                <span>Dificuldade observada</span>
+                                <strong id="stat-dificuldade">Sem dados</strong>
                             </div>
                         </div>
                     </div>
@@ -350,18 +320,13 @@
 
                 <!-- resumo do TEKO.IA -->
                 <section class="teko-summary resp-grid-full" aria-labelledby="teko-summary-title">
-                    <div class="teko-summary-mark" aria-hidden="true">
-                        <i class="fa-solid fa-sparkles"></i>
+                    <div class="teko-summary-mascot">
+                        <img src="../img/mascot/teko-sentado.webp" alt="Teko sentado">
                     </div>
                     <div class="teko-summary-content">
                         <span class="teko-summary-eyebrow">Resumo do TEKO.IA</span>
                         <h2 id="teko-summary-title">Um olhar cuidadoso sobre o desenvolvimento</h2>
                         <p id="teko-summary-text">Quando as atividades forem registradas, o TEKO.IA reunirá aqui uma leitura simples do progresso da criança para apoiar o acompanhamento do responsável.</p>
-                    </div>
-                    <div class="teko-summary-meta" aria-label="Características do resumo">
-                        <span><i class="fa-solid fa-child-reaching"></i> Individual</span>
-                        <span><i class="fa-solid fa-shield-heart"></i> Acolhedor</span>
-                        <span><i class="fa-solid fa-chart-simple"></i> Baseado no progresso</span>
                     </div>
                 </section>
 
