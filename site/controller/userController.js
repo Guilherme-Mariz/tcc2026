@@ -356,6 +356,28 @@ async function obterPerfilGoogle(req, res) {
     }
 }
 
+async function obterPerfilResponsavel(req, res) {
+    setNoStore(res);
+
+    try {
+        // O ID vem exclusivamente do token validado pelo middleware.
+        const responsavel =
+            await userModel.buscarResponsavelPorUsuario(req.user.id);
+
+        return res.status(200).json({
+            responsavel: responsavel
+                ? { nome_completo: responsavel.nome_completo }
+                : null
+        });
+    } catch (error) {
+        console.error("Erro ao consultar perfil do responsável:", error);
+
+        return res.status(500).json({
+            erro: "Não foi possível consultar o perfil do responsável."
+        });
+    }
+}
+
 async function completarCadastroGoogle(req, res) {
     setNoStore(res);
 
@@ -443,6 +465,7 @@ module.exports = {
     iniciarLoginGoogle,
     finalizarLoginGoogle,
     obterPerfilGoogle,
+    obterPerfilResponsavel,
     completarCadastroGoogle,
     logout
 };

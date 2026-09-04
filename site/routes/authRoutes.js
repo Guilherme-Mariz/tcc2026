@@ -29,6 +29,12 @@ router.get(
     userController.obterPerfilGoogle
 );
 
+router.get(
+    "/auth/profile",
+    verificarAuth,
+    userController.obterPerfilResponsavel
+);
+
 router.post(
     "/register/google",
     verificarAuth,
