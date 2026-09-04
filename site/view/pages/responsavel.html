@@ -145,7 +145,7 @@
                 <span class="snav-icon"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i></span>
                 <span class="snav-label">TEKO.IA</span>
             </a>
-            <a href="/responsavel" class="snav-item" data-nav>
+            <a href="/responsavel" class="snav-item active" data-nav>
                 <span class="snav-icon"><i class="fa-solid fa-people-roof"></i></span>
                 <span class="snav-label">Responsável</span>
             </a>
@@ -158,7 +158,7 @@
                     Trocar sessão
                 </span>
             </button>
-            <a href="/configuracoes" class="snav-item active" data-nav>
+            <a href="/configuracoes" class="snav-item" data-nav>
                 <span class="snav-icon"><i class="fa-solid fa-gear"></i></span>
                 <span class="snav-label">Config.</span>
             </a>
@@ -217,111 +217,153 @@
                     <h1 class="resp-welcome-name">Olá, <span id="resp-nome">Responsável</span>!</h1>
                     <p class="resp-welcome-sub">Acompanhe o progresso e os dados de <span id="resp-crianca-nome-sub">sua criança</span>.</p>
                 </div>
-                <button class="resp-header-lock" onclick="bloquearDashboard()" aria-label="Bloquear área">
-                    <i class="fa-solid fa-lock"></i> Bloquear
-                </button>
+                <div class="resp-header-actions">
+                    <div class="child-selector" id="child-selector" aria-label="Selecionar criança" hidden></div>
+                    <button class="resp-header-lock" onclick="bloquearDashboard()" aria-label="Bloquear área">
+                        <i class="fa-solid fa-lock"></i> Bloquear
+                    </button>
+                </div>
             </div>
 
             <div class="resp-grid">
 
                 <!-- dados da criança -->
-                <div class="resp-card">
-                    <div class="resp-card-title">
-                        <i class="fa-solid fa-child icon-blue"></i>
-                        Dados da Criança
+                <section class="resp-card child-overview resp-grid-full" aria-labelledby="child-data-title">
+                    <div class="resp-card-heading">
+                        <div class="resp-card-title" id="child-data-title">
+                            <i class="fa-solid fa-child-reaching icon-blue"></i>
+                            Dados da criança
+                        </div>
+                        <span class="data-status" id="data-status"><span></span> Perfil selecionado</span>
                     </div>
-                    <div class="crianca-row">
-                        <div class="crianca-field">
-                            <div class="crianca-field-icon"><i class="fa-solid fa-user"></i></div>
-                            <div>
-                                <span class="crianca-field-label">Nome</span>
-                                <span class="crianca-field-value" id="dado-nome">—</span>
-                            </div>
-                        </div>
-                        <div class="crianca-field">
-                            <div class="crianca-field-icon"><i class="fa-solid fa-cake-candles"></i></div>
-                            <div>
-                                <span class="crianca-field-label">Nascimento</span>
-                                <span class="crianca-field-value" id="dado-nasc">—</span>
-                            </div>
-                        </div>
-                        <div class="crianca-field">
-                            <div class="crianca-field-icon"><i class="fa-solid fa-calendar"></i></div>
-                            <div>
-                                <span class="crianca-field-label">Idade</span>
-                                <span class="crianca-field-value" id="dado-idade">—</span>
-                            </div>
-                        </div>
-                        <div class="crianca-field">
-                            <div class="crianca-field-icon"><i class="fa-solid fa-venus-mars"></i></div>
-                            <div>
-                                <span class="crianca-field-label">Gênero</span>
-                                <span class="crianca-field-value" id="dado-genero">—</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- resumo geral -->
-                <div class="resp-card">
-                    <div class="resp-card-title">
-                        <i class="fa-solid fa-chart-simple icon-green"></i>
-                        Resumo Geral
-                    </div>
-                    <div class="stats-quick">
-                        <div class="stat-quick-item">
-                            <span class="stat-quick-num" id="stat-atividades">0</span>
-                            <span class="stat-quick-label">Atividades feitas</span>
+                    <div class="child-overview-content">
+                        <div class="child-identity">
+                            <div class="child-avatar" id="dado-inicial" aria-hidden="true">T</div>
+                            <div>
+                                <span class="child-identity-label">Acompanhando</span>
+                                <strong id="dado-nome">—</strong>
+                            </div>
                         </div>
-                        <div class="stat-quick-item">
-                            <span class="stat-quick-num" id="stat-sequencia">0</span>
-                            <span class="stat-quick-label">Dias seguidos</span>
-                        </div>
-                        <div class="stat-quick-item">
-                            <span class="stat-quick-num" id="stat-acertos">0%</span>
-                            <span class="stat-quick-label">Taxa de acerto</span>
-                        </div>
-                    </div>
-                    <div class="last-activity">
-                        <div class="last-activity-icon icon-yellow">😊</div>
-                        <div style="flex:1">
-                            <span class="last-activity-name" id="last-atv-nome">Nenhuma atividade ainda</span>
-                            <span class="last-activity-meta" id="last-atv-meta">Continue explorando o TEKO!</span>
-                        </div>
-                        <span class="last-activity-badge badge-ok" id="last-atv-badge">—</span>
-                    </div>
-                </div>
 
-                <!-- progresso por área -->
-                <div class="resp-card resp-grid-full">
-                    <div class="resp-card-title">
-                        <i class="fa-solid fa-brain icon-purple"></i>
-                        Progresso por Área
+                        <div class="child-data-grid">
+                            <div class="crianca-field">
+                                <div class="crianca-field-icon"><i class="fa-solid fa-cake-candles"></i></div>
+                                <div>
+                                    <span class="crianca-field-label">Nascimento</span>
+                                    <span class="crianca-field-value" id="dado-nasc">—</span>
+                                </div>
+                            </div>
+                            <div class="crianca-field">
+                                <div class="crianca-field-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                                <div>
+                                    <span class="crianca-field-label">Idade</span>
+                                    <span class="crianca-field-value" id="dado-idade">—</span>
+                                </div>
+                            </div>
+                            <div class="crianca-field">
+                                <div class="crianca-field-icon"><i class="fa-solid fa-venus-mars"></i></div>
+                                <div>
+                                    <span class="crianca-field-label">Gênero</span>
+                                    <span class="crianca-field-value" id="dado-genero">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="child-quick-stats" aria-label="Resumo do progresso">
+                            <div class="child-stat">
+                                <strong id="stat-atividades">0</strong>
+                                <span>Atividades</span>
+                            </div>
+                            <div class="child-stat">
+                                <strong id="stat-sequencia">0</strong>
+                                <span>Dias ativos</span>
+                            </div>
+                            <div class="child-stat">
+                                <strong id="stat-acertos">0%</strong>
+                                <span>Acertos</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-items">
-                        <div class="stat-item">
-                            <div class="stat-row">
-                                <span class="stat-label">😊 Emoções</span>
-                                <span class="stat-pct" id="pct-emocoes">0%</span>
-                            </div>
-                            <div class="stat-track"><div class="stat-fill fill-green" id="bar-emocoes" style="width:0%"></div></div>
+                </section>
+
+                <!-- gráfico diário -->
+                <section class="resp-card daily-progress-card" aria-labelledby="daily-progress-title">
+                    <div class="resp-card-heading">
+                        <div class="resp-card-title" id="daily-progress-title">
+                            <i class="fa-solid fa-chart-line icon-green"></i>
+                            Progresso diário
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-row">
-                                <span class="stat-label">💬 Comunicação</span>
-                                <span class="stat-pct" id="pct-comunicacao">0%</span>
-                            </div>
-                            <div class="stat-track"><div class="stat-fill fill-yellow" id="bar-comunicacao" style="width:0%"></div></div>
+                        <span class="period-pill">Últimos 7 dias</span>
+                    </div>
+
+                    <div class="chart-summary">
+                        <div>
+                            <strong id="chart-total">0 atividades</strong>
+                            <span>concluídas no período</span>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-row">
-                                <span class="stat-label">🤝 Comportamento</span>
-                                <span class="stat-pct" id="pct-comportamento">0%</span>
-                            </div>
-                            <div class="stat-track"><div class="stat-fill fill-teal" id="bar-comportamento" style="width:0%"></div></div>
+                        <div class="chart-legend"><span></span> Atividades concluídas</div>
+                    </div>
+
+                    <div class="daily-chart" id="daily-chart">
+                        <svg id="daily-chart-svg" viewBox="0 0 640 230" role="img" aria-labelledby="chart-title chart-description" preserveAspectRatio="none">
+                            <title id="chart-title">Atividades concluídas nos últimos sete dias</title>
+                            <desc id="chart-description">O gráfico ainda não possui registros.</desc>
+                        </svg>
+                        <div class="chart-empty" id="chart-empty">
+                            <i class="fa-regular fa-chart-bar"></i>
+                            <span>O progresso aparecerá aqui após as primeiras atividades.</span>
                         </div>
                     </div>
-                </div>
+                </section>
+
+                <!-- análise do gráfico -->
+                <section class="resp-card progress-analysis" aria-labelledby="analysis-title">
+                    <div class="resp-card-title" id="analysis-title">
+                        <i class="fa-solid fa-magnifying-glass-chart icon-purple"></i>
+                        Análise do período
+                    </div>
+
+                    <div class="analysis-highlight">
+                        <div class="analysis-highlight-icon"><i class="fa-solid fa-seedling"></i></div>
+                        <div>
+                            <span id="analysis-kicker">Começando agora</span>
+                            <strong id="analysis-headline">Ainda não há atividades registradas</strong>
+                        </div>
+                    </div>
+
+                    <div class="analysis-list">
+                        <div class="analysis-item">
+                            <i class="fa-regular fa-calendar-check"></i>
+                            <div><span>Frequência</span><strong id="analysis-frequency">Sem dados suficientes</strong></div>
+                        </div>
+                        <div class="analysis-item">
+                            <i class="fa-solid fa-bullseye"></i>
+                            <div><span>Área em destaque</span><strong id="analysis-area">Aguardando atividades</strong></div>
+                        </div>
+                        <div class="analysis-item">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                            <div><span>Próximo passo</span><strong id="analysis-next">Realizar a primeira atividade</strong></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- resumo do TEKO.IA -->
+                <section class="teko-summary resp-grid-full" aria-labelledby="teko-summary-title">
+                    <div class="teko-summary-mark" aria-hidden="true">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <div class="teko-summary-content">
+                        <span class="teko-summary-eyebrow">Resumo do TEKO.IA</span>
+                        <h2 id="teko-summary-title">Um olhar cuidadoso sobre o desenvolvimento</h2>
+                        <p id="teko-summary-text">Quando as atividades forem registradas, o TEKO.IA reunirá aqui uma leitura simples do progresso da criança para apoiar o acompanhamento do responsável.</p>
+                    </div>
+                    <div class="teko-summary-meta" aria-label="Características do resumo">
+                        <span><i class="fa-solid fa-child-reaching"></i> Individual</span>
+                        <span><i class="fa-solid fa-shield-heart"></i> Acolhedor</span>
+                        <span><i class="fa-solid fa-chart-simple"></i> Baseado no progresso</span>
+                    </div>
+                </section>
 
             </div>
         </div><!-- /resp-page -->
