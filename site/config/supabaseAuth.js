@@ -1,6 +1,6 @@
 const { createClient } = require("@supabase/supabase-js");
 
-function createAuthClient() {
+function createAuthClient(options = {}) {
     const supabaseURL = process.env.SUPABASE_URL;
 
     // A chave publicável é preferida. O fallback mantém compatibilidade com o .env atual
@@ -16,16 +16,27 @@ function createAuthClient() {
         );
     }
 
+    const authOptions = {
+        autoRefreshToken: false,
+        // O PKCE precisa persistir temporariamente o code_verifier no storage
+        // isolado da requisição. Os demais fluxos continuam sem persistência.
+        persistSession: options.persistSession === true,
+        detectSessionInUrl: false,
+        flowType: options.flowType || "implicit"
+    };
+
+    // O fluxo OAuth PKCE precisa de um armazenamento temporário para o
+    // code_verifier. Ele é fornecido por requisição e nunca é compartilhado.
+    if (options.storage) {
+        authOptions.storage = options.storage;
+    }
+
     // Um cliente novo por login impede que a sessão de um usuário afete outras requisições.
     return createClient(
         supabaseURL,
         authKey,
         {
-            auth: {
-                autoRefreshToken: false,
-                persistSession: false,
-                detectSessionInUrl: false
-            }
+            auth: authOptions
         }
     );
 }
