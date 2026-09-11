@@ -755,3 +755,54 @@ body.page-leaving {
         transition: none;
     }
 }
+
+/* Conclusão persistida por criança: a atividade continua disponível para repetir. */
+.atv-completed-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: #1a6b48;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(15, 61, 40, 0.22);
+    pointer-events: none;
+}
+
+.activity-progress-status {
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    margin: 12px 0;
+}
+.activity-progress-status:empty { display: none; }
+.activity-save-status {
+    margin: 18px auto 0;
+    max-width: 560px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #f2f5f0;
+    color: #0f3d28;
+    text-align: center;
+    font: 500 0.95rem/1.5 'Poppins', sans-serif;
+}
+.activity-save-retry {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: 2px solid #1a6b48;
+    border-radius: 10px;
+    background: #fff;
+    color: #1a6b48;
+    font: inherit;
+    cursor: pointer;
+}
+.activity-save-retry[hidden] { display: none; }
+.activity-save-retry:focus-visible { outline: 3px solid #0f3d28; outline-offset: 3px; }

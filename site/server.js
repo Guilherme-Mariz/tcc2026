@@ -42,6 +42,9 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const childRoutes = require("./routes/childRoutes");
+const createActivityRouter = require("./routes/activityRoutes");
+
+app.use("/api/activities", createActivityRouter());
 
 app.use("/api/ai", aiRoutes);
 

@@ -77,3 +77,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.style.opacity = "1";
 });
+
+// As marcas vêm do servidor para a criança ativa, nunca de flags no navegador.
+document.addEventListener("DOMContentLoaded", () => {
+    const cards = [...document.querySelectorAll(".atv-card[data-activity-id]")];
+    const status = document.getElementById("activity-progress-status");
+    const api = window.TekoActivityProgress;
+    let requestSequence = 0;
+
+    function clearMarks() {
+        cards.forEach(card => {
+            card.classList.remove("is-completed");
+            card.querySelector(".atv-completed-badge")?.remove();
+        });
+    }
+
+    async function refreshCompletions() {
+        const sequence = ++requestSequence;
+        const childId = api.readChildId();
+        clearMarks();
+        if (!childId) {
+            status.textContent = "Selecione uma criança para consultar as atividades concluídas.";
+            return;
+        }
+        status.textContent = "Carregando atividades concluídas…";
+        try {
+            const data = await api.loadCompleted(childId);
+            // Uma resposta antiga nunca pode marcar os cards de outra criança.
+            if (sequence !== requestSequence || api.readChildId() !== childId) return;
+            const completed = new Set(data.completedActivityIds);
+            cards.forEach(card => {
+                if (!completed.has(card.dataset.activityId)) return;
+                const badge = document.createElement("span");
+                badge.className = "atv-completed-badge";
+                badge.setAttribute("role", "img");
+                badge.setAttribute("aria-label", "Atividade concluída");
+                badge.title = "Atividade concluída — você pode jogar novamente";
+                badge.textContent = "✓";
+                card.classList.add("is-completed");
+                card.appendChild(badge);
+            });
+            status.textContent = "";
+        } catch {
+            if (sequence !== requestSequence) return;
+            status.textContent = "Não foi possível carregar as conclusões. Recarregue a página para tentar novamente.";
+        }
+    }
+
+    window.addEventListener("teko:session-changed", refreshCompletions);
+    window.addEventListener("teko:activity-saved", refreshCompletions);
+    window.addEventListener("pageshow", refreshCompletions);
+    window.addEventListener("storage", event => {
+        if (event.key === "teko_session" || event.key === null) refreshCompletions();
+    });
+    void refreshCompletions();
+});

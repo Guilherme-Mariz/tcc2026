@@ -1,0 +1,82 @@
+[
+  {
+    "id": "510649ed-be45-5c7e-ac9f-8cde6209ad41",
+    "slug": "quebra-cabeca-emocoes",
+    "modulo_id": 1,
+    "titulo": "Detetive das Emoções",
+    "descricao": "Atividade Detetive das Emoções",
+    "ordem": 1
+  },
+  {
+    "id": "7190e012-82a7-5cf2-999f-4741887dbd9f",
+    "slug": "como-ele-pode-estar",
+    "modulo_id": 1,
+    "titulo": "Como Ele Pode Estar?",
+    "descricao": "Atividade Como Ele Pode Estar?",
+    "ordem": 2
+  },
+  {
+    "id": "6b7bdd07-2fd4-5b0a-9241-4b58d9a5daaf",
+    "slug": "monte-frase",
+    "modulo_id": 2,
+    "titulo": "Monte a Frase",
+    "descricao": "Atividade Monte a Frase",
+    "ordem": 1
+  },
+  {
+    "id": "ec5188fa-cb84-5de9-8595-e34132123097",
+    "slug": "oq-posso-dizer",
+    "modulo_id": 2,
+    "titulo": "O que Posso Dizer?",
+    "descricao": "Atividade O que Posso Dizer?",
+    "ordem": 2
+  },
+  {
+    "id": "a55cdd22-f518-50f9-bfff-72e99c7591f8",
+    "slug": "oq-fazer-agora",
+    "modulo_id": 3,
+    "titulo": "O que Fazer Agora?",
+    "descricao": "Atividade O que Fazer Agora?",
+    "ordem": 1
+  },
+  {
+    "id": "5705e581-fbfd-5377-8cc2-b2208626434a",
+    "slug": "minha-vez-sua-vez",
+    "modulo_id": 3,
+    "titulo": "Minha vez, Sua vez",
+    "descricao": "Atividade Minha vez, Sua vez",
+    "ordem": 2
+  },
+  {
+    "id": "5e94471f-2742-5590-8d4e-81340d33c47a",
+    "slug": "oq-vem-depois",
+    "modulo_id": 4,
+    "titulo": "O que Vem Depois?",
+    "descricao": "Atividade O que Vem Depois?",
+    "ordem": 1
+  },
+  {
+    "id": "969a6acc-7e70-5cf1-84f5-e08421ec9eae",
+    "slug": "mudou-o-plano",
+    "modulo_id": 4,
+    "titulo": "Mudou o Plano!",
+    "descricao": "Atividade Mudou o Plano!",
+    "ordem": 2
+  },
+  {
+    "id": "93088b29-2388-594b-a2a3-070a2bfdb875",
+    "slug": "respire-com-teko",
+    "modulo_id": 5,
+    "titulo": "Respire com o Teko",
+    "descricao": "Atividade Respire com o Teko",
+    "ordem": 1
+  },
+  {
+    "id": "11fceddd-18e2-5761-9c89-f842c8c85e22",
+    "slug": "oq-pode-me-ajudar",
+    "modulo_id": 5,
+    "titulo": "O que Pode me Ajudar?",
+    "descricao": "Atividade O que Pode me Ajudar?",
+    "ordem": 2
+  }
+]
