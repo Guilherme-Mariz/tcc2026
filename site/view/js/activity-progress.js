@@ -54,39 +54,40 @@
     function showCompletion(screen) {
         if (!screen) return;
         const current = attempt;
-        let status = screen.querySelector(".activity-save-status");
-        if (!status) {
-            status = document.createElement("div");
-            status.className = "activity-save-status";
-            const text = document.createElement("p");
-            text.setAttribute("role", "status");
-            text.setAttribute("aria-live", "polite");
-            const retry = document.createElement("button");
-            retry.type = "button";
-            retry.className = "activity-save-retry";
-            retry.textContent = "Tentar salvar novamente";
-            retry.hidden = true;
-            status.append(text, retry);
-            screen.appendChild(status);
+
+        function removeStatus() {
+            screen.querySelector(".activity-save-status")?.remove();
         }
-        const text = status.querySelector("p");
-        const retry = status.querySelector("button");
-        retry.hidden = true;
+
+        function showFailure(message, canRetry = false) {
+            let status = screen.querySelector(".activity-save-status");
+            if (!status) {
+                status = document.createElement("div");
+                status.className = "activity-save-status";
+                const text = document.createElement("p");
+                text.setAttribute("role", "alert");
+                const retry = document.createElement("button");
+                retry.type = "button";
+                retry.className = "activity-save-retry";
+                retry.textContent = "Tentar salvar novamente";
+                status.append(text, retry);
+                screen.appendChild(status);
+            }
+            status.querySelector("p").textContent = message;
+            const retry = status.querySelector("button");
+            retry.hidden = !canRetry;
+            retry.onclick = save;
+        }
 
         async function save() {
             if (!current?.childId || attempt !== current || readChildId() !== current.childId) {
-                text.textContent = "Selecione seu perfil e inicie a atividade novamente para registrar a conclusão.";
-                retry.hidden = true;
+                showFailure("Selecione seu perfil e inicie a atividade novamente para registrar a conclusão.");
                 return;
             }
-            if (current.saved) {
-                text.textContent = "Atividade concluída e salva!";
-                return;
-            }
+            if (current.saved) return;
             if (current.pending) return;
             current.pending = true;
-            text.textContent = "Salvando sua atividade…";
-            retry.hidden = true;
+            removeStatus();
             // Só congela o resultado ao concluir, nunca ao abrir/iniciar a atividade.
             current.payload ||= {
                 childId: current.childId,
@@ -104,19 +105,17 @@
                 });
                 current.saved = true;
                 if (attempt !== current) return;
-                text.textContent = "Atividade concluída e salva!";
+                removeStatus();
                 window.dispatchEvent(new CustomEvent("teko:activity-saved", {
                     detail: { childId: current.childId, activityId: current.activityId }
                 }));
             } catch (error) {
                 if (attempt !== current) return;
-                text.textContent = `Você concluiu a atividade, mas o registro ainda não foi confirmado. ${error.message}`;
-                retry.hidden = false;
+                showFailure(`Você concluiu a atividade, mas o registro ainda não foi confirmado. ${error.message}`, true);
             } finally {
                 current.pending = false;
             }
         }
-        retry.onclick = save;
         void save();
     }
 

@@ -65,7 +65,7 @@ test('abrir/iniciar não registra; conclusão registra uma vez e repetição ger
     f.emit('teko:activity-completed', { screen }); await flush();
     f.emit('teko:activity-completed', { screen }); await flush();
     assert.equal(f.requests.length, 1);
-    assert.match(screen.querySelector('p').textContent, /concluída e salva/);
+    assert.equal(screen.querySelector('.activity-save-status'), null);
     const first = JSON.parse(f.requests[0].options.body);
     assert.equal(first.childId, f.childId);
     f.emit('teko:activity-started'); f.emit('teko:activity-completed', { screen }); await flush();
@@ -82,7 +82,7 @@ test('falha permite reenvio com mesmo ID e não mostra sucesso antecipado', asyn
     assert.equal(screen.querySelector('button').hidden, false);
     online = true; await screen.querySelector('button').onclick();
     assert.equal(f.requests[0].options.body, f.requests[1].options.body);
-    assert.match(screen.querySelector('p').textContent, /concluída e salva/);
+    assert.equal(screen.querySelector('.activity-save-status'), null);
 });
 
 test('trocar criança durante a atividade invalida a tentativa em andamento', async () => {
