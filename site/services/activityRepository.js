@@ -34,6 +34,24 @@ class ActivityRepository {
         return { record: existing.data, created: false };
     }
 
+    async history(childId, offset = 0, limit = 50) {
+        const { data, error } = await this.db.from(this.table)
+            .select('id, atividade_id, resultado, created_at')
+            .eq('crianca_id', childId).order('created_at', { ascending: false })
+            .order('id', { ascending: false }).range(offset, offset + limit - 1);
+        if (error) throw error;
+        return data || [];
+    }
+
+    async allHistory(childId) {
+        const rows = [];
+        for (let offset = 0; ; offset += 1000) {
+            const page = await this.history(childId, offset, 1000);
+            rows.push(...page);
+            if (page.length < 1000) return rows;
+        }
+    }
+
     async completedActivityIds(childId, activityIds) {
         const completed = new Set();
         const pageSize = 1000;

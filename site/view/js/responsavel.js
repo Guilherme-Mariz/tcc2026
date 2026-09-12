@@ -84,7 +84,7 @@ function desbloquearDashboard() {
         pinOverlay.classList.add("hiding");
         respPage.classList.add("unlocked");
         carregarDados();
-        mostrarToast("Área desbloqueada!");
+
     }, 700);
 
     setTimeout(() => {
@@ -116,141 +116,44 @@ function bloquearDashboard() {
 /* ════════════════════════════════════════
    DADOS E SELEÇÃO DE CRIANÇAS
 ════════════════════════════════════════ */
+let requestVersion = 0;
+async function buscarJSON(url) {
+    const response = await fetch(url, { credentials: "include", cache: "no-store" });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        if (response.status === 401) window.location.href = "/login";
+        throw new Error(data.error || data.erro || "Não foi possível carregar os dados. Tente novamente.");
+    }
+    return data;
+}
+
 async function carregarDados() {
-    const sessao = lerJsonLocal("teko_session", {});
-    atualizarNomeResponsavel(sessao?.responsavel);
-
-    const criancaAtiva = sessao?.crianca || null;
-    const criancasLocais = lerJsonLocal("teko_registered_children", []);
-    const [criancasRemotas, responsavelRemoto] = await Promise.all([
-        buscarCriancas(),
-        buscarPerfilResponsavel()
-    ]);
-
-    atualizarNomeResponsavel(responsavelRemoto);
-
-    criancasDashboard = fundirCriancas(
-        Array.isArray(criancasRemotas) ? criancasRemotas : [],
-        Array.isArray(criancasLocais) ? criancasLocais : [],
-        criancaAtiva ? [criancaAtiva] : []
-    );
-
-    const idAtivo = obterId(criancaAtiva);
-    criancaSelecionada =
-        criancasDashboard.find(crianca => idsIguais(obterId(crianca), idAtivo)) ||
-        criancasDashboard[0] ||
-        null;
-
-    renderizarSeletor();
-    renderizarPainel(criancaSelecionada);
-}
-
-function atualizarNomeResponsavel(responsavel) {
-    const nomeCompleto = String(
-        responsavel?.nome_completo ||
-        responsavel?.nome ||
-        ""
-    ).trim();
-
-    if (!nomeCompleto) return;
-
-    atualizarTexto("resp-nome", nomeCompleto.split(/\s+/)[0]);
-}
-
-async function buscarPerfilResponsavel() {
+    const version = ++requestVersion;
+    mostrarEstado("Carregando dados…");
     try {
-        const resposta = await fetch("/auth/profile", {
-            credentials: "include",
-            cache: "no-store"
-        });
-
-        const resultado = await resposta.json().catch(() => ({}));
-
-        if (resposta.status === 401) {
-            window.location.href = "/login";
-            return null;
-        }
-
-        if (!resposta.ok) {
-            throw new Error(
-                resultado.erro ||
-                "Não foi possível buscar o perfil do responsável."
-            );
-        }
-
-        return resultado.responsavel || null;
-    } catch (erro) {
-        console.warn("Não foi possível atualizar o nome do responsável:", erro);
-        return null;
+        const [children, profile] = await Promise.all([
+            buscarJSON("/children"), buscarJSON("/auth/profile")
+        ]);
+        if (version !== requestVersion) return;
+        const list = children.children || children.criancas || [];
+        criancasDashboard = Array.isArray(list) ? list : [list];
+        const name = profile.responsavel?.nome_completo || profile.responsavel?.nome || "";
+        atualizarTexto("resp-nome", name.trim().split(/\s+/)[0] || "Responsável");
+        criancaSelecionada = criancasDashboard.find(c => c.id === criancaSelecionada?.id) || criancasDashboard[0] || null;
+        renderizarSeletor();
+        await renderizarPainel(criancaSelecionada);
+    } catch (error) {
+        if (version === requestVersion) mostrarEstado(error.message, true);
     }
 }
 
-async function buscarCriancas() {
-    try {
-        const resposta = await fetch("/children", {
-            credentials: "include"
-        });
-
-        const resultado = await resposta.json().catch(() => ({}));
-
-        if (resposta.status === 401) {
-            window.location.href = "/login";
-            return [];
-        }
-
-        if (!resposta.ok) {
-            throw new Error(resultado.error || "Não foi possível buscar as crianças.");
-        }
-
-        const lista = resultado.children || resultado.criancas || resultado;
-        return Array.isArray(lista) ? lista.filter(Boolean) : lista ? [lista] : [];
-    } catch (erro) {
-        console.warn("Não foi possível atualizar as crianças do painel:", erro);
-        return [];
-    }
+function mostrarEstado(message, failed = false) {
+    atualizarTexto("dashboard-status", message);
+    document.getElementById("dashboard-retry").hidden = !failed;
+    for (const id of ["stat-modulos", "stat-atividades", "stat-sequencia", "chart-total"]) atualizarTexto(id, "—");
+    document.getElementById("daily-chart").hidden = true;
 }
-
-function lerJsonLocal(chave, fallback) {
-    try {
-        const valor = JSON.parse(localStorage.getItem(chave));
-        return valor ?? fallback;
-    } catch (erro) {
-        return fallback;
-    }
-}
-
-function fundirCriancas(...listas) {
-    const resultado = [];
-
-    listas.flat().filter(Boolean).forEach(crianca => {
-        const id = obterId(crianca);
-        const nome = obterNome(crianca).toLocaleLowerCase("pt-BR");
-
-        const indice = resultado.findIndex(item => {
-            const mesmoId = id && idsIguais(obterId(item), id);
-            const mesmoNome = nome &&
-                obterNome(item).toLocaleLowerCase("pt-BR") === nome;
-            return mesmoId || mesmoNome;
-        });
-
-        const normalizada = {
-            ...crianca,
-            nome: obterNome(crianca) || "Criança"
-        };
-
-        if (indice >= 0) {
-            resultado[indice] = {
-                ...resultado[indice],
-                ...normalizada,
-                nome: obterNome(normalizada) || obterNome(resultado[indice])
-            };
-        } else {
-            resultado.push(normalizada);
-        }
-    });
-
-    return resultado.slice(0, 2);
-}
+document.getElementById("dashboard-retry").addEventListener("click", carregarDados);
 
 function obterNome(crianca) {
     return String(
@@ -329,25 +232,37 @@ function selecionarCrianca(crianca) {
     criancaSelecionada = crianca;
     renderizarSeletor();
     renderizarPainel(crianca);
-    mostrarToast(`Exibindo os dados de ${obterNome(crianca)}.`);
+
 }
 
-function renderizarPainel(crianca) {
-    if (!crianca) {
-        atualizarTexto("resp-crianca-nome-sub", "sua criança");
-        atualizarTexto("dado-nome", "Nenhuma criança cadastrada");
-        atualizarTexto("dado-inicial", "—");
-        renderizarProgresso(criarProgressoVazio(), "");
-        return;
-    }
-
-    const nome = obterNome(crianca) || "Criança";
-
+async function renderizarPainel(crianca) {
+    const version = ++requestVersion;
+    mostrarEstado(crianca ? "Carregando progresso…" : "Nenhuma criança cadastrada.");
+    const nome = obterNome(crianca) || "Nenhuma criança cadastrada";
     atualizarTexto("resp-crianca-nome-sub", nome);
     atualizarTexto("dado-nome", nome);
     atualizarTexto("dado-inicial", obterInicial(nome));
-
-    renderizarProgresso(obterProgresso(crianca), nome);
+    if (!crianca) return;
+    try {
+        const progresso = await buscarJSON("/api/activities/progress/" + encodeURIComponent(crianca.id));
+        if (version !== requestVersion) return;
+        atualizarTexto("dashboard-status", "");
+        document.getElementById("daily-chart").hidden = false;
+        atualizarTexto("stat-modulos", progresso.completedModules);
+        atualizarTexto("stat-atividades", progresso.totalRealizations);
+        atualizarTexto("stat-sequencia", progresso.streak.current + " dias");
+        const dias = progresso.daily.map(day => ({
+            label: new Date(day.date + "T12:00:00Z").toLocaleDateString("pt-BR", {
+                weekday: "short", timeZone: progresso.timeZone
+            }).replace(".", ""),
+            value: day.count
+        }));
+        const total = dias.reduce((sum, day) => sum + day.value, 0);
+        atualizarTexto("chart-total", total + (total === 1 ? " atividade" : " atividades"));
+        renderizarGrafico(dias);
+    } catch (error) {
+        if (version === requestVersion) mostrarEstado(error.message, true);
+    }
 }
 
 function atualizarTexto(id, texto) {
@@ -357,158 +272,6 @@ function atualizarTexto(id, texto) {
 
 function obterInicial(nome) {
     return nome?.trim().charAt(0).toLocaleUpperCase("pt-BR") || "—";
-}
-
-/* ════════════════════════════════════════
-   PROGRESSO — pronto para integração futura
-════════════════════════════════════════ */
-function criarDiasPadrao() {
-    const hoje = new Date();
-
-    return Array.from({ length: 7 }, (_, indice) => {
-        const data = new Date(hoje);
-        data.setDate(hoje.getDate() - (6 - indice));
-
-        const rotulo = data
-            .toLocaleDateString("pt-BR", { weekday: "short" })
-            .replace(".", "");
-
-        return {
-            label: rotulo.charAt(0).toLocaleUpperCase("pt-BR") + rotulo.slice(1),
-            value: 0
-        };
-    });
-}
-
-function criarProgressoVazio() {
-    return {
-        dias: criarDiasPadrao(),
-        total: 0,
-        modulosConcluidos: 0,
-        diasAtivos: 0,
-        tentativas: 0,
-        erros: 0,
-        taxaAcerto: 0,
-        areas: {
-            emocoes: 0,
-            comunicacao: 0,
-            comportamento: 0
-        }
-    };
-}
-
-function obterProgresso(crianca) {
-    const origem = crianca?.progresso || crianca?.progress || {};
-    const diario =
-        origem.diario ||
-        origem.ultimos7Dias ||
-        origem.daily ||
-        [];
-
-    const diasPadrao = criarDiasPadrao();
-    const dias = diasPadrao.map((dia, indice) => {
-        const registro = diario[indice];
-        const valor = typeof registro === "object"
-            ? registro?.value ?? registro?.valor ?? registro?.atividades ?? registro?.total
-            : registro;
-
-        return {
-            label: dia.label,
-            value: Math.max(0, Number(valor) || 0)
-        };
-    });
-
-    const somaPeriodo = dias.reduce((total, dia) => total + dia.value, 0);
-    const areasOrigem = origem.areas || {};
-    const tentativas = Math.max(
-        0,
-        Number(origem.tentativas ?? origem.totalTentativas ?? 0) || 0
-    );
-    const erros = Math.min(
-        tentativas,
-        Math.max(0, Number(origem.erros ?? origem.totalErros ?? 0) || 0)
-    );
-    const taxaAcertoInformada =
-        origem.taxaAcerto ?? origem.taxa_acerto ?? origem.acertos;
-
-    return {
-        dias,
-        total: Math.max(
-            0,
-            Number(
-                origem.total ??
-                origem.atividadesConcluidas ??
-                origem.atividades_feitas ??
-                somaPeriodo
-            ) || 0
-        ),
-        modulosConcluidos: Math.max(
-            0,
-            Number(
-                origem.modulosConcluidos ??
-                origem.modulos_concluidos ??
-                0
-            ) || 0
-        ),
-        diasAtivos: Math.max(
-            0,
-            Number(
-                origem.diasAtivos ??
-                origem.dias_ativos ??
-                origem.diasSeguidos ??
-                origem.dias_seguidos ??
-                dias.filter(dia => dia.value > 0).length
-            ) || 0
-        ),
-        tentativas,
-        erros,
-        taxaAcerto: limitarPercentual(
-            taxaAcertoInformada ??
-            (tentativas > 0
-                ? ((tentativas - erros) / tentativas) * 100
-                : 0)
-        ),
-        areas: {
-            emocoes: limitarPercentual(areasOrigem.emocoes ?? 0),
-            comunicacao: limitarPercentual(areasOrigem.comunicacao ?? 0),
-            comportamento: limitarPercentual(areasOrigem.comportamento ?? 0)
-        }
-    };
-}
-
-function limitarPercentual(valor) {
-    return Math.min(100, Math.max(0, Number(valor) || 0));
-}
-
-function calcularDificuldade(erros, tentativas) {
-    if (!tentativas) return "Sem dados";
-
-    const taxaDeErro = erros / tentativas;
-
-    if (taxaDeErro <= 0.2) return "Baixa";
-    if (taxaDeErro <= 0.5) return "Moderada";
-    return "Alta";
-}
-
-function renderizarProgresso(progresso, nomeCrianca) {
-    const totalPeriodo = progresso.dias.reduce(
-        (total, dia) => total + dia.value,
-        0
-    );
-
-    atualizarTexto("stat-modulos", progresso.modulosConcluidos);
-    atualizarTexto("stat-atividades", progresso.total);
-    atualizarTexto(
-        "stat-dificuldade",
-        calcularDificuldade(progresso.erros, progresso.tentativas)
-    );
-    atualizarTexto(
-        "chart-total",
-        `${totalPeriodo} ${totalPeriodo === 1 ? "atividade" : "atividades"}`
-    );
-
-    renderizarGrafico(progresso.dias);
-    renderizarAnalise(progresso, nomeCrianca);
 }
 
 function renderizarGrafico(dias) {
@@ -563,64 +326,6 @@ function renderizarGrafico(dias) {
     vazio.hidden = possuiDados;
 }
 
-function renderizarAnalise(progresso, nomeCrianca) {
-    const semDados = progresso.total === 0 &&
-        progresso.dias.every(dia => dia.value === 0);
-
-    if (semDados) {
-        atualizarTexto("analysis-kicker", "Começando agora");
-        atualizarTexto("analysis-headline", "Ainda não há atividades registradas");
-        atualizarTexto("analysis-frequency", "Sem dados suficientes");
-        atualizarTexto("analysis-area", "Aguardando atividades");
-        atualizarTexto("analysis-next", "Realizar a primeira atividade");
-        atualizarTexto(
-            "teko-summary-text",
-            `Quando as atividades de ${nomeCrianca || "sua criança"} forem registradas, o TEKO.IA reunirá aqui uma leitura simples do progresso para apoiar o acompanhamento do responsável.`
-        );
-        return;
-    }
-
-    const nomesAreas = {
-        emocoes: "Emoções",
-        comunicacao: "Comunicação",
-        comportamento: "Comportamento"
-    };
-
-    const areasOrdenadas = Object.entries(progresso.areas)
-        .sort(([, valorA], [, valorB]) => valorB - valorA);
-
-    const melhorArea = areasOrdenadas[0];
-    const proximaArea = areasOrdenadas[areasOrdenadas.length - 1];
-    const nome = nomeCrianca || "A criança";
-
-    atualizarTexto(
-        "analysis-kicker",
-        progresso.diasAtivos >= 4 ? "Boa participação" : "Progresso em construção"
-    );
-    atualizarTexto(
-        "analysis-headline",
-        `${nome} participou em ${progresso.diasAtivos} ${progresso.diasAtivos === 1 ? "dia" : "dias"} neste período`
-    );
-    atualizarTexto(
-        "analysis-frequency",
-        progresso.diasAtivos >= 4 ? "Participação frequente" : "Participação inicial"
-    );
-    atualizarTexto(
-        "analysis-area",
-        melhorArea?.[1] > 0 ? nomesAreas[melhorArea[0]] : "Em construção"
-    );
-    atualizarTexto(
-        "analysis-next",
-        proximaArea?.[1] > 0
-            ? `Explorar mais atividades de ${nomesAreas[proximaArea[0]]}`
-            : "Continuar experimentando novas atividades"
-    );
-    atualizarTexto(
-        "teko-summary-text",
-        `${nome} concluiu ${progresso.total} ${progresso.total === 1 ? "atividade" : "atividades"} e esteve presente em ${progresso.diasAtivos} ${progresso.diasAtivos === 1 ? "dia" : "dias"}. O acompanhamento deve respeitar seu ritmo e valorizar cada pequena conquista.`
-    );
-}
-
 /* ════════════════════════════════════════
    TOAST
 ════════════════════════════════════════ */
@@ -630,3 +335,7 @@ function mostrarToast(mensagem) {
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 2800);
 }
+
+window.addEventListener("focus", () => {
+    if (respPage.classList.contains("unlocked")) carregarDados();
+});

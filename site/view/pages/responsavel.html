@@ -222,6 +222,8 @@
                 </div>
             </div>
 
+            <p id="dashboard-status" role="status"></p>
+            <button id="dashboard-retry" type="button" hidden>Tentar novamente</button>
             <div class="resp-grid">
 
                 <!-- dados da criança -->
@@ -250,15 +252,15 @@
                                 <strong id="stat-atividades">0</strong>
                             </div>
                             <div class="child-progress-detail">
-                                <span>Dificuldade observada</span>
-                                <strong id="stat-dificuldade">Sem dados</strong>
+                                <span>Sequência atual</span>
+                                <strong id="stat-sequencia">—</strong>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- gráfico diário -->
-                <section class="resp-card daily-progress-card" aria-labelledby="daily-progress-title">
+                <section class="resp-card daily-progress-card resp-grid-full" aria-labelledby="daily-progress-title">
                     <div class="resp-card-heading">
                         <div class="resp-card-title" id="daily-progress-title">
                             <i class="fa-solid fa-chart-line icon-green"></i>
@@ -284,49 +286,6 @@
                             <i class="fa-regular fa-chart-bar"></i>
                             <span>O progresso aparecerá aqui após as primeiras atividades.</span>
                         </div>
-                    </div>
-                </section>
-
-                <!-- análise do gráfico -->
-                <section class="resp-card progress-analysis" aria-labelledby="analysis-title">
-                    <div class="resp-card-title" id="analysis-title">
-                        <i class="fa-solid fa-magnifying-glass-chart icon-purple"></i>
-                        Análise do período
-                    </div>
-
-                    <div class="analysis-highlight">
-                        <div class="analysis-highlight-icon"><i class="fa-solid fa-seedling"></i></div>
-                        <div>
-                            <span id="analysis-kicker">Começando agora</span>
-                            <strong id="analysis-headline">Ainda não há atividades registradas</strong>
-                        </div>
-                    </div>
-
-                    <div class="analysis-list">
-                        <div class="analysis-item">
-                            <i class="fa-regular fa-calendar-check"></i>
-                            <div><span>Frequência</span><strong id="analysis-frequency">Sem dados suficientes</strong></div>
-                        </div>
-                        <div class="analysis-item">
-                            <i class="fa-solid fa-bullseye"></i>
-                            <div><span>Área em destaque</span><strong id="analysis-area">Aguardando atividades</strong></div>
-                        </div>
-                        <div class="analysis-item">
-                            <i class="fa-solid fa-arrow-trend-up"></i>
-                            <div><span>Próximo passo</span><strong id="analysis-next">Realizar a primeira atividade</strong></div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- resumo do TEKO.IA -->
-                <section class="teko-summary resp-grid-full" aria-labelledby="teko-summary-title">
-                    <div class="teko-summary-mascot">
-                        <img src="../img/mascot/teko-sentado.webp" alt="Teko sentado">
-                    </div>
-                    <div class="teko-summary-content">
-                        <span class="teko-summary-eyebrow">Resumo do TEKO.IA</span>
-                        <h2 id="teko-summary-title">Um olhar cuidadoso sobre o desenvolvimento</h2>
-                        <p id="teko-summary-text">Quando as atividades forem registradas, o TEKO.IA reunirá aqui uma leitura simples do progresso da criança para apoiar o acompanhamento do responsável.</p>
                     </div>
                 </section>
 

@@ -1,0 +1,167 @@
+PASSAGEM PARA OUTRO CHAT — TEKO / PROGRESSO E ÁREA DO RESPONSÁVEL
+Data de preparação: 12/09/2026
+
+1. OBJETIVO E AUTORIZAÇÃO
+Concluir o sistema de progresso sem implementar a parte de IA.
+O usuário autoriza alterações necessárias no projeto e no Supabase.
+Repositório: https://github.com/Guilherme-Mariz/tcc2026
+Branch de trabalho: feat/registro-conclusao-atividades
+Criar o próximo commit nesta branch. Não fazer merge na main nem implantação.
+Não criar outros guias por padrão; este TXT é uma exceção solicitada para passagem.
+Ao terminar, informar no chat arquivos criados/alterados, testes e commit.
+
+2. ESTADO DESTA ENTREGA
+Este é um CHECKPOINT PARCIAL, reconstruído dos trechos preservados na conversa.
+O ambiente de arquivos deixou de responder com:
+  exec-server transport disconnected
+O Supabase também parou de responder; depois de reinstalar a integração, houve:
+  Unknown tool: supabase.list_projects
+O acesso direto ao GitHub voltou a funcionar e foi usado para salvar este checkpoint.
+Não afirmar que o código deste checkpoint passou nos testes, foi testado visualmente
+ou que o SQL foi aplicado: essas confirmações NÃO existem.
+As ferramentas de edição anteriores confirmaram mudanças locais no backend e painel,
+mas não foi possível reler o diretório depois da falha.
+Não depender do antigo scratch /workspace/scratch/d5ff6ea0a16d/teko-progress.
+Obter os arquivos deste commit no GitHub e continuar em ambiente funcional.
+
+Base remota conferida antes deste checkpoint:
+204dd71f8bae20d0c3fa92bbe35314f9f155533a
+Os 11 testes mencionados anteriormente pertenciam à versão base, não a este checkpoint.
+
+3. RECURSOS JÁ EXISTENTES NA BASE — PRESERVAR
+- Registro individual de conclusão, com realizationId para reenvio idempotente.
+- Cada repetição real gera um novo ID e INSERT; reenvio do mesmo ID não duplica.
+- Criança pode repetir jogos ilimitadamente.
+- Card de atividade mostra certo no canto superior direito, sem bloquear o jogo.
+- Salvamento bem-sucedido silencioso; falha permite tentar novamente.
+- Login sem PIN: um perfil entra automaticamente; vários perfis exibem escolha.
+- Trocar sessão mantém PIN; área do responsável também mantém seu PIN.
+- Autenticação por cookie/token no backend; verificar vínculo responsável/criança.
+- Nunca expor credenciais administrativas ao frontend.
+
+4. ESCOPO DO DOCUMENTO ORIGINAL, SEM IA
+- Registrar cada realização e preservar todo o histórico.
+- Atualizar resumo por criança/módulo: número de realizações e última data.
+- Registrar no máximo um dia ativo por criança/data.
+- Calcular sequência atual e maior sequência.
+- Consultar histórico paginado, progresso por módulo e frequência diária.
+- Expor dados objetivos para relatórios, independentemente da IA.
+- Banco usa crianca_id; código usa childId.
+Endpoints:
+  POST /api/activities/complete
+  GET /api/activities/progress/:childId
+  GET /api/activities/streak/:childId
+  GET /api/activities/history/:childId?offset=0&limit=50
+
+5. O QUE FOI PREPARADO NESTE CHECKPOINT
+site/services/progressSummary.js (novo):
+  agrega histórico real; totais, atividades distintas, módulos, sete dias,
+  sequência atual/maior e frequência por atividade.
+  Fuso adotado: America/Sao_Paulo.
+  Módulo concluído = todas as suas atividades concluídas ao menos uma vez.
+  Repetições aumentam total de realizações, mas não o percentual de cobertura.
+  Sequência atual mantém a contagem até ontem se hoje ainda não houve atividade.
+site/services/activityRepository.js:
+  history paginado e allHistory, mantendo registro INSERT/idempotência existentes.
+site/services/activityService.js:
+  progress retorna resumo; history valida paginação e autorização.
+site/controller/activityController.js e site/routes/activityRoutes.js:
+  rotas de sequência e histórico, mantendo autenticação e cache no-store.
+site/tests/activity-progress.test.js:
+  fixture adaptada a allHistory/history.
+site/tests/progress-summary.test.js (novo):
+  testes preparados de repetição, módulo, fuso, quebra da sequência e período vazio.
+site/view/js/responsavel.js:
+  remove leitura/fusão de perfis e progresso vindos de localStorage.
+  dados de /children e /auth/profile; progresso por /api/activities/progress.
+  contador de requisições para evitar resposta antiga sobrescrever perfil novo.
+  estados carregando/erro/repetir, e atualização ao voltar foco.
+site/view/pages/responsavel.html:
+  remove Análise do período e Resumo do TEKO.IA.
+  dados no topo, gráfico diário em largura total abaixo, conforme print do usuário.
+  troca Dificuldade observada por Sequência atual (não há medição real de dificuldade).
+site/supabase/progress_summaries.sql (novo):
+  RASCUNHO NÃO VALIDADO, preservado como proposta para revisão; não executar cegamente.
+  índices únicos, trigger transacional, RLS/permissões e preenchimento dos resumos
+  a partir de conclusões existentes, sem sobrescrever o histórico.
+  Nenhuma mudança de IA foi feita.
+
+6. BANCO — ÚLTIMA INSPEÇÃO CONFIRMADA, NÃO É ESTADO ATUAL GARANTIDO
+Projeto: TekoTEA's-Project
+Ref: wiftybobcpjnhlnmqsgd
+Na última consulta bem-sucedida havia 1 realização, 0 resumos e 0 dias ativos.
+Tabela física de histórico tem acento: public."realizações_atividades".
+id uuid; crianca_id uuid; atividade_id uuid; resultado jsonb; created_at timestamptz.
+progresso_modulos:
+  id bigint IDENTITY BY DEFAULT;
+  crianca_id uuid; modulo_id bigint; atividades_realizadas bigint;
+  ultima_realizacao timestamptz; updated_at timestamptz default now().
+sequencia_atividades:
+  id uuid default gen_random_uuid(); crianca_id uuid; data date.
+Só existiam índices de PK nos dois resumos.
+Os defaults gen_random_uuid() em crianca_id são inadequados: usar a criança real.
+Catálogo existente: site/data/activities.json, 10 atividades em 5 módulos.
+Não recriar catálogo ou tabelas sem conferir o estado real.
+
+7. ORDEM PARA TERMINAR NO PRÓXIMO COMMIT
+A. Confirmar acesso ao GitHub, terminal e Supabase com leituras simples.
+   Ler AGENTS.md, status/diff e preservar mudanças do usuário.
+   Trabalhar sobre esta branch, não sobre uma cópia antiga do scratch.
+B. Rodar sintaxe e testes existentes antes de ampliar mudanças.
+   Na raiz do repositório:
+     node --check site/view/js/responsavel.js
+     node --check site/services/progressSummary.js
+     node --test site/tests/*.test.js
+   Instalar dependências de site/ conforme lockfile se necessário.
+C. Revisar SQL contra o banco atual e preparar/aplicar migração conforme ferramentas.
+   Verificar antes se teko_conclusao_resumos ou função equivalente já existe.
+   Garantir no máximo um resumo criança/módulo e um registro criança/dia.
+   Conferir duplicatas/nulos antes de índices, sem apagar dados silenciosamente.
+   Revisar SECURITY INVOKER, RLS, grants de tabelas/sequências e permissões reais
+   do cliente administrativo; não introduzir SECURITY DEFINER para esconder erro.
+   Garantir INSERT de realização + resumos numa mesma transação.
+   Reenvio de realizationId não pode incrementar resumos novamente.
+   Preencher resumos de realizações anteriores sem duplicar registros.
+   O SQL rascunho não é idempotente no CREATE TRIGGER: ajustar após inspeção.
+D. Verificar em transação com rollback ou ambiente de teste autorizado:
+   duas conclusões no mesmo dia; repetição; mesmo realizationId reenviado;
+   atividades de módulos diferentes; falha parcial; concorrência.
+   Conferir contagens do resumo e dias únicos contra o histórico.
+   Não deixar realizações fictícias no histórico de crianças reais.
+E. Completar testes HTTP para /streak e /history:
+   sem autenticação=401, criança alheia=403, IDs/paginação inválidos=400,
+   limit/offset/hasMore corretos, dados reais e cache no-store.
+   Testar histórico >1000 linhas e inserções simultâneas durante paginação.
+   Avaliar custo de allHistory: progress/streak leem tudo; otimizar agregação
+   se necessário sem truncar dados ou quebrar isolamento.
+   Decidir retorno de POST /complete com resumo/sequence, como sugerido no documento;
+   hoje ele ainda retorna só realização e confirmação.
+F. Finalizar visual e comportamento do painel:
+   dados no topo; gráfico abaixo ocupando largura toda; sem análise e sem TEKO.IA.
+   Conferir desktop/mobile, contraste, foco, PIN, erro, carregamento e conta sem criança.
+   Conferir responsavel.css: classes display podem sobrepor atributo hidden.
+   Garantir #daily-chart[hidden] realmente oculto; não mostrar zeros como erro.
+   Testar troca rápida de criança, resposta atrasada, foco e falha de /children.
+   Invalidar requisições ao bloquear painel se necessário.
+   Conferir se saudação precisa usar nome diferente no JSON de /auth/profile.
+   O painel não usa localStorage; componentes compartilhados ainda podem usar
+   teko_session para a sessão infantil. Não apagar todas as preferências do site.
+   Não inventar taxa de acerto, dificuldade ou desempenho onde não há coleta real.
+   Conferir e limpar CSS/JS morto dos blocos removidos, se apropriado.
+G. Segurança:
+   autorização em TODAS as consultas por vínculo do responsável autenticado.
+   conferência do PIN no backend deve permanecer.
+   Não confundir overlay de PIN com autorização de API; revisar proteção esperada.
+   Executar advisors após mudanças no banco e diferenciar problemas preexistentes.
+H. Rodar a suíte completa e teste visual, registrar resultados reais.
+   Commit adicional na mesma branch; publicar sem force e preservar commits alheios.
+   Não fazer merge na main nem deploy sem solicitação.
+   Resumo final no chat com arquivos, mudanças no Supabase, testes e link do commit.
+
+8. MENSAGEM PARA INICIAR O PRÓXIMO CHAT
+"Continue o TEKO no repositório Guilherme-Mariz/tcc2026, branch
+feat/registro-conclusao-atividades. Leia CONTINUAR_PROGRESSO_TEKO.txt na raiz
+e confira o checkpoint parcial antes de alterar. Conclua progresso, sequência,
+histórico e a Área do Responsável com dados reais. Deixe IA para depois.
+Pode alterar o Supabase quando necessário. Valide tudo e publique outro commit
+na mesma branch, sem merge na main, sem novo guia e com resumo no chat."

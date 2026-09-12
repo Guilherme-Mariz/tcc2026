@@ -28,5 +28,17 @@ class ActivityController {
             return this.failure(res, error);
         }
     }
+    async streak(req, res) {
+        try {
+            const { childId, streak, timeZone } = await this.service.progress(req.user?.id, req.params.childId);
+            return res.json({ success: true, childId, streak, timeZone });
+        } catch (error) { return this.failure(res, error); }
+    }
+
+    async history(req, res) {
+        try {
+            return res.json({ success: true, ...await this.service.history(req.user?.id, req.params.childId, req.query) });
+        } catch (error) { return this.failure(res, error); }
+    }
 }
 module.exports = ActivityController;

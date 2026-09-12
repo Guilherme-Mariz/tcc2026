@@ -12,6 +12,8 @@ const payload = (overrides = {}) => ({ childId, activityId: catalog[0].id, reali
 function fixture() {
     const records = [];
     const repository = {
+        async allHistory(id) { return records.filter(r => r.crianca_id === id); },
+        async history(id, offset, limit) { return records.filter(r => r.crianca_id === id).slice(offset, offset + limit); },
         async findActivity(id) { return catalog.find(a => a.id === id); },
         async insertCompletion(row) {
             const found = records.find(r => r.id === row.id);

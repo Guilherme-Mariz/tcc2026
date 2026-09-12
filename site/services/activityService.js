@@ -1,4 +1,5 @@
 const catalog = require("../data/activities.json");
+const { summarize } = require('./progressSummary');
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function reject(status, message) {
@@ -52,10 +53,19 @@ class ActivityService {
     async progress(userId, rawChildId) {
         const childId = validId(rawChildId, "childId");
         await this.authorize(userId, childId);
-        const completedActivityIds = await this.repository.completedActivityIds(
-            childId, catalog.map(activity => activity.id)
-        );
-        return { childId, completedActivityIds };
+        return { childId, ...summarize(await this.repository.allHistory(childId)) };
+    }
+
+    async history(userId, rawChildId, query = {}) {
+        const childId = validId(rawChildId, 'childId');
+        await this.authorize(userId, childId);
+        const offset = Number(query.offset ?? 0), limit = Number(query.limit ?? 50);
+        if (!Number.isSafeInteger(offset) || offset < 0 || offset > 1000000 ||
+            !Number.isInteger(limit) || limit < 1 || limit > 100) reject(400, 'Paginação inválida.');
+        const rows = await this.repository.history(childId, offset, limit + 1);
+        return { childId, offset, limit, hasMore: rows.length > limit,
+            history: rows.slice(0, limit).map(row => ({ ...row,
+                title: catalog.find(a => a.id === row.atividade_id)?.titulo || 'Atividade' })) };
     }
 }
 module.exports = ActivityService;

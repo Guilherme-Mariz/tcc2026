@@ -24,6 +24,8 @@ function createActivityRouter({ service, authenticate } = {}) {
         return next();
     }, (req, res) => controller.complete(req, res));
     router.get("/progress/:childId", (req, res) => controller.progress(req, res));
+    router.get('/streak/:childId', (req, res) => controller.streak(req, res));
+    router.get('/history/:childId', (req, res) => controller.history(req, res));
     return router;
 }
 module.exports = createActivityRouter;
