@@ -3,7 +3,8 @@ Atualizado em 13/09/2026 (UTC)
 Repositório: Guilherme-Mariz/tcc2026
 Branch: feat/registro-conclusao-atividades
 
-STATUS: pendências deste checkpoint concluídas, exceto IA, adiada por solicitação.
+STATUS: progresso concluído; correções de IA e carregamento implementadas.
+A autenticação e a qualidade real da Groq ainda dependem de chave válida.
 Este arquivo substitui a passagem parcial anterior. Não é necessário reaplicar o SQL.
 
 ENTREGA
@@ -51,6 +52,38 @@ TESTES NO REPOSITÓRIO
 - site/tests/responsavel-browser.check.cjs: verificação opcional com Playwright.
   TEKO_CHROMIUM_PATH pode apontar para um Chromium instalado no ambiente.
 
-PRÓXIMO ESCOPO
-- IA permanece para outra solicitação.
-- Não houve merge na main nem implantação do site.
+ATUALIZAÇÃO — CHAT E CARREGAMENTO (13/09/2026)
+- Blur, indicador e foco protegido até perfis/progresso concluírem a consulta.
+- Falha no carregamento mantém overlay com botão de tentar novamente.
+- Contrato único de emoções, tendência, confiança e categorias; JSON Schema estrito.
+- Prompt revisado para negações, erros de escrita, incerteza, recusa e risco.
+- Sugestões selecionam jogos reais e aparecem com Abrir / Agora não.
+- Não reapresentar atividade antiga como sugestão atual; baixa confiança/risco
+  impedem recomendação. Confiança é heurística da IA, não diagnóstico.
+- Chave Groq carregada tardiamente e com espaços externos removidos; sua ausência
+  não derruba as demais rotas. site/.env tem caminho explícito no servidor.
+- Falhas diferenciadas: credencial, limite, timeout, JSON inválido e persistência.
+- Sessão temporária só confirma mensagens após salvar; envios simultâneos da mesma
+  criança são bloqueados no processo Node. Respostas de outro perfil são descartadas.
+- Logs do chat não incluem falas, perfis, memória nem respostas completas.
+- Tabela conversations conferida por leitura de schema/constraints: compatível.
+  Não houve migração, alteração de configurações ou inserção de dados no Supabase.
+
+VALIDAÇÃO DESTA ATUALIZAÇÃO
+- 29 testes Node passaram: 16 anteriores + 7 IA/backend + 6 scripts de interface.
+- Incluem falta de chave, 401/403 Groq, 429, timeout, formato inválido, falha de
+  salvamento, concorrência, incerteza, atividades reais, PIN pendente, erro/retry,
+  nenhuma criança, troca de perfil e respostas atrasadas.
+- Interface testada em DOM mínimo. A inspeção visual nesta rodada não foi
+  concluída: Chromium local indisponível e prévia local bloqueada no navegador remoto.
+- check:groq confirmou ausência de GROQ_API_KEY neste ambiente. Não foi feita
+  chamada de geração real nem medição da qualidade das interpretações emocionais.
+
+PENDÊNCIAS PARA VALIDAÇÃO REAL
+1. Configurar GROQ_API_KEY válida no ambiente que executa o site ou em site/.env.
+   Não enviar a chave no chat nem no Git. Reiniciar o servidor.
+2. Na pasta site, executar npm run check:groq e depois testar o chat com exemplos
+   fictícios: cumprimento, negação, erro de escrita, sentimentos mistos, recusa,
+   sugestão de atividade e relato de risco. Revisar a adequação das respostas.
+3. Conferir visualmente desktop/celular; o teste opcional de navegador foi ampliado.
+- Sem merge na main e sem implantação do site.

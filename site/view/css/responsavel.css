@@ -876,3 +876,18 @@
     cursor: pointer;
 }
 #dashboard-retry:focus-visible { outline: 3px solid #456a9a; outline-offset: 3px; }
+
+/* O painel continua desfocado e fora do foco até concluir a consulta. */
+.pin-loading-panel { display: none; width: 100%; }
+#pin-overlay.loading-data .pin-loading-panel { display: grid; justify-items: center; gap: 16px; }
+#pin-overlay.loading-data .pin-sub,
+#pin-overlay.loading-data .pin-input-wrap,
+#pin-overlay.loading-data .pin-error-msg,
+#pin-overlay.loading-data .pin-divider { display: none; }
+.pin-loading-spinner { width: 32px; height: 32px; border: 3px solid #dce8df; border-top-color: #315f49; border-radius: 50%; animation: pin-spin 1s linear infinite; }
+.pin-loading-spinner[hidden], #pin-loading-retry[hidden] { display: none; }
+#pin-loading-status { font: 500 0.9rem/1.6 'Poppins', sans-serif; color: #315f49; margin: 8px 0; }
+#pin-loading-retry { border: 0; border-radius: 12px; background: #315f49; color: white; padding: 13px 20px; font: 600 0.85rem 'Poppins', sans-serif; cursor: pointer; }
+#pin-loading-retry:focus-visible { outline: 3px solid #6bb08a; outline-offset: 4px; }
+@keyframes pin-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .pin-loading-spinner { animation: none; } }

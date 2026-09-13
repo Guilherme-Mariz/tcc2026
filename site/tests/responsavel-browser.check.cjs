@@ -35,7 +35,19 @@ const server = app.listen(0,'127.0.0.1',async()=>{
  assert.equal(await page.locator('#resp-page').evaluate(e=>e.inert),true);
  await page.locator('#pin-input').fill('9999');await page.locator('#btn-pin').click();
  await page.waitForFunction(()=>document.querySelector('#pin-error').textContent.includes('incorreto'));
+ delayed=true;
  await page.locator('#pin-input').fill('1234');await page.locator('#btn-pin').click();
+ await waitForPending(1);
+ assert.equal(await page.locator('#resp-page').evaluate(e=>e.inert),true);
+ assert.equal(await page.locator('#pin-loading-status').textContent(),'Carregando seus dados…');
+ assert.equal(await page.locator('#pin-loading-spinner').isVisible(),true);
+ await page.screenshot({path:path.join(os.tmpdir(),'teko-loading.png'),fullPage:true});
+ await pending.shift().fulfill({status:500,json:{error:'Falha ao carregar progresso.'}});
+ await page.waitForFunction(()=>!document.querySelector('#pin-loading-retry').hidden);
+ assert.equal(await page.locator('#resp-page').evaluate(e=>e.inert),true);
+ assert.equal(await page.locator('#pin-overlay').isVisible(),true);
+ delayed=false;
+ await page.locator('#pin-loading-retry').click();
  await page.waitForFunction(()=>document.querySelector('#stat-atividades').textContent==='12');
  await page.waitForFunction(()=>getComputedStyle(document.querySelector('#pin-overlay')).display==='none');
  assert.equal(await page.locator('#resp-nome').textContent(),'Marina');
@@ -70,6 +82,14 @@ const server = app.listen(0,'127.0.0.1',async()=>{
  await page.evaluate(()=>bloquearDashboard());await pending.shift().fulfill({json:summary(888)});
  assert.equal(await page.locator('#resp-page').evaluate(e=>e.inert),true);
  assert.equal(await page.locator('#daily-chart').isVisible(),false);
+ assert.equal(await page.locator('#stat-atividades').textContent(),'—');
+ // Bloqueio também invalida uma tentativa de desbloqueio ainda carregando.
+ await page.locator('#pin-input').fill('1234');await page.locator('#btn-pin').click();
+ await waitForPending(1);await page.evaluate(()=>bloquearDashboard());
+ await pending.shift().fulfill({json:summary(777)});
+ await page.waitForTimeout(100);
+ assert.equal(await page.locator('#resp-page').evaluate(e=>e.inert),true);
+ assert.equal(await page.locator('#pin-overlay').isVisible(),true);
  assert.equal(await page.locator('#stat-atividades').textContent(),'—');
  assert.deepEqual(errors,[]);console.log('PASS: desktop/mobile, PIN, saudação, erro/retry, foco, nenhuma criança, troca rápida e resposta após bloqueio.');
  } finally {await browser.close();server.close();}

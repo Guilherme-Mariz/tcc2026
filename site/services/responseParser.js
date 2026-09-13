@@ -1,124 +1,38 @@
-class ResponseParser {
-
-    parse(aiResponse, conversation) {
-
-        if (!aiResponse) {
-            throw new Error("Resposta vazia da IA.");
-        }
-
-        if (
-            !aiResponse.response ||
-            typeof aiResponse.response !== "string"
-        ) {
-            throw new Error("Campo 'response' inválido.");
-        }
-
-        const current = conversation.toJSON();
-
-        return {
-
-            response: aiResponse.response,
-
-            memory: {
-
-                history:
-                    typeof aiResponse.history === "string"
-                        ? aiResponse.history
-                        : current.history,
-
-                summary:
-                    typeof aiResponse.summary === "string"
-                        ? aiResponse.summary
-                        : current.summary,
-
-                lastEmotion:
-                    typeof aiResponse.emotionGroup === "string"
-                        ? aiResponse.emotionGroup
-                        : current.lastEmotion,
-
-                emotionTrend:
-                    this.validateEmotionTrend(
-                        aiResponse.emotionTrend,
-                        current.emotionTrend
-                    ),
-
-                lastActivity:
-                    this.validateLastActivity(
-                        aiResponse.activityCategory,
-                        current.lastActivity
-                    ),
-
-                childInterests:
-                    this.validateInterests(
-                        aiResponse.childInterests,
-                        current.childInterests
-                    )
-
-            }
-
-        };
-
-    }
-
-    validateEmotionTrend(value, fallback) {
-
-        const allowed = [
-            "positiva",
-            "intermediaria",
-            "negativa"
-        ];
-
-        return allowed.includes(value)
-            ? value
-            : fallback || "intermediaria";
-
-    }
-
-    validateLastActivity(activityCategory, fallback) {
-
-        if (
-            typeof activityCategory === "string" &&
-            activityCategory.trim() !== ""
-        ) {
-
-            return {
-                category: activityCategory,
-                accepted: null
-            };
-
-        }
-
-        return fallback || {
-            category: null,
-            accepted: null
-        };
-
-    }
-
-    validateInterests(interests, fallback) {
-
-        if (!Array.isArray(interests)) {
-            return fallback || [];
-        }
-
-        return interests
-            .filter(item =>
-                item &&
-                typeof item.name === "string"
-            )
-            .map(item => ({
-
-                name: item.name,
-
-                confidence:
-                    typeof item.confidence === "number"
-                        ? item.confidence
-                        : 1
-
-            }));
-
-    }
-
+const { categories, emotions, trends, schema, selectActivity } = require('./aiContract');
+function invalid() {
+    const error = new Error('Resposta da IA fora do formato esperado.');
+    error.code = 'AI_INVALID_RESPONSE';
+    throw error;
 }
-
-module.exports = new ResponseParser();
+const text = (value, max) => typeof value === 'string' && value.length <= max;
+const confidence = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
+module.exports = {
+    parse(value, conversation) {
+        if (!value || Array.isArray(value) || typeof value !== 'object' ||
+            Object.keys(value).some(key => !schema.required.includes(key)) ||
+            schema.required.some(key => !Object.hasOwn(value, key)) ||
+            !text(value.response, 1600) || !value.response.trim() ||
+            !emotions.includes(value.emotionGroup) || !trends.includes(value.emotionTrend) ||
+            !confidence(value.confidence) || typeof value.safetyConcern !== 'boolean' ||
+            typeof value.shouldSuggestActivity !== 'boolean' ||
+            !(value.activityCategory === null || Object.hasOwn(categories, value.activityCategory)) ||
+            !text(value.history, 2000) || !text(value.summary, 1000) ||
+            !Array.isArray(value.childInterests) || value.childInterests.length > 10 ||
+            value.childInterests.some(i => !i || !text(i.name, 80) || !i.name.trim() || !confidence(i.confidence))) invalid();
+        const current = conversation.toJSON();
+        const certain = value.confidence >= 0.65 && value.emotionGroup !== 'incerta';
+        const activity = value.shouldSuggestActivity && certain && !value.safetyConcern
+            ? selectActivity(value.activityCategory, current.lastActivity) : null;
+        return {
+            response: value.response.trim(), confidence: value.confidence, activity,
+            memory: {
+                history: value.history, summary: value.summary,
+                lastEmotion: certain ? value.emotionGroup : 'incerta',
+                emotionTrend: certain ? value.emotionTrend : 'intermediaria',
+                // Memória anterior não é a sugestão atual.
+                lastActivity: activity ? { ...activity, accepted: null } : current.lastActivity,
+                childInterests: value.childInterests.filter(i => i.confidence >= 0.65)
+            }
+        };
+    }
+};

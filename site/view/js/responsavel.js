@@ -10,6 +10,8 @@ const pinError = document.getElementById("pin-error");
 let criancasDashboard = [];
 let criancaSelecionada = null;
 let diasExibidos = null;
+let accessVersion = 0;
+let pinAutorizado = false;
 
 window.addEventListener("load", () => {
     pinInput?.focus();
@@ -26,6 +28,7 @@ pinInput?.addEventListener("input", () => {
 });
 
 async function verificarPin() {
+    if (btnPin.disabled || pinAutorizado) return;
     const version = requestVersion;
     const pin = pinInput.value.trim();
 
@@ -46,6 +49,7 @@ async function verificarPin() {
                 "Content-Type": "application/json"
             },
             credentials: "include",
+            signal: AbortSignal.timeout(15000),
             body: JSON.stringify({ pin })
         });
 
@@ -71,7 +75,8 @@ async function verificarPin() {
             return;
         }
 
-        desbloquearDashboard();
+        pinAutorizado = true;
+        await desbloquearDashboard();
     } catch (erro) {
         console.error("Erro ao validar PIN:", erro);
         erroPin("Não foi possível validar o PIN. Tente novamente.");
@@ -80,25 +85,33 @@ async function verificarPin() {
     }
 }
 
-function desbloquearDashboard() {
-    const version = ++requestVersion;
-    btnPin.classList.add("success");
-
-    setTimeout(() => {
-        if (version !== requestVersion) return;
-        pinOverlay.classList.add("hiding");
-        respPage.inert = false;
-        respPage.classList.add("unlocked");
-        carregarDados();
-
-    }, 700);
-
-    setTimeout(() => {
-        if (!respPage.classList.contains("unlocked")) return;
-        pinOverlay.style.display = "none";
-        document.getElementById("resp-heading").focus();
-    }, 1250);
+async function desbloquearDashboard() {
+    if (!pinAutorizado) return;
+    const version = ++accessVersion;
+    pinOverlay.classList.add("loading-data");
+    const status = document.getElementById("pin-loading-status");
+    const retry = document.getElementById("pin-loading-retry");
+    status.textContent = "Carregando seus dados…";
+    retry.hidden = true;
+    document.getElementById("pin-loading-spinner").hidden = false;
+    respPage.setAttribute("aria-busy", "true");
+    status.focus();
+    const ready = await carregarDados();
+    if (version !== accessVersion) return;
+    respPage.setAttribute("aria-busy", "false");
+    if (!ready) {
+        document.getElementById("pin-loading-spinner").hidden = true;
+        status.textContent = document.getElementById("dashboard-status").textContent || "Não foi possível carregar os dados.";
+        retry.hidden = false;
+        retry.focus();
+        return;
+    }
+    pinOverlay.style.display = "none";
+    respPage.inert = false;
+    respPage.classList.add("unlocked");
+    document.getElementById("resp-heading").focus();
 }
+document.getElementById("pin-loading-retry").addEventListener("click", desbloquearDashboard);
 
 function erroPin(mensagem = "PIN incorreto. Tente novamente.") {
     pinInput.classList.add("error");
@@ -113,6 +126,10 @@ function erroPin(mensagem = "PIN incorreto. Tente novamente.") {
 
 function bloquearDashboard() {
     ++requestVersion;
+    ++accessVersion;
+    pinAutorizado = false;
+    pinOverlay.classList.remove("loading-data");
+    respPage.setAttribute("aria-busy", "false");
     diasExibidos = null;
     respPage.inert = true;
     criancasDashboard = [];
@@ -137,7 +154,7 @@ function bloquearDashboard() {
 ════════════════════════════════════════ */
 let requestVersion = 0;
 async function buscarJSON(url) {
-    const response = await fetch(url, { credentials: "include", cache: "no-store" });
+    const response = await fetch(url, { credentials: "include", cache: "no-store", signal: AbortSignal.timeout(15000) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
         if (response.status === 401) window.location.href = "/login";
@@ -162,15 +179,16 @@ async function carregarDados() {
         atualizarTexto("resp-nome", name.trim().split(/\s+/)[0] || "Responsável");
         criancaSelecionada = criancasDashboard.find(c => c.id === criancaSelecionada?.id) || criancasDashboard[0] || null;
         renderizarSeletor();
-        await renderizarPainel(criancaSelecionada);
+        return await renderizarPainel(criancaSelecionada);
     } catch (error) {
         if (version === requestVersion) {
             criancasDashboard = [];
             criancaSelecionada = null;
             atualizarTexto("dado-nome", "—");
             atualizarTexto("dado-inicial", "—");
-            mostrarEstado(error.message, true);
+            mostrarEstado(error.name === "TimeoutError" ? "O carregamento demorou demais. Tente novamente." : error.message, true);
         }
+        return false;
     }
 }
 
@@ -264,7 +282,7 @@ async function renderizarPainel(crianca) {
     atualizarTexto("resp-crianca-nome-sub", nome);
     atualizarTexto("dado-nome", nome);
     atualizarTexto("dado-inicial", obterInicial(nome));
-    if (!crianca) return;
+    if (!crianca) return true;
     try {
         const progresso = await buscarJSON("/api/activities/progress/" + encodeURIComponent(crianca.id));
         if (version !== requestVersion) return;
@@ -282,8 +300,10 @@ async function renderizarPainel(crianca) {
         const total = dias.reduce((sum, day) => sum + day.value, 0);
         atualizarTexto("chart-total", total + (total === 1 ? " atividade" : " atividades"));
         renderizarGrafico(dias);
+        return true;
     } catch (error) {
-        if (version === requestVersion) mostrarEstado(error.message, true);
+        if (version === requestVersion) mostrarEstado(error.name === "TimeoutError" ? "O carregamento demorou demais. Tente novamente." : error.message, true);
+        return false;
     }
 }
 
