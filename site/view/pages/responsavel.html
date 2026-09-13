@@ -208,13 +208,13 @@
         </div>
 
         <!-- ════════ DASHBOARD (visível em blur atrás do PIN) ════════ -->
-        <div id="resp-page">
+        <div id="resp-page" inert>
 
             <!-- boas-vindas -->
             <div class="resp-header">
                 <div class="resp-header-text">
                     <span class="resp-welcome-tag">Área do Responsável</span>
-                    <h1 class="resp-welcome-name">Olá, <span id="resp-nome">Responsável</span>!</h1>
+                    <h1 class="resp-welcome-name" id="resp-heading" tabindex="-1">Olá, <span id="resp-nome">Responsável</span>!</h1>
                     <p class="resp-welcome-sub">Acompanhe o progresso e os dados de <span id="resp-crianca-nome-sub">sua criança</span>.</p>
                 </div>
                 <div class="resp-header-actions">
@@ -245,11 +245,11 @@
                         <div class="child-progress-details" aria-label="Resumo do progresso">
                             <div class="child-progress-detail">
                                 <span>Módulos concluídos</span>
-                                <strong id="stat-modulos">0</strong>
+                                <strong id="stat-modulos">—</strong>
                             </div>
                             <div class="child-progress-detail">
                                 <span>Atividades realizadas</span>
-                                <strong id="stat-atividades">0</strong>
+                                <strong id="stat-atividades">—</strong>
                             </div>
                             <div class="child-progress-detail">
                                 <span>Sequência atual</span>
@@ -271,14 +271,14 @@
 
                     <div class="chart-summary">
                         <div>
-                            <strong id="chart-total">0 atividades</strong>
+                            <strong id="chart-total">—</strong>
                             <span>concluídas no período</span>
                         </div>
                         <div class="chart-legend"><span></span> Atividades concluídas</div>
                     </div>
 
-                    <div class="daily-chart" id="daily-chart">
-                        <svg id="daily-chart-svg" viewBox="0 0 640 230" role="img" aria-labelledby="chart-title chart-description" preserveAspectRatio="none">
+                    <div class="daily-chart" id="daily-chart" hidden>
+                        <svg id="daily-chart-svg" viewBox="0 0 640 230" role="img" aria-labelledby="chart-title chart-description" preserveAspectRatio="xMidYMid meet">
                             <title id="chart-title">Atividades concluídas nos últimos sete dias</title>
                             <desc id="chart-description">O gráfico ainda não possui registros.</desc>
                         </svg>
@@ -293,12 +293,6 @@
         </div><!-- /resp-page -->
 
     </main>
-
-    <!-- ── TOAST ── -->
-    <div id="toast" role="status">
-        <i class="fa-solid fa-check"></i>
-        <span id="toast-msg">Área desbloqueada!</span>
-    </div>
 
     <script src="../js/site-shell.js"></script>
     <script src="../js/responsavel.js"></script>

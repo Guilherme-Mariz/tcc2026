@@ -605,8 +605,7 @@
 }
 
 /* gráfico diário */
-.daily-progress-card,
-.progress-analysis {
+.daily-progress-card {
     min-height: 398px;
 }
 
@@ -731,194 +730,7 @@
     line-height: 1.55;
 }
 
-/* análise */
-.progress-analysis {
-    background: linear-gradient(155deg, #fff 0%, #fbfcfa 100%);
-}
-
-.analysis-highlight {
-    padding: 16px;
-    border: 1px solid #dfeae2;
-    border-radius: 15px;
-    background: var(--bg-soft);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.analysis-highlight-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    color: var(--green-deep);
-    background: #d8eddf;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-}
-
-.analysis-highlight span,
-.analysis-highlight strong {
-    display: block;
-}
-
-.analysis-highlight span {
-    margin-bottom: 3px;
-    color: var(--green-deep);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.055em;
-    text-transform: uppercase;
-}
-
-.analysis-highlight strong {
-    color: var(--text);
-    font-size: 0.77rem;
-    line-height: 1.45;
-}
-
-.analysis-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.analysis-item {
-    padding: 12px 4px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 11px;
-}
-
-.analysis-item:last-child {
-    border-bottom: 0;
-}
-
-.analysis-item > i {
-    width: 31px;
-    height: 31px;
-    border-radius: 9px;
-    color: var(--green-forest);
-    background: #edf5ef;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    font-size: 0.75rem;
-}
-
-.analysis-item span,
-.analysis-item strong {
-    display: block;
-}
-
-.analysis-item span {
-    margin-bottom: 2px;
-    color: var(--text-soft);
-    font-size: 0.61rem;
-    font-weight: 500;
-}
-
-.analysis-item strong {
-    color: var(--text);
-    font-size: 0.72rem;
-    font-weight: 600;
-    line-height: 1.4;
-}
-
-/* resumo TEKO.IA */
-.teko-summary {
-    min-height: 178px;
-    padding: 18px 30px 18px 18px;
-    border: 1px solid #d2e4d7;
-    border-radius: 21px;
-    background:
-        radial-gradient(circle at 92% 12%, rgba(255, 255, 255, 0.11) 0 74px, transparent 75px),
-        linear-gradient(125deg, #1f7650 0%, var(--green-deep) 100%);
-    box-shadow: 0 10px 28px rgba(26, 107, 72, 0.18);
-    color: #fff;
-    display: grid;
-    grid-template-columns: 150px minmax(0, 1fr);
-    align-items: center;
-    gap: 26px;
-    position: relative;
-    overflow: hidden;
-}
-
-.teko-summary-mascot {
-    height: 142px;
-    align-self: end;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.teko-summary-mascot img {
-    width: 145px;
-    height: 145px;
-    object-fit: contain;
-    object-position: center bottom;
-    filter: drop-shadow(0 10px 13px rgba(9, 56, 36, 0.2));
-}
-
-.teko-summary-content {
-    width: 100%;
-    max-width: 900px;
-}
-
-.teko-summary-eyebrow {
-    margin-bottom: 4px;
-    color: #f8d477;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    display: block;
-}
-
-.teko-summary h2 {
-    margin: 0 0 7px;
-    color: #fff;
-    font-family: "Fraunces", serif;
-    font-size: clamp(1.08rem, 2vw, 1.3rem);
-}
-
-.teko-summary p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.71);
-    font-size: 0.78rem;
-    line-height: 1.65;
-}
-
-/* toast */
-#toast {
-    position: fixed;
-    z-index: 9998;
-    bottom: 28px;
-    left: 50%;
-    padding: 12px 24px;
-    border-radius: 999px;
-    background: var(--green-deep);
-    box-shadow: 0 6px 24px rgba(58, 140, 96, 0.32);
-    color: #fff;
-    font-family: "Poppins", sans-serif;
-    font-size: 0.84rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-50%) translateY(80px);
-    transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.32s ease;
-}
-
-#toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* responsivo */
+/* responsividade */
 @media (max-width: 1180px) {
     .resp-header {
         align-items: flex-start;
@@ -943,13 +755,10 @@
         grid-column: 1;
     }
 
-    .daily-progress-card,
-    .progress-analysis {
+    .daily-progress-card {
         min-height: auto;
     }
 
-    .teko-summary { grid-template-columns: 130px minmax(0, 1fr); }
-    .teko-summary-mascot img { width: 130px; height: 130px; }
 }
 
 @media (max-width: 720px) {
@@ -1041,29 +850,29 @@
         inset: 42px 18px 38px;
     }
 
-    .teko-summary {
-        padding: 18px 22px 24px;
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
 
-    .teko-summary-mascot {
-        height: 120px;
-        justify-content: flex-start;
-    }
-
-    .teko-summary-mascot img {
-        width: 125px;
-        height: 125px;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     #resp-page,
     #pin-overlay,
     .child-selector-button,
-    .resp-card,
-    #toast {
+    .resp-card {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* O atributo hidden deve prevalecer sobre display definido por componentes. */
+#resp-page [hidden] { display: none !important; }
+#dashboard-status { min-height: 1.5em; color: #41534a; }
+#dashboard-retry {
+    padding: 10px 18px;
+    margin-bottom: 20px;
+    border: 1px solid #597961;
+    border-radius: 12px;
+    background: #fff;
+    color: #304936;
+    font: inherit;
+    cursor: pointer;
+}
+#dashboard-retry:focus-visible { outline: 3px solid #456a9a; outline-offset: 3px; }

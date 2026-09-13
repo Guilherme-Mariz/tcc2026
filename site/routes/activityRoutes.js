@@ -13,11 +13,11 @@ function createActivityRouter({ service, authenticate } = {}) {
     }
     const controller = new ActivityController(service);
     const router = express.Router();
-    router.use(authenticate || require("../middleware/authMiddleware"));
     router.use((req, res, next) => {
         res.set("Cache-Control", "no-store");
         next();
     });
+    router.use(authenticate || require("../middleware/authMiddleware"));
     router.post("/complete", (req, res, next) => {
         // JSON obrigatório: impede POST simples de formulário de outra origem.
         if (!req.is("application/json")) return res.status(415).json({ success: false, error: "Envie JSON." });

@@ -14,6 +14,8 @@ class ActivityController {
 
     async complete(req, res) {
         try {
+            // Confirma apenas a gravação atômica. O resumo tem consulta própria;
+            // uma falha de leitura posterior não pode transformar sucesso em erro.
             const { record, created } = await this.service.complete(req.user?.id, req.body);
             return res.status(created ? 201 : 200).json({ success: true, created, realization: record });
         } catch (error) {

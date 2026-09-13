@@ -71,6 +71,7 @@ class ChildRepository {
 
     return (data || []).map((child) => ({
       id: child.id,
+      nome: child.nome,
       firstName: child.nome.trim().split(" ")[0],
     }));
   }

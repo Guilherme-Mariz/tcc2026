@@ -9,6 +9,7 @@ const pinError = document.getElementById("pin-error");
 
 let criancasDashboard = [];
 let criancaSelecionada = null;
+let diasExibidos = null;
 
 window.addEventListener("load", () => {
     pinInput?.focus();
@@ -25,6 +26,7 @@ pinInput?.addEventListener("input", () => {
 });
 
 async function verificarPin() {
+    const version = requestVersion;
     const pin = pinInput.value.trim();
 
     if (pin.length !== 4) {
@@ -48,6 +50,7 @@ async function verificarPin() {
         });
 
         const resultado = await resposta.json().catch(() => ({}));
+        if (version !== requestVersion) return;
 
         if (!resposta.ok || resultado.valid !== true) {
             if (resposta.status === 401) {
@@ -78,17 +81,22 @@ async function verificarPin() {
 }
 
 function desbloquearDashboard() {
+    const version = ++requestVersion;
     btnPin.classList.add("success");
 
     setTimeout(() => {
+        if (version !== requestVersion) return;
         pinOverlay.classList.add("hiding");
+        respPage.inert = false;
         respPage.classList.add("unlocked");
         carregarDados();
 
     }, 700);
 
     setTimeout(() => {
+        if (!respPage.classList.contains("unlocked")) return;
         pinOverlay.style.display = "none";
+        document.getElementById("resp-heading").focus();
     }, 1250);
 }
 
@@ -104,6 +112,17 @@ function erroPin(mensagem = "PIN incorreto. Tente novamente.") {
 }
 
 function bloquearDashboard() {
+    ++requestVersion;
+    diasExibidos = null;
+    respPage.inert = true;
+    criancasDashboard = [];
+    criancaSelecionada = null;
+    renderizarSeletor();
+    atualizarTexto("dado-nome", "—");
+    atualizarTexto("dado-inicial", "—");
+    atualizarTexto("resp-nome", "Responsável");
+    atualizarTexto("resp-crianca-nome-sub", "sua criança");
+    mostrarEstado("");
     pinOverlay.style.display = "flex";
     pinOverlay.classList.remove("hiding");
     respPage.classList.remove("unlocked");
@@ -130,20 +149,28 @@ async function buscarJSON(url) {
 async function carregarDados() {
     const version = ++requestVersion;
     mostrarEstado("Carregando dados…");
+    document.getElementById("child-selector").replaceChildren();
+    document.getElementById("child-selector").hidden = true;
     try {
         const [children, profile] = await Promise.all([
             buscarJSON("/children"), buscarJSON("/auth/profile")
         ]);
         if (version !== requestVersion) return;
-        const list = children.children || children.criancas || [];
-        criancasDashboard = Array.isArray(list) ? list : [list];
+        if (!Array.isArray(children.children)) throw new Error("Não foi possível carregar os perfis. Tente novamente.");
+        criancasDashboard = children.children;
         const name = profile.responsavel?.nome_completo || profile.responsavel?.nome || "";
         atualizarTexto("resp-nome", name.trim().split(/\s+/)[0] || "Responsável");
         criancaSelecionada = criancasDashboard.find(c => c.id === criancaSelecionada?.id) || criancasDashboard[0] || null;
         renderizarSeletor();
         await renderizarPainel(criancaSelecionada);
     } catch (error) {
-        if (version === requestVersion) mostrarEstado(error.message, true);
+        if (version === requestVersion) {
+            criancasDashboard = [];
+            criancaSelecionada = null;
+            atualizarTexto("dado-nome", "—");
+            atualizarTexto("dado-inicial", "—");
+            mostrarEstado(error.message, true);
+        }
     }
 }
 
@@ -167,11 +194,6 @@ function obterNome(crianca) {
 
 function obterId(crianca) {
     return crianca?.id ?? null;
-}
-
-function idsIguais(idA, idB) {
-    if (idA == null || idB == null) return false;
-    return String(idA) === String(idB);
 }
 
 function obterChaveCrianca(crianca, indice) {
@@ -250,7 +272,7 @@ async function renderizarPainel(crianca) {
         document.getElementById("daily-chart").hidden = false;
         atualizarTexto("stat-modulos", progresso.completedModules);
         atualizarTexto("stat-atividades", progresso.totalRealizations);
-        atualizarTexto("stat-sequencia", progresso.streak.current + " dias");
+        atualizarTexto("stat-sequencia", progresso.streak.current + (progresso.streak.current === 1 ? " dia" : " dias"));
         const dias = progresso.daily.map(day => ({
             label: new Date(day.date + "T12:00:00Z").toLocaleDateString("pt-BR", {
                 weekday: "short", timeZone: progresso.timeZone
@@ -275,6 +297,7 @@ function obterInicial(nome) {
 }
 
 function renderizarGrafico(dias) {
+    diasExibidos = dias;
     const svg = document.getElementById("daily-chart-svg");
     const vazio = document.getElementById("chart-empty");
     const descricao = dias
@@ -284,8 +307,10 @@ function renderizarGrafico(dias) {
     const valores = dias.map(dia => Math.max(0, Number(dia.value) || 0));
     const possuiDados = valores.some(valor => valor > 0);
     const maximo = Math.max(4, ...valores);
-    const esquerda = 38;
-    const direita = 606;
+    const largura = Math.max(280, svg.clientWidth || 640);
+    svg.setAttribute("viewBox", `0 0 ${largura} 230`);
+    const esquerda = 30;
+    const direita = largura - 30;
     const topo = 30;
     const base = 184;
     const passo = (direita - esquerda) / Math.max(1, dias.length - 1);
@@ -326,16 +351,10 @@ function renderizarGrafico(dias) {
     vazio.hidden = possuiDados;
 }
 
-/* ════════════════════════════════════════
-   TOAST
-════════════════════════════════════════ */
-function mostrarToast(mensagem) {
-    const toast = document.getElementById("toast");
-    atualizarTexto("toast-msg", mensagem);
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 2800);
-}
-
 window.addEventListener("focus", () => {
     if (respPage.classList.contains("unlocked")) carregarDados();
+});
+
+window.addEventListener("resize", () => {
+    if (diasExibidos && !document.getElementById("daily-chart").hidden) renderizarGrafico(diasExibidos);
 });

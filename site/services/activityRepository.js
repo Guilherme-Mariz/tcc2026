@@ -1,3 +1,4 @@
+const { summarizeFacts } = require('./progressSummary');
 // O cliente administrativo permanece exclusivamente no servidor.
 // O service verifica a propriedade da criança antes de chamar estas operações.
 class ActivityRepository {
@@ -34,37 +35,28 @@ class ActivityRepository {
         return { record: existing.data, created: false };
     }
 
-    async history(childId, offset = 0, limit = 50) {
-        const { data, error } = await this.db.from(this.table)
+    async history(childId, offset = 0, limit = 50, cursor = null) {
+        let query = this.db.from(this.table)
             .select('id, atividade_id, resultado, created_at')
             .eq('crianca_id', childId).order('created_at', { ascending: false })
-            .order('id', { ascending: false }).range(offset, offset + limit - 1);
+            .order('id', { ascending: false });
+        if (cursor) {
+            query = query.or(`created_at.lt.${cursor.date},and(created_at.eq.${cursor.date},id.lt.${cursor.id})`);
+        }
+        const { data, error } = await query.range(offset, offset + limit - 1);
         if (error) throw error;
         return data || [];
     }
 
-    async allHistory(childId) {
-        const rows = [];
-        for (let offset = 0; ; offset += 1000) {
-            const page = await this.history(childId, offset, 1000);
-            rows.push(...page);
-            if (page.length < 1000) return rows;
+    async progress(childId) {
+        // Uma única consulta/snapshot no Postgres agrega todo o histórico, sem
+        // transferir cada realização ou depender do limite de mil linhas da API.
+        const { data, error } = await this.db.rpc('teko_progress_facts', { p_child_id: childId });
+        if (error) throw error;
+        if (!data || !Array.isArray(data.activities) || !Array.isArray(data.days)) {
+            throw new Error('Resumo de progresso indisponível.');
         }
-    }
-
-    async completedActivityIds(childId, activityIds) {
-        const completed = new Set();
-        const pageSize = 1000;
-        for (let from = 0; ; from += pageSize) {
-            const { data, error } = await this.db.from(this.table)
-                .select("atividade_id").eq("crianca_id", childId)
-                .eq("resultado->>concluida", "true").in("atividade_id", activityIds)
-                .order("id").range(from, from + pageSize - 1);
-            if (error) throw error;
-            for (const row of data || []) completed.add(row.atividade_id);
-            if (!data || data.length < pageSize || completed.size === activityIds.length) break;
-        }
-        return [...completed];
+        return summarizeFacts(data);
     }
 }
 module.exports = ActivityRepository;

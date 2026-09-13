@@ -12,8 +12,13 @@ const payload = (overrides = {}) => ({ childId, activityId: catalog[0].id, reali
 function fixture() {
     const records = [];
     const repository = {
-        async allHistory(id) { return records.filter(r => r.crianca_id === id); },
-        async history(id, offset, limit) { return records.filter(r => r.crianca_id === id).slice(offset, offset + limit); },
+        async progress(id) { return require('../services/progressSummary').summarize(records.filter(r => r.crianca_id === id)); },
+        async history(id, offset, limit, cursor) {
+            return records.filter(r => r.crianca_id === id && (!cursor || r.created_at < cursor.date ||
+                (r.created_at === cursor.date && r.id < cursor.id)))
+                .sort((a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id))
+                .slice(offset, offset + limit);
+        },
         async findActivity(id) { return catalog.find(a => a.id === id); },
         async insertCompletion(row) {
             const found = records.find(r => r.id === row.id);
@@ -118,14 +123,85 @@ test('repository faz INSERT e trata reenvio pela PK sem UPDATE de histórico', a
     await assert.rejects(outage.insertCompletion(row), { code: 'offline' });
 });
 
-test('consulta inclui conclusões além das mil primeiras realizações', async () => {
+test('resumo usa uma consulta agregada e propaga falhas do banco', async () => {
     const calls = [];
-    const repo = new Repository(fakeDb([
-        { data: Array.from({ length: 1000 }, () => ({ atividade_id: catalog[0].id })) },
-        { data: [{ atividade_id: catalog[1].id }] }
-    ], calls));
-    assert.deepEqual(await repo.completedActivityIds(childId, catalog.map(a => a.id)), [catalog[0].id, catalog[1].id]);
-    assert.deepEqual(calls[1].range, [1000, 1999]);
-    assert.ok(calls.every(c => c.filters.some(([n, v]) => n === 'crianca_id' && v === childId)));
-    assert.ok(calls.every(c => c.filters.some(([n, v]) => n === 'resultado->>concluida' && v === 'true')));
+    const repo = new Repository({ async rpc(name, args) {
+        calls.push({ name, args });
+        return { data: { activities: [{ activityId: catalog[0].id, total: 1501, last: '2026-09-12T12:00:00Z' }],
+            days: [{ date: '2026-09-12', count: 1501 }] } };
+    } });
+    assert.equal((await repo.progress(childId)).totalRealizations, 1501);
+    assert.deepEqual(calls, [{ name: 'teko_progress_facts', args: { p_child_id: childId } }]);
+    await assert.rejects(new Repository({ async rpc() { return { error: { code: 'offline' } }; } }).progress(childId), { code: 'offline' });
+});
+
+test('HTTP: sequência e histórico validam sessão, vínculo, paginação e falhas', async () => {
+    const f = fixture();
+    const app = express();
+    app.use('/api/activities', createRouter({ service: f.service, authenticate(req, res, next) {
+        if (req.headers.authorization !== 'Bearer valid') return res.status(401).json({ error: 'Sessão expirada' });
+        req.user = { id: 'parent-a' }; next();
+    } }));
+    const server = app.listen(0, '127.0.0.1');
+    await new Promise(resolve => server.once('listening', resolve));
+    const base = `http://127.0.0.1:${server.address().port}/api/activities`;
+    const get = (path, authenticated = true) => fetch(base + path, { headers: authenticated ? { Authorization: 'Bearer valid' } : {} });
+    try {
+        for (const endpoint of ['progress', 'streak', 'history']) {
+            const denied = await get(`/${endpoint}/${childId}`, false);
+            assert.equal(denied.status, 401);
+            assert.equal(denied.headers.get('cache-control'), 'no-store');
+            assert.equal((await get(`/${endpoint}/${foreignChild}`)).status, 403);
+            assert.equal((await get(`/${endpoint}/invalid`)).status, 400);
+        }
+        for (const query of ['limit=0', 'limit=101', 'limit=1.5', 'limit=', 'limit=1&limit=2',
+            'offset=-1', 'offset=1000001', 'offset=NaN', 'offset=', 'cursor=garbage']) {
+            assert.equal((await get(`/history/${childId}?${query}`)).status, 400, query);
+        }
+        for (let i = 0; i < 1505; i++) f.records.push({ id: randomUUID(), crianca_id: childId,
+            atividade_id: catalog[i % 2].id, resultado: { concluida: true },
+            created_at: new Date(Date.parse('2026-09-01T12:00:00Z') + i * 1000).toISOString() });
+        const first = await (await get(`/history/${childId}?limit=100`)).json();
+        assert.equal(first.limit, 100); assert.equal(first.offset, 0); assert.equal(first.hasMore, true);
+        assert.equal(first.history.length, 100); assert.equal(first.history[0].title, catalog[0].titulo);
+        const offsetPage = await (await get(`/history/${childId}?offset=100&limit=50`)).json();
+        assert.equal(offsetPage.history[0].id, f.records[1404].id);
+        const seen = first.history.map(r => r.id);
+        let cursor = first.nextCursor;
+        // Inserção entre páginas não repete nem omite registros da navegação iniciada.
+        f.records.push({ ...f.records[0], id: randomUUID(), created_at: '2026-09-12T12:00:00.123456Z' });
+        while (cursor) {
+            const response = await get(`/history/${childId}?limit=100&cursor=${cursor}`);
+            assert.equal(response.status, 200); assert.equal(response.headers.get('cache-control'), 'no-store');
+            const page = await response.json();
+            seen.push(...page.history.map(r => r.id)); cursor = page.nextCursor;
+            assert.equal(page.hasMore, Boolean(cursor));
+        }
+        assert.equal(seen.length, 1505); assert.equal(new Set(seen).size, 1505);
+        assert.equal((await (await get(`/progress/${childId}`)).json()).totalRealizations, 1506);
+        const streak = await (await get(`/streak/${childId}`)).json();
+        assert.equal(streak.streak.activeDays, 2); assert.equal(streak.timeZone, 'America/Sao_Paulo');
+        const empty = await (await get(`/history/${childId}?offset=9999`)).json();
+        assert.deepEqual(empty.history, []); assert.equal(empty.hasMore, false); assert.equal(empty.nextCursor, null);
+        assert.equal((await get(`/history/${childId}?offset=1&cursor=${first.nextCursor}`)).status, 400);
+        f.repository.history = f.repository.progress = async () => { throw { code: 'database_offline' }; };
+        for (const endpoint of ['history', 'streak']) {
+            const response = await get(`/${endpoint}/${childId}`);
+            assert.equal(response.status, 500);
+            assert.equal((await response.json()).error, 'Não foi possível acessar o progresso. Tente novamente.');
+        }
+    } finally { await new Promise(resolve => server.close(resolve)); }
+});
+
+test('cursor mantém precisão de microssegundos e não aceita outra criança', async () => {
+    const f = fixture();
+    const date = '2026-09-12T12:00:00.123456+00:00';
+    f.records.push(...Array.from({ length: 3 }, () => ({ id: randomUUID(), crianca_id: childId,
+        atividade_id: catalog[0].id, created_at: date })));
+    const page = await f.service.history('parent-a', childId, { limit: '1' });
+    assert.equal(JSON.parse(Buffer.from(page.nextCursor, 'base64url')).date, date);
+    const next = await f.service.history('parent-a', childId, { cursor: page.nextCursor, limit: '1' });
+    assert.notEqual(next.history[0].id, page.history[0].id);
+    const wrong = Buffer.from(JSON.stringify({ childId: foreignChild, date, id: randomUUID() })).toString('base64url');
+    await assert.rejects(f.service.history('parent-a', childId, { cursor: wrong }), { status: 400 });
 });
