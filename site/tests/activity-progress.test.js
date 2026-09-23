@@ -19,6 +19,17 @@ function fixture() {
                 .sort((a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id))
                 .slice(offset, offset + limit);
         },
+        async report(id) {
+            const grouped = new Map();
+            for (const row of records.filter(r => r.crianca_id === id)) {
+                const item = grouped.get(row.atividade_id) || { activityId: row.atividade_id, count: 0, firstCompletedAt: row.created_at, lastCompletedAt: row.created_at };
+                item.count += 1;
+                if (row.created_at < item.firstCompletedAt) item.firstCompletedAt = row.created_at;
+                if (row.created_at > item.lastCompletedAt) item.lastCompletedAt = row.created_at;
+                grouped.set(row.atividade_id, item);
+            }
+            return { totalRealizations: records.filter(r => r.crianca_id === id).length, activities: [...grouped.values()] };
+        },
         async findActivity(id) { return catalog.find(a => a.id === id); },
         async insertCompletion(row) {
             const found = records.find(r => r.id === row.id);
@@ -135,6 +146,20 @@ test('resumo usa uma consulta agregada e propaga falhas do banco', async () => {
     await assert.rejects(new Repository({ async rpc() { return { error: { code: 'offline' } }; } }).progress(childId), { code: 'offline' });
 });
 
+test('relatório usa agregação no banco e acrescenta os títulos do catálogo', async () => {
+    const calls = [];
+    const repo = new Repository({ async rpc(name, args) {
+        calls.push({ name, args });
+        return { data: { totalRealizations: 3, activities: [{ activityId: catalog[0].id, count: 3,
+            firstCompletedAt: '2026-09-01T12:00:00Z', lastCompletedAt: '2026-09-03T12:00:00Z' }] }, error: null };
+    } });
+    const children = { async findResponsibleIdByUserId() { return 'responsible-a'; }, async findById() { return { id: childId }; } };
+    const report = await new Service({ repository: repo, children }).report('parent-a', childId);
+    assert.equal(report.totalRealizations, 3);
+    assert.equal(report.activities[0].title, catalog[0].titulo);
+    assert.deepEqual(calls, [{ name: 'teko_activity_report', args: { p_child_id: childId } }]);
+});
+
 test('HTTP: sequência e histórico validam sessão, vínculo, paginação e falhas', async () => {
     const f = fixture();
     const app = express();
@@ -147,7 +172,7 @@ test('HTTP: sequência e histórico validam sessão, vínculo, paginação e fal
     const base = `http://127.0.0.1:${server.address().port}/api/activities`;
     const get = (path, authenticated = true) => fetch(base + path, { headers: authenticated ? { Authorization: 'Bearer valid' } : {} });
     try {
-        for (const endpoint of ['progress', 'streak', 'history']) {
+        for (const endpoint of ['progress', 'streak', 'history', 'report']) {
             const denied = await get(`/${endpoint}/${childId}`, false);
             assert.equal(denied.status, 401);
             assert.equal(denied.headers.get('cache-control'), 'no-store');
@@ -181,6 +206,9 @@ test('HTTP: sequência e histórico validam sessão, vínculo, paginação e fal
         assert.equal((await (await get(`/progress/${childId}`)).json()).totalRealizations, 1506);
         const streak = await (await get(`/streak/${childId}`)).json();
         assert.equal(streak.streak.activeDays, 2); assert.equal(streak.timeZone, 'America/Sao_Paulo');
+        const report = await (await get(`/report/${childId}`)).json();
+        assert.equal(report.totalRealizations, 1506);
+        assert.equal(report.activities[0].title, catalog[0].titulo);
         const empty = await (await get(`/history/${childId}?offset=9999`)).json();
         assert.deepEqual(empty.history, []); assert.equal(empty.hasMore, false); assert.equal(empty.nextCursor, null);
         assert.equal((await get(`/history/${childId}?offset=1&cursor=${first.nextCursor}`)).status, 400);

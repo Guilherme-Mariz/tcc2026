@@ -58,5 +58,12 @@ class ActivityRepository {
         }
         return summarizeFacts(data);
     }
+
+    async report(childId) {
+        const { data, error } = await this.db.rpc('teko_activity_report', { p_child_id: childId });
+        if (error) throw error;
+        if (!data || !Array.isArray(data.activities)) throw new Error('Relatório indisponível.');
+        return data;
+    }
 }
 module.exports = ActivityRepository;

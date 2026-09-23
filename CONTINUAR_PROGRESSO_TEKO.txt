@@ -87,3 +87,29 @@ PENDÊNCIAS PARA VALIDAÇÃO REAL
    sugestão de atividade e relato de risco. Revisar a adequação das respostas.
 3. Conferir visualmente desktop/celular; o teste opcional de navegador foi ampliado.
 - Sem merge na main e sem implantação do site.
+
+ATUALIZAÇÃO — PAINEL, FOTO E RELATÓRIO (23/09/2026)
+- Cabeçalho da área do responsável redesenhado no estilo da Home, usando
+  site/view/img/teko-lendo.webp como fundo e painel translúcido para o texto.
+- Espaçamento antes de Dados da criança reduzido. As mensagens cruas
+  “Carregando dados/progresso” não aparecem mais no dashboard; o carregamento
+  após o PIN continua no overlay desfocado e erros reais mantêm aviso/repetir.
+- Foto da criança adicionada com confirmação antes do seletor de arquivos,
+  validação JPEG/PNG/WebP pelo tipo e assinatura, limite de 3 MB e vínculo com
+  o responsável autenticado. As fotos ficam no bucket privado child-avatars e
+  são exibidas por URL assinada temporária; a chave administrativa fica no servidor.
+- Relatório detalhado em CSV abaixo do gráfico: nome da atividade, quantidade,
+  primeira e última realização, total e data de geração. A agregação ocorre no
+  Postgres e não transfere todo o histórico para o navegador.
+- Migração child_avatars_and_activity_report aplicada no Supabase
+  wiftybobcpjnhlnmqsgd, versão 20260923111854.
+
+VALIDAÇÃO DESTA ATUALIZAÇÃO
+- 32 testes Node passaram, incluindo autorização da foto, conteúdo inválido,
+  criança sem vínculo, agregação e rota autenticada do relatório.
+- Bucket confirmado como privado, com limite e MIME types esperados.
+- Teste transacional do relatório no Supabase passou e foi revertido; nenhuma
+  atividade fictícia permaneceu no banco.
+- Advisors não apresentaram aviso novo. A inspeção visual automatizada não foi
+  executada porque este ambiente continua sem Chromium local.
+- Sem merge na main e sem implantação do site.

@@ -87,5 +87,22 @@ class ActivityService {
             history: rows.slice(0, limit).map(row => ({ ...row,
                 title: catalog.find(a => a.id === row.atividade_id)?.titulo || 'Atividade' })) };
     }
+
+    async report(userId, rawChildId) {
+        const childId = validId(rawChildId, 'childId');
+        await this.authorize(userId, childId);
+        const report = await this.repository.report(childId);
+        return {
+            childId,
+            totalRealizations: Number(report.totalRealizations) || 0,
+            activities: report.activities.map(item => ({
+                activityId: item.activityId,
+                title: catalog.find(activity => activity.id === item.activityId)?.titulo || 'Atividade',
+                count: Number(item.count) || 0,
+                firstCompletedAt: item.firstCompletedAt || null,
+                lastCompletedAt: item.lastCompletedAt || null,
+            }))
+        };
+    }
 }
 module.exports = ActivityService;

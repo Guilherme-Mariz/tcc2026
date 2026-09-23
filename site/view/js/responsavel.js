@@ -165,7 +165,7 @@ async function buscarJSON(url) {
 
 async function carregarDados() {
     const version = ++requestVersion;
-    mostrarEstado("Carregando dados…");
+    prepararPainel();
     document.getElementById("child-selector").replaceChildren();
     document.getElementById("child-selector").hidden = true;
     try {
@@ -197,6 +197,15 @@ function mostrarEstado(message, failed = false) {
     document.getElementById("dashboard-retry").hidden = !failed;
     for (const id of ["stat-modulos", "stat-atividades", "stat-sequencia", "chart-total"]) atualizarTexto(id, "—");
     document.getElementById("daily-chart").hidden = true;
+    document.getElementById("download-report").disabled = true;
+}
+
+function prepararPainel() {
+    atualizarTexto("dashboard-status", "");
+    document.getElementById("dashboard-retry").hidden = true;
+    for (const id of ["stat-modulos", "stat-atividades", "stat-sequencia", "chart-total"]) atualizarTexto(id, "—");
+    document.getElementById("daily-chart").hidden = true;
+    document.getElementById("download-report").disabled = true;
 }
 document.getElementById("dashboard-retry").addEventListener("click", carregarDados);
 
@@ -244,7 +253,14 @@ function renderizarSeletor() {
 
         const avatar = document.createElement("span");
         avatar.className = "child-selector-avatar";
-        avatar.textContent = obterInicial(nome);
+        if (crianca.avatarUrl) {
+            const imagem = document.createElement("img");
+            imagem.src = crianca.avatarUrl;
+            imagem.alt = "";
+            avatar.appendChild(imagem);
+        } else {
+            avatar.textContent = obterInicial(nome);
+        }
 
         const copia = document.createElement("span");
         copia.className = "child-selector-copy";
@@ -277,11 +293,13 @@ function selecionarCrianca(crianca) {
 
 async function renderizarPainel(crianca) {
     const version = ++requestVersion;
-    mostrarEstado(crianca ? "Carregando progresso…" : "Nenhuma criança cadastrada.");
+    if (crianca) prepararPainel();
+    else mostrarEstado("Nenhuma criança cadastrada.");
     const nome = obterNome(crianca) || "Nenhuma criança cadastrada";
     atualizarTexto("resp-crianca-nome-sub", nome);
     atualizarTexto("dado-nome", nome);
     atualizarTexto("dado-inicial", obterInicial(nome));
+    renderizarAvatar(crianca);
     if (!crianca) return true;
     try {
         const progresso = await buscarJSON("/api/activities/progress/" + encodeURIComponent(crianca.id));
@@ -300,12 +318,125 @@ async function renderizarPainel(crianca) {
         const total = dias.reduce((sum, day) => sum + day.value, 0);
         atualizarTexto("chart-total", total + (total === 1 ? " atividade" : " atividades"));
         renderizarGrafico(dias);
+        document.getElementById("download-report").disabled = false;
         return true;
     } catch (error) {
         if (version === requestVersion) mostrarEstado(error.name === "TimeoutError" ? "O carregamento demorou demais. Tente novamente." : error.message, true);
         return false;
     }
 }
+
+function renderizarAvatar(crianca) {
+    const imagem = document.getElementById("child-avatar-image");
+    const inicial = document.getElementById("dado-inicial");
+    const botao = document.getElementById("child-avatar-edit");
+    const possuiFoto = Boolean(crianca?.avatarUrl);
+    imagem.hidden = !possuiFoto;
+    imagem.src = possuiFoto ? crianca.avatarUrl : "";
+    imagem.alt = possuiFoto ? `Foto de ${obterNome(crianca)}` : "";
+    inicial.hidden = possuiFoto;
+    botao.disabled = !crianca;
+    botao.setAttribute("aria-label", possuiFoto ? "Alterar foto da criança" : "Adicionar foto da criança");
+    atualizarTexto("child-avatar-status", "");
+}
+
+const avatarDialog = document.getElementById("avatar-dialog");
+const avatarInput = document.getElementById("child-avatar-input");
+const avatarButton = document.getElementById("child-avatar-edit");
+
+avatarButton.addEventListener("click", () => {
+    if (!criancaSelecionada) return;
+    if (typeof avatarDialog.showModal === "function") avatarDialog.showModal();
+    else avatarInput.click();
+});
+
+document.getElementById("avatar-dialog-confirm").addEventListener("click", () => {
+    avatarInput.click();
+});
+
+avatarInput.addEventListener("change", async () => {
+    const file = avatarInput.files?.[0];
+    avatarInput.value = "";
+    if (!file || !criancaSelecionada) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        atualizarTexto("child-avatar-status", "Use uma imagem JPEG, PNG ou WebP.");
+        return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+        atualizarTexto("child-avatar-status", "A imagem deve ter no máximo 3 MB.");
+        return;
+    }
+
+    const childId = criancaSelecionada.id;
+    avatarButton.disabled = true;
+    atualizarTexto("child-avatar-status", "Salvando foto…");
+    try {
+        const response = await fetch(`/children/${encodeURIComponent(childId)}/avatar`, {
+            method: "PUT",
+            headers: { "Content-Type": file.type },
+            credentials: "include",
+            signal: AbortSignal.timeout(20000),
+            body: file,
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "Não foi possível salvar a foto.");
+        const child = criancasDashboard.find(item => item.id === childId);
+        if (child) child.avatarUrl = data.avatarUrl;
+        if (criancaSelecionada?.id === childId) {
+            renderizarAvatar(criancaSelecionada);
+            atualizarTexto("child-avatar-status", "Foto atualizada.");
+        }
+        renderizarSeletor();
+    } catch (error) {
+        atualizarTexto("child-avatar-status", error.name === "TimeoutError" ? "O envio demorou demais. Tente novamente." : error.message);
+    } finally {
+        avatarButton.disabled = !criancaSelecionada;
+    }
+});
+
+function escaparCSV(value) {
+    let text = String(value ?? "");
+    if (/^[=+\-@]/.test(text)) text = `'${text}`;
+    return /[;"\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function formatarDataRelatorio(value) {
+    return value ? new Date(value).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }) : "—";
+}
+
+document.getElementById("download-report").addEventListener("click", async event => {
+    const button = event.currentTarget;
+    if (!criancaSelecionada || button.disabled) return;
+    const child = criancaSelecionada;
+    const original = button.querySelector("span").textContent;
+    button.disabled = true;
+    button.querySelector("span").textContent = "Preparando…";
+    try {
+        const report = await buscarJSON(`/api/activities/report/${encodeURIComponent(child.id)}`);
+        const rows = [
+            ["Relatório de atividades — TEKO"],
+            ["Criança", obterNome(child)],
+            ["Gerado em", new Date().toLocaleString("pt-BR")],
+            ["Total de realizações", report.totalRealizations],
+            [],
+            ["Atividade", "Quantidade", "Primeira realização", "Última realização"],
+            ...report.activities.map(item => [item.title, item.count, formatarDataRelatorio(item.firstCompletedAt), formatarDataRelatorio(item.lastCompletedAt)])
+        ];
+        const csv = "\ufeff" + rows.map(row => row.map(escaparCSV).join(";")).join("\r\n");
+        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+        const link = document.createElement("a");
+        const safeName = obterNome(child).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "crianca";
+        link.href = url;
+        link.download = `relatorio-teko-${safeName}.csv`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+        atualizarTexto("dashboard-status", error.name === "TimeoutError" ? "O relatório demorou demais. Tente novamente." : error.message);
+    } finally {
+        button.querySelector("span").textContent = original;
+        button.disabled = !criancaSelecionada;
+    }
+});
 
 function atualizarTexto(id, texto) {
     const elemento = document.getElementById(id);

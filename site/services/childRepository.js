@@ -1,4 +1,7 @@
 const supabaseAdmin = require("../config/supabase");
+const { randomUUID } = require("node:crypto");
+
+const AVATAR_BUCKET = "child-avatars";
 
 class ChildRepository {
   constructor() {
@@ -32,7 +35,7 @@ class ChildRepository {
 
     const { data, error } = await supabaseAdmin
       .from(this.table)
-      .select("id, nome")
+      .select("id, nome, avatar_path")
       .eq("id", childId)
       .eq("responsavel_id", responsavelId)
       .single();
@@ -52,7 +55,17 @@ class ChildRepository {
     return {
       id: data.id,
       firstName: data.nome.trim().split(" ")[0],
+      avatarPath: data.avatar_path || null,
     };
+  }
+
+  async createAvatarUrl(path) {
+    if (!path) return null;
+    const { data, error } = await supabaseAdmin.storage
+      .from(AVATAR_BUCKET)
+      .createSignedUrl(path, 60 * 60);
+    if (error) throw error;
+    return data?.signedUrl || null;
   }
 
   async findByResponsibleId(responsavelId) {
@@ -62,18 +75,49 @@ class ChildRepository {
 
     const { data, error } = await supabaseAdmin
       .from(this.table)
-      .select("id, nome")
+      .select("id, nome, avatar_path")
       .eq("responsavel_id", responsavelId);
 
     if (error) {
       throw error;
     }
 
-    return (data || []).map((child) => ({
+    return Promise.all((data || []).map(async (child) => ({
       id: child.id,
       nome: child.nome,
       firstName: child.nome.trim().split(" ")[0],
-    }));
+      avatarUrl: await this.createAvatarUrl(child.avatar_path),
+    })));
+  }
+
+  async updateAvatarByUserId(userId, childId, buffer, mimeType) {
+    const responsavelId = await this.findResponsibleIdByUserId(userId);
+    const child = responsavelId && await this.findById(childId, responsavelId);
+    if (!child) return null;
+
+    const extension = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }[mimeType];
+    const newPath = `${responsavelId}/${childId}/${randomUUID()}.${extension}`;
+    const storage = supabaseAdmin.storage.from(AVATAR_BUCKET);
+    const uploaded = await storage.upload(newPath, buffer, {
+      contentType: mimeType,
+      cacheControl: "3600",
+      upsert: false,
+    });
+    if (uploaded.error) throw uploaded.error;
+
+    const updated = await supabaseAdmin.from(this.table)
+      .update({ avatar_path: newPath })
+      .eq("id", childId)
+      .eq("responsavel_id", responsavelId)
+      .select("id")
+      .single();
+
+    if (updated.error) {
+      await storage.remove([newPath]);
+      throw updated.error;
+    }
+    if (child.avatarPath) await storage.remove([child.avatarPath]);
+    return { id: childId, avatarUrl: await this.createAvatarUrl(newPath) };
   }
 
   async verifyPinByUserId(userId, pin) {
@@ -111,4 +155,3 @@ class ChildRepository {
 }
 
 module.exports = new ChildRepository();
-
