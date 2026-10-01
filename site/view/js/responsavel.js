@@ -12,6 +12,9 @@ let criancaSelecionada = null;
 let diasExibidos = null;
 let accessVersion = 0;
 let pinAutorizado = false;
+let avatarEscolhendo = false;
+let avatarEnviando = false;
+let avatarChildId = null;
 
 window.addEventListener("load", () => {
     pinInput?.focus();
@@ -131,6 +134,11 @@ function bloquearDashboard() {
     pinOverlay.classList.remove("loading-data");
     respPage.setAttribute("aria-busy", "false");
     diasExibidos = null;
+    avatarEscolhendo = false;
+    avatarChildId = null;
+    avatarInput.value = "";
+    if (avatarDialog.open) avatarDialog.close();
+    renderizarAvatar(null);
     respPage.inert = true;
     criancasDashboard = [];
     criancaSelecionada = null;
@@ -332,10 +340,11 @@ function renderizarAvatar(crianca) {
     const botao = document.getElementById("child-avatar-edit");
     const possuiFoto = Boolean(crianca?.avatarUrl);
     imagem.hidden = !possuiFoto;
-    imagem.src = possuiFoto ? crianca.avatarUrl : "";
+    if (possuiFoto) imagem.src = crianca.avatarUrl;
+    else imagem.removeAttribute("src");
     imagem.alt = possuiFoto ? `Foto de ${obterNome(crianca)}` : "";
     inicial.hidden = possuiFoto;
-    botao.disabled = !crianca;
+    botao.disabled = !crianca || avatarEnviando;
     botao.setAttribute("aria-label", possuiFoto ? "Alterar foto da criança" : "Adicionar foto da criança");
     atualizarTexto("child-avatar-status", "");
 }
@@ -344,20 +353,37 @@ const avatarDialog = document.getElementById("avatar-dialog");
 const avatarInput = document.getElementById("child-avatar-input");
 const avatarButton = document.getElementById("child-avatar-edit");
 
+function escolherFoto() {
+    if (!criancaSelecionada || avatarEnviando) return;
+    avatarChildId = criancaSelecionada.id;
+    avatarEscolhendo = true;
+    avatarInput.click();
+}
+
 avatarButton.addEventListener("click", () => {
-    if (!criancaSelecionada) return;
+    if (!criancaSelecionada || avatarEnviando) return;
     if (typeof avatarDialog.showModal === "function") avatarDialog.showModal();
-    else avatarInput.click();
+    else if (window.confirm("Você autoriza enviar a foto escolhida para o perfil da criança? Somente essa imagem será acessada.")) escolherFoto();
 });
 
-document.getElementById("avatar-dialog-confirm").addEventListener("click", () => {
-    avatarInput.click();
+document.getElementById("avatar-dialog-confirm").addEventListener("click", escolherFoto);
+avatarInput.addEventListener("cancel", () => {
+    avatarEscolhendo = false;
+    avatarChildId = null;
+});
+
+document.getElementById("child-avatar-image").addEventListener("error", event => {
+    event.currentTarget.hidden = true;
+    document.getElementById("dado-inicial").hidden = false;
 });
 
 avatarInput.addEventListener("change", async () => {
     const file = avatarInput.files?.[0];
+    const childId = avatarChildId;
+    avatarEscolhendo = false;
+    avatarChildId = null;
     avatarInput.value = "";
-    if (!file || !criancaSelecionada) return;
+    if (!file || !childId || !pinAutorizado || avatarEnviando) return;
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
         atualizarTexto("child-avatar-status", "Use uma imagem JPEG, PNG ou WebP.");
         return;
@@ -367,7 +393,8 @@ avatarInput.addEventListener("change", async () => {
         return;
     }
 
-    const childId = criancaSelecionada.id;
+    const version = accessVersion;
+    avatarEnviando = true;
     avatarButton.disabled = true;
     atualizarTexto("child-avatar-status", "Salvando foto…");
     try {
@@ -380,6 +407,7 @@ avatarInput.addEventListener("change", async () => {
         });
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || "Não foi possível salvar a foto.");
+        if (version !== accessVersion) return;
         const child = criancasDashboard.find(item => item.id === childId);
         if (child) child.avatarUrl = data.avatarUrl;
         if (criancaSelecionada?.id === childId) {
@@ -388,8 +416,11 @@ avatarInput.addEventListener("change", async () => {
         }
         renderizarSeletor();
     } catch (error) {
-        atualizarTexto("child-avatar-status", error.name === "TimeoutError" ? "O envio demorou demais. Tente novamente." : error.message);
+        if (version === accessVersion && criancaSelecionada?.id === childId) {
+            atualizarTexto("child-avatar-status", error.name === "TimeoutError" ? "O envio demorou demais. Tente novamente." : error.message);
+        }
     } finally {
+        avatarEnviando = false;
         avatarButton.disabled = !criancaSelecionada;
     }
 });
@@ -503,7 +534,7 @@ function renderizarGrafico(dias) {
 }
 
 window.addEventListener("focus", () => {
-    if (respPage.classList.contains("unlocked")) carregarDados();
+    if (respPage.classList.contains("unlocked") && !avatarEscolhendo && !avatarEnviando && !avatarDialog.open) carregarDados();
 });
 
 window.addEventListener("resize", () => {

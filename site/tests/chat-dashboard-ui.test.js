@@ -101,3 +101,37 @@ test('troca de criança descarta resposta atrasada, sugestão e texto do perfil 
     assert.match(f.el('chat-display-text').textContent,/Bruno/);assert.doesNotMatch(f.el('chat-display-text').textContent,/Ana/);
     assert.equal(f.el('chat-activity').hidden,true);assert.equal(f.el('chat-input').value,'');assert.equal(f.el('send-btn').disabled,false);
 });
+
+test('seletor de foto não recarrega painel ao recuperar foco e cancelamento não envia', async () => {
+    let calls = 0;
+    const f = dashboard(async () => { calls++; return reply({}); });
+    f.run(`pinAutorizado = true; criancaSelecionada = {id: 'child-a'}; respPage.classList.add('unlocked');`);
+    f.el('child-avatar-input').click = () => {};
+    f.run('escolherFoto()');
+    await f.window.emit('focus');
+    assert.equal(calls, 0);
+    await f.el('child-avatar-input').emit('cancel');
+    assert.equal(f.run('avatarEscolhendo'), false);
+    assert.equal(f.run('avatarChildId'), null);
+    assert.equal(calls, 0);
+});
+
+test('envio da foto mantém criança original e ignora erro após trocar perfil', async () => {
+    let finish;
+    let uploadUrl;
+    const f = dashboard(async url => { uploadUrl = url; return new Promise(resolve => { finish = resolve; }); });
+    f.run(`pinAutorizado = true; criancaSelecionada = {id: 'child-a'}; respPage.classList.add('unlocked');`);
+    f.el('child-avatar-input').click = () => {};
+    f.run('escolherFoto()');
+    f.el('child-avatar-input').files = [{type: 'image/png', size: 100}];
+    const pending = f.el('child-avatar-input').emit('change');
+    await f.window.emit('focus');
+    assert.equal(uploadUrl, '/children/child-a/avatar');
+    assert.equal(f.el('child-avatar-edit').disabled, true);
+    f.run(`criancaSelecionada = {id: 'child-b'}; renderizarAvatar(criancaSelecionada);`);
+    finish(reply({error: 'Falha no envio de A'}, 500));
+    await pending;
+    assert.equal(f.el('child-avatar-status').textContent, '');
+    assert.equal(f.el('child-avatar-edit').disabled, false);
+    assert.equal(f.run('avatarEnviando'), false);
+});

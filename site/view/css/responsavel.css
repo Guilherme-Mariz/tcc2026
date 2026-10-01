@@ -254,13 +254,14 @@
 
 /* cabeçalho */
 .resp-header {
-    min-height: 250px;
-    padding: 26px 34px;
-    border-radius: 22px;
+    min-height: 260px;
+    padding: 24px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
     background-image: linear-gradient(90deg, rgba(19, 55, 39, 0.16), rgba(19, 55, 39, 0.02)), url("../img/teko-lendo.webp");
     background-position: center 47%;
     background-size: cover;
-    box-shadow: 0 10px 30px rgba(26, 107, 72, 0.22);
+    box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
     position: relative;
@@ -269,10 +270,10 @@
 
 .resp-header-panel {
     width: min(530px, 58%);
-    padding: 23px 25px;
+    padding: 26px 30px;
     border: 1px solid rgba(255, 255, 255, 0.64);
     border-radius: 18px;
-    background: rgba(255, 253, 248, 0.86);
+    background: rgba(255, 255, 255, 0.9);
     box-shadow: 0 12px 32px rgba(24, 63, 44, 0.16);
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
@@ -321,6 +322,7 @@
     flex-shrink: 0;
     margin-top: 15px;
 }
+.resp-header-actions:has(.child-selector[hidden]) { display: none; }
 
 .child-selector {
     display: flex;
@@ -792,6 +794,7 @@
 .report-download button:focus-visible { outline: 3px solid rgba(58, 140, 96, 0.28); outline-offset: 3px; }
 
 .avatar-dialog {
+    margin: auto;
     width: min(430px, calc(100vw - 32px));
     padding: 0;
     border: 1px solid var(--border);
