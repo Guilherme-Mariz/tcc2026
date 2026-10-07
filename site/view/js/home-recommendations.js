@@ -3,7 +3,6 @@
     const empty = document.getElementById('recommendations-empty');
     const status = document.getElementById('recommendations-status');
     const retry = document.getElementById('recommendations-retry');
-    const count = document.getElementById('recommendations-count');
     const notification = document.getElementById('recommendations-notification');
     const panel = document.getElementById('home-recommendations');
     if (!list) return;
@@ -20,8 +19,6 @@
         notification.textContent = '';
         status.textContent = '';
         retry.hidden = true;
-        count.textContent = '0/3';
-        count.setAttribute('aria-label', 'Nenhuma atividade recomendada');
     }
     async function load() {
         const request = ++version;
@@ -63,8 +60,6 @@
                 list.append(link);
             }
             empty.hidden = items.length > 0;
-            count.textContent = `${items.length}/3`;
-            count.setAttribute('aria-label', `${items.length} de 3 atividades recomendadas`);
             if (items.length) {
                 notification.textContent = items.length === 1
                     ? 'O Teko deixou uma atividade para você!'

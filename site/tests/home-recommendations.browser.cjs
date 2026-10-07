@@ -35,7 +35,6 @@ const server = app.listen(0, '127.0.0.1', async () => {
         ];
         await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
         await page.waitForFunction(()=>document.querySelectorAll('.recommendation-item').length===3);
-        assert.equal(await page.locator('#recommendations-count').textContent(),'3/3');
         assert.equal(await page.locator('#recommendations-notification').isVisible(),true);
         await page.screenshot({path:path.join(os.tmpdir(),'teko-home-recommendations-desktop.png'),fullPage:true});
         await page.setViewportSize({width:390,height:844});
@@ -44,7 +43,6 @@ const server = app.listen(0, '127.0.0.1', async () => {
         recommendations.shift();
         await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
         await page.waitForFunction(()=>document.querySelectorAll('.recommendation-item').length===2);
-        assert.equal(await page.locator('#recommendations-count').textContent(),'2/3');
         fail = true;
         await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
         await page.waitForFunction(()=>!document.querySelector('#recommendations-retry').hidden);

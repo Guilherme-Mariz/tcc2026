@@ -150,13 +150,11 @@ test('Home começa vazia, mostra até três cartões e atualiza após conclusão
     recommendations = [1,2,3].map(i => ({id:String(i),title:`Atividade ${i}`,url:`/atividades/jogo-${i}`}));
     await f.window.emit('focus');
     assert.equal(f.el('recommendations-list').children.length, 3);
-    assert.equal(f.el('recommendations-count').textContent, '3/3');
     assert.equal(f.el('recommendations-notification').hidden, false);
     assert.equal(f.el('recommendations-list').children[0].href, '/atividades/jogo-1');
     recommendations.shift();
     await f.window.emit('pageshow', {persisted:true}); await tick();
     assert.equal(f.el('recommendations-list').children.length, 2);
-    assert.equal(f.el('recommendations-count').textContent, '2/3');
 });
 
 test('Home descarta resposta antiga ao trocar criança e permite repetir consulta com erro', async () => {
