@@ -102,7 +102,6 @@ function carregarSessaoAtiva(child = obterCriancaAtivaLocal()) {
     chatRequest = null;
     sending = false;
     chatInput.value = "";
-    mostrarAtividade(null);
     const id = obterIdCrianca(child);
     const nome = obterNomeCrianca(child);
 
@@ -248,29 +247,6 @@ if (micBtn) {
    ENVIAR MENSAGEM
    ========================================================= */
 
-function mostrarAtividade(activity) {
-    const panel = document.getElementById("chat-activity");
-    panel.replaceChildren();
-    panel.hidden = true;
-    if (!activity || typeof activity.title !== "string" ||
-        typeof activity.url !== "string" || !/^\/atividades\/[a-z0-9-]+$/.test(activity.url)) return;
-    const link = document.createElement("a");
-    link.className = "chat-activity-link";
-    link.href = activity.url;
-    link.textContent = "Abrir: " + activity.title;
-    const dismiss = document.createElement("button");
-    dismiss.type = "button";
-    dismiss.textContent = "Agora não";
-    dismiss.addEventListener("click", () => {
-        mostrarAtividade(null);
-        // A recusa passa pela conversa para orientar as sugestões seguintes.
-        chatInput.value = "Agora não quero uma atividade. Quero continuar conversando.";
-        enviarMensagem();
-    });
-    panel.append(link, dismiss);
-    panel.hidden = false;
-}
-
 async function enviarMensagem() {
     if (!chatInput || sending) return;
     const texto = chatInput.value.trim();
@@ -287,16 +263,15 @@ async function enviarMensagem() {
     chatRequest = new AbortController();
     sending = true;
     sendBtn.disabled = true;
-    mostrarAtividade(null);
     mostrarCarregando();
     try {
         const resposta = await fetch("/api/ai/chat", {
             method: "POST", headers: { "Content-Type": "application/json" },
             credentials: "include",
-            signal: AbortSignal.any([chatRequest.signal, AbortSignal.timeout(30000)]),
+            signal: AbortSignal.any([chatRequest.signal, AbortSignal.timeout(60000)]),
             body: JSON.stringify({ childId: childIdSelecionado, message: texto })
         });
-        const dados = await resposta.json();
+        const dados = await resposta.json().catch(() => ({}));
         if (version !== chatVersion) return;
         if (!resposta.ok) {
             if (resposta.status === 401) {
@@ -318,7 +293,11 @@ async function enviarMensagem() {
         if (typeof dados.response !== "string" || !dados.response.trim()) throw new Error("Resposta vazia.");
         if (chatInput.value.trim() === texto) chatInput.value = "";
         digitarMensagem(dados.response);
-        mostrarAtividade(dados.activity);
+        if (dados.recommendationAdded) {
+            // Apenas invalidação entre abas; a lista vem sempre do servidor.
+            try { localStorage.setItem('teko_recommendations_changed', String(Date.now())); } catch {}
+        }
+
     } catch (error) {
         if (version !== chatVersion) return;
         digitarMensagem(error.name === "TimeoutError"

@@ -197,7 +197,7 @@
 
 
 .home-page .tekoia-home-card,
-.home-page .suggestion-card {
+.home-page .recommendations-card {
     aspect-ratio: 1 / 1;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
@@ -210,7 +210,7 @@
 
 
 .home-page .tekoia-home-card:hover,
-.home-page .suggestion-card:hover {
+.home-page .recommendations-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
@@ -252,84 +252,6 @@
 
 
 .home-page .tekoia-home-card:hover .tekoia-home-action i {
-    transform: translateX(4px);
-}
-
-
-/*sugestao do dia*/
-.home-page .suggestion-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 30px;
-    background: linear-gradient(145deg, #fff8df, #f8d477);
-    border: 1.5px solid rgba(232, 190, 80, 0.35);
-    color: var(--text);
-}
-
-
-.home-page .suggestion-icon {
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: var(--radius-lg);
-    font-size: 2rem;
-}
-
-
-.home-page .suggestion-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-
-.home-page .suggestion-label {
-    margin-bottom: 7px;
-    color: #7e641d;
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-
-.home-page .suggestion-content h2 {
-    font-family: "Fraunces", serif;
-    font-size: clamp(1.3rem, 2vw, 1.75rem);
-    line-height: 1.2;
-}
-
-
-.home-page .suggestion-content p {
-    margin-top: 8px;
-    color: #675c3e;
-    font-size: 0.8rem;
-    line-height: 1.6;
-}
-
-
-.home-page .suggestion-action {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 20px;
-    color: #705816;
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-
-.home-page .suggestion-action i {
-    transition: transform var(--transition);
-}
-
-
-.home-page .suggestion-card:hover .suggestion-action i {
     transform: translateX(4px);
 }
 
@@ -410,7 +332,7 @@
 
 
     .home-page .tekoia-home-card,
-    .home-page .suggestion-card {
+    .home-page .recommendations-card {
         aspect-ratio: auto;
         min-height: 320px;
     }
@@ -459,7 +381,7 @@
 
 
     .home-page .tekoia-home-card,
-    .home-page .suggestion-card {
+    .home-page .recommendations-card {
         min-height: 280px;
     }
 
@@ -469,3 +391,35 @@
         font-size: 0.75rem;
     }
 }
+
+/* Fila de recomendações: três cartões verticais, sem sugestões fictícias. */
+.home-page .recommendations-card {
+    min-width: 0;
+    padding: 24px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    aspect-ratio: auto;
+}
+.recommendations-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.recommendations-label { color: var(--green-deep); font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.recommendations-heading h2 { margin-top: 5px; font-family: 'Fraunces', serif; font-size: 1.3rem; line-height: 1.25; }
+.recommendations-count { flex-shrink: 0; padding: 5px 9px; border-radius: 999px; color: var(--green-deep); background: var(--bg-soft); font-size: .72rem; font-weight: 600; }
+.recommendations-list { display: flex; flex-direction: column; gap: 12px; }
+.recommendation-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px; min-height: 76px; border: 1px solid #ceded3; border-radius: 14px; background: #f2f8f4; color: var(--green-deep); text-decoration: none; }
+.recommendation-item:hover { background: #e4f1e8; border-color: var(--green-mid); }
+.recommendation-item:focus-visible, #recommendations-retry:focus-visible { outline: 3px solid var(--green-mid); outline-offset: 3px; }
+.recommendation-item strong { display: block; font-size: .85rem; line-height: 1.4; }
+.recommendation-item small { display: block; margin-top: 4px; font-size: .7rem; font-weight: 500; }
+.recommendation-arrow { font-size: 1.2rem; }
+.recommendations-empty { flex: 1; display: grid; place-content: center; min-height: 180px; padding: 24px; border: 1px dashed #d0ded4; border-radius: 14px; color: var(--text-soft); font-size: .8rem; text-align: center; line-height: 1.7; }
+.recommendations-notification { padding: 10px 12px; border-radius: 10px; background: #e6f3eb; color: var(--green-deep); font-size: .74rem; }
+.recommendations-status { color: var(--text-soft); font-size: .76rem; line-height: 1.5; }
+.recommendations-status:empty { display: none; }
+#recommendations-retry { align-self: flex-start; border: 0; border-radius: 10px; padding: 10px 14px; background: var(--green-deep); color: white; font: inherit; font-size: .75rem; cursor: pointer; }
+.recommendations-card [hidden] { display: none !important; }
+@media (max-width: 480px) { .home-page .recommendations-card { padding: 18px; } }

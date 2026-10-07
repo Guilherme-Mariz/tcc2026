@@ -308,33 +308,26 @@
                 </div>
             </a>
         
-            <a href="/atividades" class="suggestion-card">
-                <div class="suggestion-icon" aria-hidden="true">
-                    🎭
+            <section class="recommendations-card" id="home-recommendations" aria-labelledby="recommendations-title">
+                <div class="recommendations-heading">
+                    <div>
+                        <span class="recommendations-label">Sugestões do Teko</span>
+                        <h2 id="recommendations-title">Recomendação de Atividades</h2>
+                    </div>
+                    <span id="recommendations-count" class="recommendations-count" aria-label="Nenhuma atividade recomendada">0/3</span>
                 </div>
-        
-                <div class="suggestion-content">
-                    <span class="suggestion-label">
-                        Sugestão do TEKO.IA
-                    </span>
-        
-                    <h2>Como você se sentiria se...?</h2>
-        
-                    <p>
-                        Descubra como as emoções aparecem em situações do dia a dia.
-                    </p>
-        
-                    <span class="suggestion-action">
-                        Começar atividade
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </span>
-                </div>
-            </a>
+                <p id="recommendations-notification" class="recommendations-notification" role="status" hidden></p>
+                <div id="recommendations-list" class="recommendations-list" aria-label="Atividades recomendadas"></div>
+                <p id="recommendations-empty" class="recommendations-empty">As sugestões do Teko aparecerão aqui depois de vocês conversarem.</p>
+                <p id="recommendations-status" class="recommendations-status" role="status"></p>
+                <button id="recommendations-retry" type="button" hidden>Tentar novamente</button>
+            </section>
         </section>
     </main>
 
     <script src="../js/site-shell.js"></script>
     <script src="../js/session-switch.js"></script>
     <script src="../js/home.js"></script>
+    <script src="../js/home-recommendations.js"></script>
 </body>
 </html>

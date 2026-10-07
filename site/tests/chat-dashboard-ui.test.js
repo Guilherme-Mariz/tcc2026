@@ -80,17 +80,21 @@ test('chat preserva texto no erro Groq e bloqueia envio duplicado por Enter',asy
     const pending=f.run('enviarMensagem()');await f.run('enviarMensagem()');assert.equal(calls,1);
     resolve(reply({code:'AI_UNAVAILABLE'},503));await pending;f.typeAll();
     assert.equal(f.el('chat-input').value,'estou triste');assert.equal(f.el('send-btn').disabled,false);
-    assert.match(f.el('chat-display-text').textContent,/responsável/);assert.equal(f.el('chat-activity').hidden,true);
+    assert.match(f.el('chat-display-text').textContent,/responsável/);
 });
 
-test('chat mostra atividade atual e limpa sugestão ao continuar; URL externa não vira link',async()=>{
-    let activity={title:'Respire com o Teko',url:'/atividades/respire-com-teko'};
-    const f=fixture('tekoia',async()=>reply({response:'Quer experimentar?',activity}));f.run('carregarSessaoAtiva()');
-    f.el('chat-input').value='quero acalmar';await f.run('enviarMensagem()');
-    assert.equal(f.el('chat-activity').hidden,false);assert.equal(f.el('chat-activity').children[0].href,activity.url);
-    activity=null;await f.el('chat-activity').children[1].emit('click');await tick();
-    assert.equal(f.el('chat-activity').hidden,true);
-    f.run("mostrarAtividade({title:'Inválida',url:'https://example.com'})");assert.equal(f.el('chat-activity').hidden,true);
+test('chat recebe resposta sem renderizar atividade e avisa outras abas da Home', async () => {
+    const f = fixture('tekoia', async () => reply({response: 'Entendo. Quer me contar mais?', recommendationAdded: true}));
+    const changed = [];
+    f.context.localStorage.setItem = (key, value) => changed.push([key, value]);
+    f.run('carregarSessaoAtiva()');
+    f.el('chat-input').value = 'quero acalmar';
+    await f.run('enviarMensagem()'); f.typeAll();
+    assert.equal(f.el('chat-display-text').textContent, 'Entendo. Quer me contar mais?');
+    assert.equal(f.el('chat-input').value, '');
+    assert.equal(changed.length, 1);
+    assert.equal(changed[0][0], 'teko_recommendations_changed');
+    assert.equal(f.run('typeof mostrarAtividade'), 'undefined');
 });
 
 test('troca de criança descarta resposta atrasada, sugestão e texto do perfil anterior',async()=>{
@@ -99,7 +103,7 @@ test('troca de criança descarta resposta atrasada, sugestão e texto do perfil 
     await f.window.emit('teko:session-changed',{detail:{child:{id:'other',firstName:'Bruno'}}});
     resolve(reply({response:'Resposta da Ana',activity:{title:'Jogo antigo',url:'/atividades/respire-com-teko'}}));await pending;f.typeAll();
     assert.match(f.el('chat-display-text').textContent,/Bruno/);assert.doesNotMatch(f.el('chat-display-text').textContent,/Ana/);
-    assert.equal(f.el('chat-activity').hidden,true);assert.equal(f.el('chat-input').value,'');assert.equal(f.el('send-btn').disabled,false);
+    assert.equal(f.el('chat-input').value,'');assert.equal(f.el('send-btn').disabled,false);
 });
 
 test('seletor de foto não recarrega painel ao recuperar foco e cancelamento não envia', async () => {
@@ -134,4 +138,41 @@ test('envio da foto mantém criança original e ignora erro após trocar perfil'
     assert.equal(f.el('child-avatar-status').textContent, '');
     assert.equal(f.el('child-avatar-edit').disabled, false);
     assert.equal(f.run('avatarEnviando'), false);
+});
+
+test('Home começa vazia, mostra até três cartões e atualiza após conclusão', async () => {
+    let recommendations = [];
+    const f = fixture('home-recommendations', async () => reply({recommendations}));
+    await tick();
+    assert.equal(f.el('recommendations-list').children.length, 0);
+    assert.equal(f.el('recommendations-empty').hidden, false);
+    assert.equal(f.el('recommendations-notification').hidden, true);
+    recommendations = [1,2,3].map(i => ({id:String(i),title:`Atividade ${i}`,url:`/atividades/jogo-${i}`}));
+    await f.window.emit('focus');
+    assert.equal(f.el('recommendations-list').children.length, 3);
+    assert.equal(f.el('recommendations-count').textContent, '3/3');
+    assert.equal(f.el('recommendations-notification').hidden, false);
+    assert.equal(f.el('recommendations-list').children[0].href, '/atividades/jogo-1');
+    recommendations.shift();
+    await f.window.emit('pageshow', {persisted:true}); await tick();
+    assert.equal(f.el('recommendations-list').children.length, 2);
+    assert.equal(f.el('recommendations-count').textContent, '2/3');
+});
+
+test('Home descarta resposta antiga ao trocar criança e permite repetir consulta com erro', async () => {
+    let finish; let calls=0;
+    const f = fixture('home-recommendations', async () => {
+        if (++calls === 1) return new Promise(resolve => {finish=resolve;});
+        return calls === 2 ? reply({error:'indisponível'},503) : reply({recommendations:[]});
+    });
+    f.context.localStorage.getItem = () => JSON.stringify({crianca:{id:'other'}});
+    await f.window.emit('teko:session-changed');
+    assert.equal(f.el('recommendations-retry').hidden, false);
+    finish(reply({recommendations:[{id:'a',title:'Da outra criança',url:'/atividades/jogo-a'}]}));
+    await tick();
+    assert.equal(f.el('recommendations-list').children.length, 0);
+    assert.equal(f.el('recommendations-retry').hidden, false);
+    await f.el('recommendations-retry').emit('click');
+    assert.equal(f.el('recommendations-empty').hidden, false);
+    assert.equal(f.el('recommendations-retry').hidden, true);
 });

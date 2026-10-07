@@ -106,6 +106,7 @@
                 current.saved = true;
                 if (attempt !== current) return;
                 removeStatus();
+                try { localStorage.setItem('teko_recommendations_changed', String(Date.now())); } catch {}
                 window.dispatchEvent(new CustomEvent("teko:activity-saved", {
                     detail: { childId: current.childId, activityId: current.activityId }
                 }));

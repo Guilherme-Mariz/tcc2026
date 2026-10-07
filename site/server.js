@@ -47,6 +47,7 @@ const createActivityRouter = require("./routes/activityRoutes");
 app.use("/api/activities", createActivityRouter());
 
 app.use("/api/ai", aiRoutes);
+app.use("/api/recommendations", require("./routes/recommendationRoutes")());
 
 app.use("/", childRoutes);
 

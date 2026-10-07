@@ -3,6 +3,7 @@ const conversationService = require('../services/conversationService');
 const sessionManager = require('../services/sessionManager');
 const groqService = require('../services/groqService');
 const aiError = require('../services/aiErrors');
+const RecommendationRepository = require('../services/recommendationRepository');
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 class AIController {
     constructor(deps = {}) {
@@ -10,6 +11,7 @@ class AIController {
         this.conversations = deps.conversations || conversationService;
         this.sessions = deps.sessions || sessionManager;
         this.ai = deps.ai || groqService;
+        this.recommendations = deps.recommendations || new RecommendationRepository(require("../config/supabase"));
         this.pending = new Set();
     }
     async chat(req, res) {
@@ -36,12 +38,22 @@ class AIController {
             const result = await this.ai.chat(conversation, session, message.trim());
             stage = 'memory_save';
             await this.conversations.saveConversation(result.conversation);
+            // Falha na sugestão não deve impedir a criança de receber a resposta.
+            let recommendationAdded = false;
+            let recommendationUnavailable = false;
+            if (result.activity) {
+                try { recommendationAdded = await this.recommendations.enqueue(id, result.activity); }
+                catch (error) {
+                    recommendationUnavailable = true;
+                    console.error('Falha ao salvar recomendação', { code: error.code });
+                }
+            }
             session.addUserMessage(message.trim());
             session.addAssistantMessage(result.response);
             return res.status(200).json({
                 success: true, response: result.response,
                 emotion: result.conversation.getLastEmotion(), emotionTrend: result.conversation.getEmotionTrend(),
-                confidence: result.confidence, activity: result.activity
+                confidence: result.confidence, recommendationAdded, recommendationUnavailable
             });
         } catch (error) {
             // Não registrar texto, perfil, memória, cabeçalhos ou credenciais.

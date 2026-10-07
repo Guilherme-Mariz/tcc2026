@@ -117,3 +117,39 @@ test('chave ausente não quebra import; configuração apara espaços e define p
         assert.equal(client.timeout,20000);assert.equal(client.maxRetries,0);
     } finally {if(old===undefined)delete process.env.GROQ_API_KEY;else process.env.GROQ_API_KEY=old;}
 });
+
+test('Groq recupera JSON inválido uma vez, sem duplicar histórico', async () => {
+    let calls = 0;
+    const service = new GroqService(() => ({chat:{completions:{create:async () => {
+        if (++calls === 1) return {choices:[{finish_reason:'length',message:{content:'{'}}]};
+        return completion(valid());
+    }}}}));
+    const session = new Session('child');
+    const response = await service.chat(new Conversation({childId:'child'}), session, 'oi');
+    assert.equal(calls, 2);
+    assert.ok(response.response);
+    assert.deepEqual(session.getMessages(), []);
+    for (const status of [401,403,429]) {
+        calls = 0;
+        const failing = new GroqService(() => ({chat:{completions:{create:async () => {calls++;throw {status};}}}}));
+        await assert.rejects(failing.chat(new Conversation({childId:'child'}),session,'oi'));
+        assert.equal(calls, 1);
+    }
+});
+
+test('sugestão é enviada à Home; falha da fila não apaga resposta do chat', async () => {
+    for (const fails of [false,true]) {
+        const f = fixture(); let enqueues=0;
+        f.controller.ai.chat = async conversation => ({conversation,response:'Entendo.',confidence:0.9,activity:catalog[0]});
+        f.controller.recommendations = {enqueue:async (id,activity) => {
+            assert.equal(id,f.childId);assert.equal(activity.id,catalog[0].id);enqueues++;
+            if(fails)throw {code:'database_unavailable'};
+            return true;
+        }};
+        const res=f.response();await f.controller.chat(f.request(),res);
+        assert.equal(res.statusCode,200);assert.equal(res.body.response,'Entendo.');
+        assert.equal(res.body.activity,undefined);assert.equal(res.body.recommendationAdded,!fails);
+        assert.equal(res.body.recommendationUnavailable,fails);assert.equal(enqueues,1);
+        assert.equal(f.session.getMessages().length,2);
+    }
+});

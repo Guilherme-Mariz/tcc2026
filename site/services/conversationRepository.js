@@ -102,15 +102,15 @@ class ConversationRepository {
 
     async save(conversation) {
 
-        const exists = await this.findByChildId(
-            conversation.getChildId()
-        );
-
-        if (exists) {
-            return this.update(conversation);
-        }
-
-        return this.create(conversation);
+        const c = conversation.toJSON();
+        // Uma única operação evita conflito de criação em requisições concorrentes.
+        const { error } = await supabase.from(this.table).upsert({
+            child_id: c.childId, history: c.history, summary: c.summary,
+            last_emotion: c.lastEmotion, emotion_trend: c.emotionTrend,
+            last_activity: c.lastActivity, child_interests: c.childInterests,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'child_id' });
+        if (error) throw error;
 
     }
 
