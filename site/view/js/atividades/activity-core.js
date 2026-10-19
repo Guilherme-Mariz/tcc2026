@@ -50,6 +50,12 @@
 
                 const nextScreen = screens[nextName];
 
+                if (nextName === "done" || nextName === "conclusao") {
+                    document.dispatchEvent(new CustomEvent("teko:activity-completed", {
+                        detail: { screen: nextScreen }
+                    }));
+                }
+
                 nextScreen.classList.add("activity-screen-fade-in");
                 nextScreen.hidden = false;
 
@@ -282,6 +288,7 @@
 
             if (elapsed >= 3000) {
                 cancel();
+                document.dispatchEvent(new CustomEvent("teko:activity-started"));
                 onStart?.();
                 if (!game.contains(document.activeElement)) {
                     const target = game.querySelector("button:not([disabled]), [tabindex='0']");

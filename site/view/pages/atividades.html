@@ -208,11 +208,13 @@
                 </div>
             </section>
 
+            <p id="activity-progress-status" class="activity-progress-status" role="status" aria-live="polite"></p>
+
             <!-- grids de atividades -->
 
             <!-- EMOÇÕES -->
             <div class="atv-grid active" id="grid-emocoes" role="tabpanel">
-                <a href="/atividades/quebra-cabeca-emocoes" class="atv-card">
+                <a href="/atividades/quebra-cabeca-emocoes" class="atv-card" data-activity-id="510649ed-be45-5c7e-ac9f-8cde6209ad41">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-comprimento.webp" alt="" class="atv-card-img">
                     </div>
@@ -221,7 +223,7 @@
                     </div>
                     <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </a>
-                <a href="/atividades/como-ele-pode-estar" class="atv-card">
+                <a href="/atividades/como-ele-pode-estar" class="atv-card" data-activity-id="7190e012-82a7-5cf2-999f-4741887dbd9f">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-duvida.webp" alt="" class="atv-card-img">
                     </div>
@@ -234,7 +236,7 @@
 
             <!-- COMUNICAÇÃO -->
             <div class="atv-grid" id="grid-comunicacao" role="tabpanel" hidden>
-                <a href="/atividades/monte-frase" class="atv-card">
+                <a href="/atividades/monte-frase" class="atv-card" data-activity-id="6b7bdd07-2fd4-5b0a-9241-4b58d9a5daaf">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-frases.webp" alt="" class="atv-card-img atv-card-img-reduzida">
                     </div>
@@ -243,7 +245,7 @@
                     </div>
                     <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </a>
-                <a href="/atividades/oq-posso-dizer" class="atv-card">
+                <a href="/atividades/oq-posso-dizer" class="atv-card" data-activity-id="ec5188fa-cb84-5de9-8595-e34132123097">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-oi.webp" alt="" class="atv-card-img atv-card-img-reduzida">
                     </div>
@@ -256,7 +258,7 @@
 
             <!-- SITUAÇÕES SOCIAIS -->
             <div class="atv-grid" id="grid-situacoes-sociais" role="tabpanel" hidden>
-                <a href="/atividades/oq-fazer-agora" class="atv-card">
+                <a href="/atividades/oq-fazer-agora" class="atv-card" data-activity-id="a55cdd22-f518-50f9-bfff-72e99c7591f8">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-duvida.webp" alt="" class="atv-card-img">
                     </div>
@@ -265,7 +267,7 @@
                     </div>
                     <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </a>
-                <a href="/atividades/minha-vez-sua-vez" class="atv-card">
+                <a href="/atividades/minha-vez-sua-vez" class="atv-card" data-activity-id="5705e581-fbfd-5377-8cc2-b2208626434a">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-apontando.webp" alt="" class="atv-card-img">
                     </div>
@@ -278,7 +280,7 @@
 
             <!-- ROTINA -->
             <div class="atv-grid" id="grid-rotina" role="tabpanel" hidden>
-                <a href="/atividades/oq-vem-depois" class="atv-card">
+                <a href="/atividades/oq-vem-depois" class="atv-card" data-activity-id="5e94471f-2742-5590-8d4e-81340d33c47a">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-checklist.webp" alt="" class="atv-card-img">
                     </div>
@@ -287,7 +289,7 @@
                     </div>
                     <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </a>
-                <a href="/atividades/mudou-o-plano" class="atv-card">
+                <a href="/atividades/mudou-o-plano" class="atv-card" data-activity-id="969a6acc-7e70-5cf1-84f5-e08421ec9eae">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-diario.webp" alt="" class="atv-card-img">
                     </div>
@@ -300,7 +302,7 @@
 
             <!-- CALMA -->
             <div class="atv-grid" id="grid-calma" role="tabpanel" hidden>
-                <a href="/atividades/respire-com-teko" class="atv-card">
+                <a href="/atividades/respire-com-teko" class="atv-card" data-activity-id="93088b29-2388-594b-a2a3-070a2bfdb875">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-respirando.webp" alt="" class="atv-card-img">
                     </div>
@@ -309,7 +311,7 @@
                     </div>
                     <div class="atv-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </a>
-                <a href="/atividades/oq-pode-me-ajudar" class="atv-card">
+                <a href="/atividades/oq-pode-me-ajudar" class="atv-card" data-activity-id="11fceddd-18e2-5761-9c89-f842c8c85e22">
                     <div class="atv-card-icon-wrap">
                         <img src="../img/mascot/teko-almofada.webp" alt="" class="atv-card-img">
                     </div>
@@ -325,6 +327,7 @@
         <script src="../js/vendor/gsap.min.js"></script>
 
         <script src="../js/site-shell.js"></script>
+        <script src="../js/activity-progress.js"></script>
         <script src="../js/atividades.js"></script>
     </body>
 </html>

@@ -207,9 +207,7 @@
             <div class="profile-summary-info">
                 <h2 id="profile-child-name">Criança</h2>
         
-                <button type="button" class="nickname-button">
-                    Escolher apelido
-                </button>
+
             </div>
         
             <label class="profile-color-control" for="profile-color">
@@ -231,72 +229,22 @@
                     <h2>Meu desempenho</h2>
                 </div>
         
-                <span class="performance-period">Esta semana</span>
+                <span class="performance-period">Progresso total</span>
             </div>
-        
-            <div class="progress-items">
-                <div class="progress-item">
-                    <div class="progress-row">
-                        <span class="progress-name">
-                            <span class="progress-emoji" aria-hidden="true">😊</span>
-                            Reconhecer emoções
-                        </span>
-        
-                        <span class="progress-pct">70%</span>
-                    </div>
-        
-                    <div
-                        class="progress-track"
-                        role="progressbar"
-                        aria-valuenow="70"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                    >
-                        <div class="progress-fill fill-green" style="width: 70%"></div>
-                    </div>
+
+            <div class="progress-item">
+                <div class="progress-row">
+                    <span class="progress-name" id="home-progress-label">Atividades concluídas</span>
+                    <span class="progress-pct" id="home-progress-percent">—</span>
                 </div>
-        
-                <div class="progress-item">
-                    <div class="progress-row">
-                        <span class="progress-name">
-                            <span class="progress-emoji" aria-hidden="true">🗣️</span>
-                            Situações sociais
-                        </span>
-        
-                        <span class="progress-pct">45%</span>
-                    </div>
-        
-                    <div
-                        class="progress-track"
-                        role="progressbar"
-                        aria-valuenow="45"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                    >
-                        <div class="progress-fill fill-yellow" style="width: 45%"></div>
-                    </div>
+                <div class="progress-track" id="home-progress-bar" role="progressbar"
+                    aria-labelledby="home-progress-label" aria-describedby="home-progress-status"
+                    aria-valuemin="0" aria-valuemax="100" aria-busy="true">
+                    <div class="progress-fill fill-green" id="home-progress-fill" style="width: 0%"></div>
                 </div>
-        
-                <div class="progress-item">
-                    <div class="progress-row">
-                        <span class="progress-name">
-                            <span class="progress-emoji" aria-hidden="true">🧩</span>
-                            Expressões e metáforas
-                        </span>
-        
-                        <span class="progress-pct">20%</span>
-                    </div>
-        
-                    <div
-                        class="progress-track"
-                        role="progressbar"
-                        aria-valuenow="20"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                    >
-                        <div class="progress-fill fill-teal" style="width: 20%"></div>
-                    </div>
-                </div>
+                <p id="home-progress-status" role="status">Carregando progresso…</p>
+                <p class="home-progress-help">Cada atividade diferente concluída preenche um pouco da barra.</p>
+                <button type="button" id="home-progress-retry" hidden>Tentar novamente</button>
             </div>
         </section>
 
@@ -336,5 +284,6 @@
     <script src="../js/site-shell.js"></script>
     <script src="../js/session-switch.js"></script>
     <script src="../js/home.js"></script>
+    <script src="../js/home-progress.js"></script>
 </body>
 </html>

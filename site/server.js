@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('node:path').join(__dirname, '.env'), quiet: true });
 
 /* 
 set PATH=%PATH%;C:\Users\Gui\Documents\PROJETOTCC\node\nodejs\node-v24.14.0-win-x64
@@ -42,6 +42,9 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const childRoutes = require("./routes/childRoutes");
+const createActivityRouter = require("./routes/activityRoutes");
+
+app.use("/api/activities", createActivityRouter());
 
 app.use("/api/ai", aiRoutes);
 

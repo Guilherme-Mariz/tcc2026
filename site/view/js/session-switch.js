@@ -31,10 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const deveIniciar =
             sessionStorage.getItem("teko_iniciar_sessao") === "true";
 
-        if (deveIniciar) {
-            sessionStorage.removeItem("teko_iniciar_sessao");
-            abrirModal(true);
+        if (!deveIniciar) return;
+
+        sessionStorage.removeItem("teko_iniciar_sessao");
+
+        if (criancasDisponiveis.length === 1) {
+            ativarCrianca(criancasDisponiveis[0]);
+            return;
         }
+
+        abrirModal(true);
     });
 
     elementos.abrir.addEventListener("click", () => abrirModal(false));
@@ -47,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     elementos.fechar.addEventListener("click", () => fecharModal());
     elementos.cancelar.addEventListener("click", () => fecharModal());
     elementos.confirmar.addEventListener("click", confirmarTroca);
-    elementos.mostrarPin.addEventListener("click", alternarPin);
-
     elementos.pin.addEventListener("input", () => {
         elementos.pin.value = elementos.pin.value
             .replace(/\D/g, "")
@@ -229,15 +233,12 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.pin.value = "";
         elementos.pin.type = "password";
         elementos.erro.textContent = "";
-        elementos.mostrarPin.querySelector("i").className =
-            "fa-solid fa-eye";
 
         if (campoPin) campoPin.hidden = selecaoInicial;
         elementos.fechar.hidden = selecaoInicial;
         elementos.cancelar.hidden = selecaoInicial;
-        elementos.confirmar.textContent = selecaoInicial
-            ? "Iniciar sessão"
-            : "Confirmar troca";
+        elementos.confirmar.innerHTML =
+            '<i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span>Entrar</span>';
 
         if (titulo) {
             titulo.textContent = selecaoInicial
@@ -348,24 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
         elementos.erro.textContent = "";
     }
 
-    function alternarPin() {
-        const mostrando = elementos.pin.type === "text";
-        const icone = elementos.mostrarPin.querySelector("i");
-
-        elementos.pin.type = mostrando
-            ? "password"
-            : "text";
-
-        icone.className = mostrando
-            ? "fa-solid fa-eye"
-            : "fa-solid fa-eye-slash";
-
-        elementos.mostrarPin.setAttribute(
-            "aria-label",
-            mostrando ? "Mostrar PIN" : "Ocultar PIN"
-        );
-    }
-
     async function validarPinNoServidor(pin) {
         const resposta = await fetch("/verify-pin", {
             method: "POST",
@@ -422,7 +405,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             elementos.confirmar.disabled = true;
-            elementos.confirmar.textContent = "Verificando...";
+            elementos.confirmar.innerHTML =
+                '<span>Verificando...</span>';
 
             try {
                 // O backend relaciona o usuário autenticado ao PIN salvo no Supabase.
@@ -444,21 +428,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             } finally {
                 elementos.confirmar.disabled = false;
-                elementos.confirmar.textContent = "Confirmar troca";
+                elementos.confirmar.innerHTML =
+                    '<i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span>Entrar</span>';
             }
         }
 
-        salvarCriancaAtiva(criancaSelecionada);
-
-        window.dispatchEvent(
-            new CustomEvent("teko:session-changed", {
-                detail: { child: criancaSelecionada }
-            })
-        );
+        ativarCrianca(criancaSelecionada);
 
         selecaoInicial = false;
         fecharModal(true);
         window.location.reload();
+    }
+
+    function ativarCrianca(crianca) {
+        salvarCriancaAtiva(crianca);
+
+        window.dispatchEvent(
+            new CustomEvent("teko:session-changed", {
+                detail: { child: crianca }
+            })
+        );
     }
 
     function adaptarInterfaceParaPin() {
@@ -477,7 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (input) {
-            input.placeholder = "Digite o PIN de 4 números";
+            input.placeholder = "· · · ·";
             input.inputMode = "numeric";
             input.maxLength = 4;
             input.pattern = "[0-9]{4}";
@@ -485,9 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
             input.setAttribute("aria-label", "PIN de 4 números");
         }
 
-        if (botao) {
-            botao.setAttribute("aria-label", "Mostrar PIN");
-        }
+        if (botao) botao.hidden = true;
     }
 
     function garantirInterface() {
@@ -585,4 +572,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
-

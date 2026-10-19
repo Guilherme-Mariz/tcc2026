@@ -131,23 +131,6 @@
 }
 
 
-.home-page .nickname-button {
-    padding: 0;
-    background: transparent;
-    border: none;
-    color: var(--green-deep);
-    font-family: "Poppins", sans-serif;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-
-.home-page .nickname-button:hover {
-    text-decoration: underline;
-}
-
-
 .home-page .profile-color-control {
     margin-left: auto;
     display: flex;
@@ -468,4 +451,11 @@
         padding: 10px 14px;
         font-size: 0.75rem;
     }
+}
+
+.home-page #home-progress-status { margin: 12px 0 4px; font-size: 0.85rem; color: var(--text); }
+.home-page .home-progress-help { margin: 0; font-size: 0.75rem; color: var(--text-mid); }
+.home-page #home-progress-retry { margin-top: 12px; padding: 8px 14px; border: 1px solid var(--green-deep); border-radius: 12px; background: white; color: var(--green-deep); font: inherit; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) {
+    .home-page #home-progress-fill { transition: none; }
 }

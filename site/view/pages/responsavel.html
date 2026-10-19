@@ -204,24 +204,33 @@
                 <p class="pin-error-msg" id="pin-error" role="alert"></p>
 
                 <div class="pin-divider"><span>área restrita</span></div>
+                <div class="pin-loading-panel">
+                    <span id="pin-loading-spinner" class="pin-loading-spinner" aria-hidden="true"></span>
+                    <p id="pin-loading-status" role="status" tabindex="-1"></p>
+                    <button id="pin-loading-retry" type="button" hidden>Tentar novamente</button>
+                </div>
             </div>
         </div>
 
         <!-- ════════ DASHBOARD (visível em blur atrás do PIN) ════════ -->
-        <div id="resp-page">
+        <div id="resp-page" inert>
 
             <!-- boas-vindas -->
             <div class="resp-header">
-                <div class="resp-header-text">
-                    <span class="resp-welcome-tag">Área do Responsável</span>
-                    <h1 class="resp-welcome-name">Olá, <span id="resp-nome">Responsável</span>!</h1>
-                    <p class="resp-welcome-sub">Acompanhe o progresso e os dados de <span id="resp-crianca-nome-sub">sua criança</span>.</p>
-                </div>
-                <div class="resp-header-actions">
-                    <div class="child-selector" id="child-selector" aria-label="Selecionar criança" hidden></div>
+                <div class="resp-header-panel">
+                    <div class="resp-header-text">
+                        <span class="resp-welcome-tag">Área do Responsável</span>
+                        <h1 class="resp-welcome-name" id="resp-heading" tabindex="-1">Olá, <span id="resp-nome">Responsável</span>!</h1>
+                        <p class="resp-welcome-sub">Acompanhe o progresso e os dados de <span id="resp-crianca-nome-sub">sua criança</span>.</p>
+                    </div>
+                    <div class="resp-header-actions">
+                        <div class="child-selector" id="child-selector" aria-label="Selecionar criança" hidden></div>
+                    </div>
                 </div>
             </div>
 
+            <p id="dashboard-status" role="status" aria-live="polite"></p>
+            <button id="dashboard-retry" type="button" hidden>Tentar novamente</button>
             <div class="resp-grid">
 
                 <!-- dados da criança -->
@@ -233,32 +242,42 @@
 
                     <div class="child-overview-content">
                         <div class="child-identity">
-                            <div class="child-avatar" id="dado-inicial" aria-hidden="true">T</div>
+                            <div class="child-avatar-wrap">
+                                <div class="child-avatar">
+                                    <span id="dado-inicial" aria-hidden="true">T</span>
+                                    <img id="child-avatar-image" alt="" hidden>
+                                </div>
+                                <button class="child-avatar-edit" id="child-avatar-edit" type="button" aria-label="Adicionar foto da criança">
+                                    <i class="fa-solid fa-camera" aria-hidden="true"></i>
+                                </button>
+                                <input id="child-avatar-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                            </div>
                             <div>
                                 <span class="child-identity-label">Acompanhando</span>
                                 <strong id="dado-nome">—</strong>
+                                <span class="child-avatar-status" id="child-avatar-status" role="status" aria-live="polite"></span>
                             </div>
                         </div>
 
                         <div class="child-progress-details" aria-label="Resumo do progresso">
                             <div class="child-progress-detail">
                                 <span>Módulos concluídos</span>
-                                <strong id="stat-modulos">0</strong>
+                                <strong id="stat-modulos">—</strong>
                             </div>
                             <div class="child-progress-detail">
                                 <span>Atividades realizadas</span>
-                                <strong id="stat-atividades">0</strong>
+                                <strong id="stat-atividades">—</strong>
                             </div>
                             <div class="child-progress-detail">
-                                <span>Dificuldade observada</span>
-                                <strong id="stat-dificuldade">Sem dados</strong>
+                                <span>Sequência atual</span>
+                                <strong id="stat-sequencia">—</strong>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- gráfico diário -->
-                <section class="resp-card daily-progress-card" aria-labelledby="daily-progress-title">
+                <section class="resp-card daily-progress-card resp-grid-full" aria-labelledby="daily-progress-title">
                     <div class="resp-card-heading">
                         <div class="resp-card-title" id="daily-progress-title">
                             <i class="fa-solid fa-chart-line icon-green"></i>
@@ -269,14 +288,14 @@
 
                     <div class="chart-summary">
                         <div>
-                            <strong id="chart-total">0 atividades</strong>
+                            <strong id="chart-total">—</strong>
                             <span>concluídas no período</span>
                         </div>
                         <div class="chart-legend"><span></span> Atividades concluídas</div>
                     </div>
 
-                    <div class="daily-chart" id="daily-chart">
-                        <svg id="daily-chart-svg" viewBox="0 0 640 230" role="img" aria-labelledby="chart-title chart-description" preserveAspectRatio="none">
+                    <div class="daily-chart" id="daily-chart" hidden>
+                        <svg id="daily-chart-svg" viewBox="0 0 640 230" role="img" aria-labelledby="chart-title chart-description" preserveAspectRatio="xMidYMid meet">
                             <title id="chart-title">Atividades concluídas nos últimos sete dias</title>
                             <desc id="chart-description">O gráfico ainda não possui registros.</desc>
                         </svg>
@@ -285,61 +304,35 @@
                             <span>O progresso aparecerá aqui após as primeiras atividades.</span>
                         </div>
                     </div>
-                </section>
 
-                <!-- análise do gráfico -->
-                <section class="resp-card progress-analysis" aria-labelledby="analysis-title">
-                    <div class="resp-card-title" id="analysis-title">
-                        <i class="fa-solid fa-magnifying-glass-chart icon-purple"></i>
-                        Análise do período
-                    </div>
-
-                    <div class="analysis-highlight">
-                        <div class="analysis-highlight-icon"><i class="fa-solid fa-seedling"></i></div>
+                    <div class="report-download">
                         <div>
-                            <span id="analysis-kicker">Começando agora</span>
-                            <strong id="analysis-headline">Ainda não há atividades registradas</strong>
+                            <strong>Relatório detalhado</strong>
+                            <span>Baixe a lista de atividades e quantas vezes cada uma foi realizada.</span>
                         </div>
-                    </div>
-
-                    <div class="analysis-list">
-                        <div class="analysis-item">
-                            <i class="fa-regular fa-calendar-check"></i>
-                            <div><span>Frequência</span><strong id="analysis-frequency">Sem dados suficientes</strong></div>
-                        </div>
-                        <div class="analysis-item">
-                            <i class="fa-solid fa-bullseye"></i>
-                            <div><span>Área em destaque</span><strong id="analysis-area">Aguardando atividades</strong></div>
-                        </div>
-                        <div class="analysis-item">
-                            <i class="fa-solid fa-arrow-trend-up"></i>
-                            <div><span>Próximo passo</span><strong id="analysis-next">Realizar a primeira atividade</strong></div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- resumo do TEKO.IA -->
-                <section class="teko-summary resp-grid-full" aria-labelledby="teko-summary-title">
-                    <div class="teko-summary-mascot">
-                        <img src="../img/mascot/teko-sentado.webp" alt="Teko sentado">
-                    </div>
-                    <div class="teko-summary-content">
-                        <span class="teko-summary-eyebrow">Resumo do TEKO.IA</span>
-                        <h2 id="teko-summary-title">Um olhar cuidadoso sobre o desenvolvimento</h2>
-                        <p id="teko-summary-text">Quando as atividades forem registradas, o TEKO.IA reunirá aqui uma leitura simples do progresso da criança para apoiar o acompanhamento do responsável.</p>
+                        <button id="download-report" type="button" disabled>
+                            <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                            <span>Baixar relatório</span>
+                        </button>
                     </div>
                 </section>
 
             </div>
         </div><!-- /resp-page -->
 
-    </main>
+        <dialog class="avatar-dialog" id="avatar-dialog" aria-labelledby="avatar-dialog-title">
+            <form method="dialog">
+                <div class="avatar-dialog-icon" aria-hidden="true"><i class="fa-solid fa-image"></i></div>
+                <h2 id="avatar-dialog-title">Adicionar foto da criança?</h2>
+                <p>Ao continuar, você autoriza o envio da foto escolhida para o perfil da criança. O TEKO acessará somente essa imagem e a armazenará de forma privada. Use JPEG, PNG ou WebP de até 3 MB.</p>
+                <div class="avatar-dialog-actions">
+                    <button class="avatar-dialog-cancel" value="cancel">Cancelar</button>
+                    <button class="avatar-dialog-confirm" id="avatar-dialog-confirm" value="default">Autorizar e escolher foto</button>
+                </div>
+            </form>
+        </dialog>
 
-    <!-- ── TOAST ── -->
-    <div id="toast" role="status">
-        <i class="fa-solid fa-check"></i>
-        <span id="toast-msg">Área desbloqueada!</span>
-    </div>
+    </main>
 
     <script src="../js/site-shell.js"></script>
     <script src="../js/responsavel.js"></script>

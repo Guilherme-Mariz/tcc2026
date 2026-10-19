@@ -203,13 +203,14 @@
                     <div class="chat-display">
                         <p class="chat-display-text" id="chat-display-text"></p>
                     </div>
+                    <div id="chat-activity" class="chat-activity" aria-label="Atividade sugerida" hidden></div>
                     <div class="chat-input-area">
                         <button class="mic-btn" id="mic-btn" type="button" title="Falar mensagem" aria-pressed="false">
                             <i class="fa-solid fa-microphone"></i>
                         </button>
 
                         <input type="text" class="chat-input" id="chat-input" placeholder="Escreva uma mensagem..."
-                            autocomplete="off" aria-label="Mensagem">
+                            autocomplete="off" maxlength="2000" aria-label="Mensagem">
 
                         <button class="send-btn" id="send-btn" aria-label="Enviar">
                             <i class="fa-solid fa-paper-plane"></i>

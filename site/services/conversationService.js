@@ -13,8 +13,7 @@ class ConversationService {
                 childId,
                 firstName
             });
-
-            await conversationRepository.create(conversation);
+            // Só criar no banco depois de obter e validar a primeira resposta.
 
         } else {
 

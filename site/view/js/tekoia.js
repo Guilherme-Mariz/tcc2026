@@ -22,6 +22,9 @@ let childIdSelecionado = null;
 
 let typingTimer = null;
 let gravando = false;
+let sending = false;
+let chatVersion = 0;
+let chatRequest = null;
 
 
 /* =========================================================
@@ -94,6 +97,12 @@ function obterCriancaAtivaLocal() {
 
 function carregarSessaoAtiva(child = obterCriancaAtivaLocal()) {
 
+    ++chatVersion;
+    chatRequest?.abort();
+    chatRequest = null;
+    sending = false;
+    chatInput.value = "";
+    mostrarAtividade(null);
     const id = obterIdCrianca(child);
     const nome = obterNomeCrianca(child);
 
@@ -239,159 +248,91 @@ if (micBtn) {
    ENVIAR MENSAGEM
    ========================================================= */
 
-async function enviarMensagem() {
-
-    if (!chatInput) return;
-
-
-    const texto =
-        chatInput.value.trim();
-
-
-    if (!texto) return;
-
-
-    /*
-     * IMPORTANTE:
-     *
-     * O TEKOIA só envia mensagem se houver
-     * um childId válido.
-     */
-
-    if (!childIdSelecionado) {
-
-        digitarMensagem(
-            'Use “Trocar sessão” no menu para escolher uma criança antes de conversar. 😊'
-        );
-
-        return;
-    }
-
-
-    console.log(
-        "===== ENVIO PARA TEKO ====="
-    );
-
-    console.log(
-        "childId enviado:",
-        childIdSelecionado
-    );
-
-    console.log(
-        "message:",
-        texto
-    );
-
-
-    chatInput.value =
-        "";
-
-
-    sendBtn.disabled =
-        true;
-
-
-    mostrarCarregando();
-
-
-    try {
-
-        const resposta =
-            await fetch(
-                "/api/ai/chat",
-                {
-
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    credentials: "include",
-
-                    body: JSON.stringify({
-
-                        childId:
-                            childIdSelecionado,
-
-                        message:
-                            texto
-                    })
-
-                }
-            );
-
-
-        const dados =
-            await resposta.json();
-
-
-        if (!resposta.ok) {
-
-            if (
-                resposta.status === 403
-            ) {
-
-                digitarMensagem(
-                    "Você não tem acesso a essa criança."
-                );
-
-                return;
-            }
-
-
-            if (
-                resposta.status === 401
-            ) {
-
-                digitarMensagem(
-                    "Sua sessão expirou. Faça login novamente."
-                );
-
-                return;
-            }
-
-
-            throw new Error(
-                dados.error ||
-                "Erro ao conversar com o TEKO."
-            );
-
-        }
-
-
-        digitarMensagem(
-            dados.response ||
-            "Hmm, não entendi. Pode repetir? 😊"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao enviar mensagem:",
-            error
-        );
-
-
-        digitarMensagem(
-            "Ops, tive um problema aqui. Tenta de novo! 😅"
-        );
-
-
-    } finally {
-
-        sendBtn.disabled =
-            false;
-
-
-        chatInput.focus();
-
-    }
-
+function mostrarAtividade(activity) {
+    const panel = document.getElementById("chat-activity");
+    panel.replaceChildren();
+    panel.hidden = true;
+    if (!activity || typeof activity.title !== "string" ||
+        typeof activity.url !== "string" || !/^\/atividades\/[a-z0-9-]+$/.test(activity.url)) return;
+    const link = document.createElement("a");
+    link.className = "chat-activity-link";
+    link.href = activity.url;
+    link.textContent = "Abrir: " + activity.title;
+    const dismiss = document.createElement("button");
+    dismiss.type = "button";
+    dismiss.textContent = "Agora não";
+    dismiss.addEventListener("click", () => {
+        mostrarAtividade(null);
+        // A recusa passa pela conversa para orientar as sugestões seguintes.
+        chatInput.value = "Agora não quero uma atividade. Quero continuar conversando.";
+        enviarMensagem();
+    });
+    panel.append(link, dismiss);
+    panel.hidden = false;
 }
 
+async function enviarMensagem() {
+    if (!chatInput || sending) return;
+    const texto = chatInput.value.trim();
+    if (!texto) return;
+    if (!childIdSelecionado) {
+        digitarMensagem('Use “Trocar sessão” no menu para escolher uma criança antes de conversar.');
+        return;
+    }
+    if (texto.length > 2000) {
+        digitarMensagem("Vamos conversar em partes? Escreva uma mensagem um pouco menor.");
+        return;
+    }
+    const version = ++chatVersion;
+    chatRequest = new AbortController();
+    sending = true;
+    sendBtn.disabled = true;
+    mostrarAtividade(null);
+    mostrarCarregando();
+    try {
+        const resposta = await fetch("/api/ai/chat", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            signal: AbortSignal.any([chatRequest.signal, AbortSignal.timeout(30000)]),
+            body: JSON.stringify({ childId: childIdSelecionado, message: texto })
+        });
+        const dados = await resposta.json();
+        if (version !== chatVersion) return;
+        if (!resposta.ok) {
+            if (resposta.status === 401) {
+                digitarMensagem("Sua sessão expirou. Faça login novamente.");
+            } else if (resposta.status === 403) {
+                digitarMensagem("Essa criança não está disponível nesta conta. Peça ajuda ao responsável.");
+            } else {
+                const errors = {
+                    AI_UNAVAILABLE: "Não consigo conversar agora. Peça ajuda ao responsável e tente mais tarde.",
+                    AI_BUSY: "Preciso de uma pequena pausa. Tente novamente em um minuto.",
+                    AI_TIMEOUT: "Demorei para responder. Você pode tentar de novo.",
+                    CHAT_PENDING: "Espere minha resposta antes de enviar outra mensagem.",
+                    AI_INVALID_RESPONSE: "Não consegui preparar a resposta. Você pode tentar de novo."
+                };
+                digitarMensagem(errors[dados.code] || "Não consegui concluir a conversa agora. Você pode tentar de novo.");
+            }
+            return;
+        }
+        if (typeof dados.response !== "string" || !dados.response.trim()) throw new Error("Resposta vazia.");
+        if (chatInput.value.trim() === texto) chatInput.value = "";
+        digitarMensagem(dados.response);
+        mostrarAtividade(dados.activity);
+    } catch (error) {
+        if (version !== chatVersion) return;
+        digitarMensagem(error.name === "TimeoutError"
+            ? "Demorei para responder. Você pode tentar de novo."
+            : "Não consegui me conectar agora. Sua mensagem continua aqui para tentar novamente.");
+    } finally {
+        if (version === chatVersion) {
+            sending = false;
+            chatRequest = null;
+            sendBtn.disabled = !childIdSelecionado;
+            chatInput.focus();
+        }
+    }
+}
 
 /* ── botão enviar ── */
 

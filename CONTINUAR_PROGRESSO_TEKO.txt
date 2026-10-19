@@ -1,0 +1,115 @@
+TEKO — PROGRESSO E ÁREA DO RESPONSÁVEL
+Atualizado em 13/09/2026 (UTC)
+Repositório: Guilherme-Mariz/tcc2026
+Branch: feat/registro-conclusao-atividades
+
+STATUS: progresso concluído; correções de IA e carregamento implementadas.
+A autenticação e a qualidade real da Groq ainda dependem de chave válida.
+Este arquivo substitui a passagem parcial anterior. Não é necessário reaplicar o SQL.
+
+ENTREGA
+- Cada conclusão mantém seu registro; reenvio do realizationId não duplica.
+- Trigger transacional atualiza resumo por criança/módulo e um dia ativo por data.
+- Migração complete_progress aplicada no Supabase wiftybobcpjnhlnmqsgd,
+  versão 20260913002917, com preenchimento dos resumos anteriores.
+- Consulta agregada em um único snapshot, sem transferir/truncar todo o histórico.
+- Progresso por módulo, frequência diária, sequência atual e maior sequência.
+- Histórico mantém offset/limit e retorna nextCursor para paginação estável.
+  Nas páginas seguintes, enviar cursor=nextCursor e omitir offset (ou usar zero).
+  Novas conclusões ficam disponíveis ao reiniciar a navegação; cursor mantém
+  microssegundos e desempate por ID. Não garante snapshot de alterações retroativas
+  administrativas; o fluxo da aplicação apenas insere conclusões com data do servidor.
+- POST /complete confirma a gravação; resumo e sequência continuam nas consultas GET.
+  Isso evita reportar erro de salvamento por uma falha posterior na leitura do resumo.
+- Todas as consultas validam a sessão e o vínculo do responsável/criança.
+  PIN continua validado no backend; é a barreira de navegação da área do responsável.
+  APIs de progresso são autorizadas por sessão/vínculo e também atendem os jogos.
+- Painel usa perfis e progresso do backend, sem localStorage como fonte dos dados.
+- Dados no topo, gráfico abaixo em largura total e legível no celular.
+- Estados de carregamento, erro/repetir, conta sem criança, foco e troca rápida.
+- Bloqueio invalida respostas pendentes e impede foco nos controles do painel.
+- Blocos de análise/TEKO.IA, toast sem uso e estilos antigos removidos.
+- Fluxo de login sem PIN e repetição ilimitada dos jogos preservados.
+
+VALIDAÇÃO REALIZADA
+- 16 testes Node passaram, incluindo HTTP 401/403/400, no-store, paginação,
+  erros, idempotência e 1.505 registros com inserção entre páginas.
+- SQL testado em Postgres WASM: reaplicação, backfill, mais de 1.500 registros,
+  permissões service_role, fuso e falha após atualização parcial com rollback.
+- Duas transações concorrentes de teste no Supabase foram revertidas;
+  cada uma testou repetição, reenvio, módulos distintos, agregação e erro do trigger.
+- Banco após testes: 1 realização, 1 resumo, 1 dia ativo e nenhuma divergência.
+- Chromium com respostas HTTP simuladas: desktop 1440px, celular 390px, PIN,
+  saudação, troca rápida, erro/retry, foco, nenhuma criança e bloqueio.
+  Fontes/ícones externos não carregaram neste ambiente; layout e comportamento
+  foram verificados com os recursos locais. Não foi realizado login manual real.
+- Advisors: nenhum aviso novo. Permanecem os avisos preexistentes de RLS sem
+  políticas nas tabelas acessadas pelo backend e proteção de senhas vazadas desativada.
+
+TESTES NO REPOSITÓRIO
+- node --test site/tests/*.test.js
+- site/tests/progress-database.sql: regressão transacional com ROLLBACK.
+- site/tests/responsavel-browser.check.cjs: verificação opcional com Playwright.
+  TEKO_CHROMIUM_PATH pode apontar para um Chromium instalado no ambiente.
+
+ATUALIZAÇÃO — CHAT E CARREGAMENTO (13/09/2026)
+- Blur, indicador e foco protegido até perfis/progresso concluírem a consulta.
+- Falha no carregamento mantém overlay com botão de tentar novamente.
+- Contrato único de emoções, tendência, confiança e categorias; JSON Schema estrito.
+- Prompt revisado para negações, erros de escrita, incerteza, recusa e risco.
+- Sugestões selecionam jogos reais e aparecem com Abrir / Agora não.
+- Não reapresentar atividade antiga como sugestão atual; baixa confiança/risco
+  impedem recomendação. Confiança é heurística da IA, não diagnóstico.
+- Chave Groq carregada tardiamente e com espaços externos removidos; sua ausência
+  não derruba as demais rotas. site/.env tem caminho explícito no servidor.
+- Falhas diferenciadas: credencial, limite, timeout, JSON inválido e persistência.
+- Sessão temporária só confirma mensagens após salvar; envios simultâneos da mesma
+  criança são bloqueados no processo Node. Respostas de outro perfil são descartadas.
+- Logs do chat não incluem falas, perfis, memória nem respostas completas.
+- Tabela conversations conferida por leitura de schema/constraints: compatível.
+  Não houve migração, alteração de configurações ou inserção de dados no Supabase.
+
+VALIDAÇÃO DESTA ATUALIZAÇÃO
+- 29 testes Node passaram: 16 anteriores + 7 IA/backend + 6 scripts de interface.
+- Incluem falta de chave, 401/403 Groq, 429, timeout, formato inválido, falha de
+  salvamento, concorrência, incerteza, atividades reais, PIN pendente, erro/retry,
+  nenhuma criança, troca de perfil e respostas atrasadas.
+- Interface testada em DOM mínimo. A inspeção visual nesta rodada não foi
+  concluída: Chromium local indisponível e prévia local bloqueada no navegador remoto.
+- check:groq confirmou ausência de GROQ_API_KEY neste ambiente. Não foi feita
+  chamada de geração real nem medição da qualidade das interpretações emocionais.
+
+PENDÊNCIAS PARA VALIDAÇÃO REAL
+1. Configurar GROQ_API_KEY válida no ambiente que executa o site ou em site/.env.
+   Não enviar a chave no chat nem no Git. Reiniciar o servidor.
+2. Na pasta site, executar npm run check:groq e depois testar o chat com exemplos
+   fictícios: cumprimento, negação, erro de escrita, sentimentos mistos, recusa,
+   sugestão de atividade e relato de risco. Revisar a adequação das respostas.
+3. Conferir visualmente desktop/celular; o teste opcional de navegador foi ampliado.
+- Sem merge na main e sem implantação do site.
+
+ATUALIZAÇÃO — PAINEL, FOTO E RELATÓRIO (23/09/2026)
+- Cabeçalho da área do responsável redesenhado no estilo da Home, usando
+  site/view/img/teko-lendo.webp como fundo e painel translúcido para o texto.
+- Espaçamento antes de Dados da criança reduzido. As mensagens cruas
+  “Carregando dados/progresso” não aparecem mais no dashboard; o carregamento
+  após o PIN continua no overlay desfocado e erros reais mantêm aviso/repetir.
+- Foto da criança adicionada com confirmação antes do seletor de arquivos,
+  validação JPEG/PNG/WebP pelo tipo e assinatura, limite de 3 MB e vínculo com
+  o responsável autenticado. As fotos ficam no bucket privado child-avatars e
+  são exibidas por URL assinada temporária; a chave administrativa fica no servidor.
+- Relatório detalhado em CSV abaixo do gráfico: nome da atividade, quantidade,
+  primeira e última realização, total e data de geração. A agregação ocorre no
+  Postgres e não transfere todo o histórico para o navegador.
+- Migração child_avatars_and_activity_report aplicada no Supabase
+  wiftybobcpjnhlnmqsgd, versão 20260923111854.
+
+VALIDAÇÃO DESTA ATUALIZAÇÃO
+- 32 testes Node passaram, incluindo autorização da foto, conteúdo inválido,
+  criança sem vínculo, agregação e rota autenticada do relatório.
+- Bucket confirmado como privado, com limite e MIME types esperados.
+- Teste transacional do relatório no Supabase passou e foi revertido; nenhuma
+  atividade fictícia permaneceu no banco.
+- Advisors não apresentaram aviso novo. A inspeção visual automatizada não foi
+  executada porque este ambiente continua sem Chromium local.
+- Sem merge na main e sem implantação do site.
