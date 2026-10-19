@@ -7,6 +7,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let version = 0;
     let pending;
 
+    const suggestion = document.getElementById('home-suggestion');
+    const suggestionTitle = document.getElementById('suggestion-title');
+    const suggestionDescription = document.getElementById('suggestion-description');
+    const suggestionCover = document.getElementById('suggestion-cover');
+    const suggestionCoverWrap = document.getElementById('suggestion-cover-wrap');
+    const suggestionAction = document.getElementById('suggestion-action');
+
+    function resetSuggestion(title, description, loading = false) {
+        suggestion.removeAttribute('href');
+        suggestion.setAttribute('aria-disabled', 'true');
+        suggestion.setAttribute('aria-busy', String(loading));
+        suggestionTitle.textContent = title;
+        suggestionDescription.textContent = description;
+        suggestionCoverWrap.hidden = true;
+        suggestionCover.removeAttribute('src');
+        suggestionAction.hidden = true;
+    }
+
+    function renderSuggestion(activity) {
+        if (!activity) {
+            resetSuggestion('Você concluiu todas as atividades!', 'Parabéns pelas descobertas! Você pode revisitar suas favoritas na página Atividades.');
+            return;
+        }
+        suggestion.setAttribute('href', activity.url);
+        suggestion.removeAttribute('aria-disabled');
+        suggestion.setAttribute('aria-busy', 'false');
+        suggestionTitle.textContent = activity.title;
+        suggestionDescription.textContent = activity.description;
+        suggestionCover.setAttribute('src', activity.cover);
+        suggestionCoverWrap.hidden = false;
+        suggestionAction.hidden = false;
+    }
+
     function childId() {
         try {
             const child = JSON.parse(localStorage.getItem('teko_session') || '{}').crianca;
@@ -27,6 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         percent.textContent = '—';
         retry.hidden = true;
         status.textContent = id ? 'Carregando progresso…' : 'Selecione uma criança para ver o progresso.';
+        resetSuggestion(id ? 'Buscando sua próxima atividade…' : 'Escolha seu perfil',
+            id ? 'Vamos conferir o que você ainda pode descobrir.' : 'Selecione uma criança para ver a sugestão.', Boolean(id));
         if (!id) { bar.setAttribute('aria-busy', 'false'); return; }
         const timeout = setTimeout(() => controller.abort(), 15000);
         try {
@@ -47,10 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
             status.textContent = `${completed} de ${catalog.size} atividades concluídas`;
             bar.setAttribute('aria-valuenow', String(value));
             bar.setAttribute('aria-valuetext', status.textContent);
+            renderSuggestion(data.suggestedActivity);
         } catch {
             if (current !== version || id !== childId()) return;
             status.textContent = 'Não foi possível carregar o progresso. Tente novamente.';
             retry.hidden = false;
+            resetSuggestion('Sua sugestão está indisponível', 'Use Tentar novamente na área de desempenho para carregar sua próxima atividade.');
         } finally {
             clearTimeout(timeout);
             if (current === version) bar.setAttribute('aria-busy', 'false');

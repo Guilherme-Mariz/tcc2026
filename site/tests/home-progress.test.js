@@ -32,6 +32,7 @@ function fixture(fetch) {
         localStorage: { getItem: () => JSON.stringify({ crianca: child ? { id: child } : null }) }
     });
     return { document, window, el: name => document.getElementById('home-progress-' + name),
+        suggestion: name => document.getElementById(name),
         select: value => { child = value; } };
 }
 
@@ -70,4 +71,45 @@ test('troca de criança ignora resposta antiga; erro permite tentar novamente e 
     assert.equal(f.el('fill').style.width, '0%');
     assert.equal(f.el('bar').attributes['aria-valuenow'], undefined);
     assert.match(f.el('status').textContent, /Selecione/);
+});
+
+
+test('sugestão usa capa e link reais, avança após conclusão e termina sem recomendar repetição', async () => {
+    let ids = [];
+    const f = fixture(async () => reply(progress(ids)));
+    await f.document.emit('DOMContentLoaded'); await tick();
+    for (let index = 0; index < catalog.length; index++) {
+        assert.equal(f.suggestion('suggestion-title').textContent, catalog[index].titulo);
+        assert.equal(f.suggestion('suggestion-description').textContent, catalog[index].descricao);
+        assert.equal(f.suggestion('suggestion-cover').attributes.src, catalog[index].capa);
+        assert.equal(f.suggestion('home-suggestion').attributes.href, `/atividades/${catalog[index].slug}`);
+        assert.equal(f.suggestion('suggestion-action').hidden, false);
+        ids.push(index);
+        await f.window.emit('teko:activity-saved');
+    }
+    assert.equal(f.suggestion('home-suggestion').attributes.href, undefined);
+    assert.equal(f.suggestion('suggestion-action').hidden, true);
+    assert.match(f.suggestion('suggestion-title').textContent, /todas/);
+});
+
+test('erro e troca de perfil removem sugestão e link antigos', async () => {
+    let fail = false;
+    const f = fixture(async () => fail ? reply({}, false) : reply(progress([])));
+    await f.document.emit('DOMContentLoaded'); await tick();
+    fail = true; await f.window.emit('focus');
+    assert.equal(f.suggestion('home-suggestion').attributes.href, undefined);
+    assert.equal(f.suggestion('suggestion-cover-wrap').hidden, true);
+    fail = false; await f.el('retry').emit('click');
+    assert.ok(f.suggestion('home-suggestion').attributes.href);
+    f.select(null); await f.window.emit('teko:session-changed');
+    assert.equal(f.suggestion('home-suggestion').attributes.href, undefined);
+});
+
+test('todas as sugestões têm a capa existente e a rota da atividade', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../view/pages/atividades.html'), 'utf8');
+    for (const activity of catalog) {
+        assert.ok(fs.existsSync(path.join(__dirname, '../view', activity.capa)));
+        assert.ok(fs.existsSync(path.join(__dirname, `../view/pages/atividades/${activity.slug}.html`)));
+        assert.ok(html.includes(`src="..${activity.capa}"`));
+    }
 });

@@ -45,7 +45,13 @@ function summarizeFacts(facts, now = new Date()) {
             percent: activities.length ? Math.round(unique / activities.length * 100) : 0,
             lastRealization: matching.map(a => a.last).sort((a, b) => new Date(a) - new Date(b)).at(-1) || null };
     });
+    const nextActivity = catalog.find(activity => !stats.has(activity.id));
     return {
+        suggestedActivity: nextActivity ? {
+            activityId: nextActivity.id, title: nextActivity.titulo,
+            description: nextActivity.descricao, cover: nextActivity.capa,
+            url: `/atividades/${nextActivity.slug}`
+        } : null,
         timeZone, totalRealizations: facts.activities.reduce((sum, a) => sum + Number(a.total), 0),
         completedActivityIds: [...stats.keys()],
         completedModules: modules.filter(m => m.percent === 100).length, modules,
