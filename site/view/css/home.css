@@ -253,21 +253,21 @@
 
 
 .home-page .suggestion-cover {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    aspect-ratio: 2048 / 1143;
     flex-shrink: 0;
-    padding: 8px;
+    overflow: hidden;
     background: rgba(255, 255, 255, 0.75);
     border-radius: var(--radius-lg);
 }
-.home-page .suggestion-cover img { width: 100%; height: 100%; object-fit: contain; }
+.home-page .suggestion-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .home-page .suggestion-card { gap: 20px; aspect-ratio: auto; min-height: 420px; }
 .home-page .suggestion-card[aria-disabled="true"] { cursor: default; }
 .home-page .suggestion-card[aria-disabled="true"]:hover { transform: none; }
 .home-page .suggestion-card:focus-visible { outline: 3px solid var(--green-deep); outline-offset: 4px; }
 .home-page .suggestion-card [hidden] { display: none; }
 @media (max-width: 480px) {
-    .home-page .suggestion-cover { width: 130px; height: 130px; }
+    .home-page .suggestion-cover { width: 100%; }
 }
 
 .home-page .suggestion-content {

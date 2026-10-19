@@ -74,14 +74,13 @@ test('troca de criança ignora resposta antiga; erro permite tentar novamente e 
 });
 
 
-test('sugestão usa capa e link reais, avança após conclusão e termina sem recomendar repetição', async () => {
+test('sugestão usa link real, avança após conclusão e termina sem recomendar repetição', async () => {
     let ids = [];
     const f = fixture(async () => reply(progress(ids)));
     await f.document.emit('DOMContentLoaded'); await tick();
     for (let index = 0; index < catalog.length; index++) {
         assert.equal(f.suggestion('suggestion-title').textContent, catalog[index].titulo);
         assert.equal(f.suggestion('suggestion-description').textContent, catalog[index].descricao);
-        assert.equal(f.suggestion('suggestion-cover').attributes.src, catalog[index].capa);
         assert.equal(f.suggestion('home-suggestion').attributes.href, `/atividades/${catalog[index].slug}`);
         assert.equal(f.suggestion('suggestion-action').hidden, false);
         ids.push(index);
@@ -98,7 +97,6 @@ test('erro e troca de perfil removem sugestão e link antigos', async () => {
     await f.document.emit('DOMContentLoaded'); await tick();
     fail = true; await f.window.emit('focus');
     assert.equal(f.suggestion('home-suggestion').attributes.href, undefined);
-    assert.equal(f.suggestion('suggestion-cover-wrap').hidden, true);
     fail = false; await f.el('retry').emit('click');
     assert.ok(f.suggestion('home-suggestion').attributes.href);
     f.select(null); await f.window.emit('teko:session-changed');

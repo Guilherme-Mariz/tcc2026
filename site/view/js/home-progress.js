@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const suggestion = document.getElementById('home-suggestion');
     const suggestionTitle = document.getElementById('suggestion-title');
     const suggestionDescription = document.getElementById('suggestion-description');
-    const suggestionCover = document.getElementById('suggestion-cover');
-    const suggestionCoverWrap = document.getElementById('suggestion-cover-wrap');
     const suggestionAction = document.getElementById('suggestion-action');
 
     function resetSuggestion(title, description, loading = false) {
@@ -20,8 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestion.setAttribute('aria-busy', String(loading));
         suggestionTitle.textContent = title;
         suggestionDescription.textContent = description;
-        suggestionCoverWrap.hidden = true;
-        suggestionCover.removeAttribute('src');
         suggestionAction.hidden = true;
     }
 
@@ -35,8 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestion.setAttribute('aria-busy', 'false');
         suggestionTitle.textContent = activity.title;
         suggestionDescription.textContent = activity.description;
-        suggestionCover.setAttribute('src', activity.cover);
-        suggestionCoverWrap.hidden = false;
         suggestionAction.hidden = false;
     }
 
