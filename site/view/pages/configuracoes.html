@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../css/configuracoes.css">
     <script src="../js/session-switch.js" defer></script>
     <title>teko. — Configurações</title>
+    <link rel="stylesheet" href="/css/preferencias.css">
+    <script src="/js/preferencias.js"></script>
 </head>
 <body>
 
@@ -228,6 +230,15 @@
                     <div class="font-preview" id="font-preview">Normal — Olá! Estou aprendendo com o TEKO!</div>
                 </div>
 
+                <div class="cfg-row">
+                    <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-moon"></i></div>
+                    <label class="cfg-row-text" for="darkMode"><span class="cfg-row-label">Modo escuro</span></label>
+                    <label class="teko-toggle">
+                        <input type="checkbox" id="darkMode" aria-label="Modo escuro">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+
                 <!-- animações -->
                 <div class="cfg-row">
                     <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
@@ -273,10 +284,10 @@
                     <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-music"></i></div>
                     <div class="cfg-row-text">
                         <span class="cfg-row-label">Efeitos sonoros</span>
-                        <span class="cfg-row-desc">Sons nas atividades e conquistas</span>
+                        <span class="cfg-row-desc">Um som suave ao tocar nos botões das atividades</span>
                     </div>
                     <label class="teko-toggle">
-                        <input type="checkbox" id="toggle-efeitos" checked aria-label="Efeitos sonoros">
+                        <input type="checkbox" id="toggle-efeitos" aria-label="Efeitos sonoros">
                         <span class="toggle-track"></span>
                     </label>
                 </div>
@@ -285,7 +296,7 @@
                     <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-microphone"></i></div>
                     <div class="cfg-row-text">
                         <span class="cfg-row-label">Narração</span>
-                        <span class="cfg-row-desc">O TEKO lê os textos para você</span>
+                        <span class="cfg-row-desc">Permite ouvir a fala ao usar o botão de áudio nas atividades</span>
                     </div>
                     <label class="teko-toggle">
                         <input type="checkbox" id="toggle-narracao" checked aria-label="Narração">
@@ -301,7 +312,7 @@
                         </div>
                         <span class="vol-pct" id="vol-narracao-pct">80%</span>
                     </div>
-                    <input type="range" class="teko-slider teko-slider-blue" id="vol-narracao" min="0" max="100" value="80" aria-label="Volume da narração">
+                    <input type="range" class="teko-slider teko-slider-blue" id="vol-narracao" min="0" max="100" value="80" aria-label="Volume dos sons e da narração">
                 </div>
 
             </div>
@@ -313,7 +324,7 @@
                 <div class="cfg-card-icon cfg-icon-yellow"><i class="fa-solid fa-gauge-simple"></i></div>
                 <div class="cfg-card-info">
                     <span class="cfg-card-title">Ritmo</span>
-                    <span class="cfg-card-sub">Velocidade das atividades e dificuldade</span>
+                    <span class="cfg-card-sub">Tempo para começar e trocar de rodada</span>
                 </div>
                 <i class="fa-solid fa-chevron-down cfg-chevron" aria-hidden="true"></i>
             </button>
@@ -324,7 +335,7 @@
                         <div class="cfg-row-icon" aria-hidden="true"><i class="fa-solid fa-forward"></i></div>
                         <div class="cfg-row-text">
                             <span class="cfg-row-label">Velocidade das atividades</span>
-                            <span class="cfg-row-desc">Escolha o ritmo mais confortável</span>
+                            <span class="cfg-row-desc">Ajuste a contagem inicial e a pausa entre rodadas</span>
                         </div>
                     </div>
                     <div class="speed-btns">
@@ -347,13 +358,14 @@
         <div class="cfg-save-bar">
             <div>
                 <div class="cfg-save-title">Tudo certo?</div>
-                <div class="cfg-save-desc">Suas preferências ficam salvas no dispositivo.</div>
+                <div class="cfg-save-desc" id="cfg-status" role="status">As escolhas ficam salvas no perfil desta criança.</div>
             </div>
             <div class="cfg-save-actions">
-                <button class="btn-reset" onclick="resetarConfiguracoes()">
-                    <i class="fa-solid fa-rotate-left"></i> Resetar
+                <button hidden id="cfg-retry" class="btn-reset" type="button">Tentar novamente</button>
+                <button class="btn-reset" id="cfg-reset" onclick="resetarConfiguracoes()">
+                    <i class="fa-solid fa-rotate-left"></i> Restaurar padrão
                 </button>
-                <button class="btn-save" onclick="salvarConfiguracoes()">
+                <button class="btn-save">
                     <i class="fa-solid fa-check"></i> Salvar
                 </button>
             </div>
@@ -369,6 +381,7 @@
     </div>
 
     <script src="../js/site-shell.js"></script>
+
     <script src="../js/configuracoes.js"></script>
 </body>
 </html>

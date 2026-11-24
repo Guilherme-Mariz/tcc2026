@@ -15,9 +15,11 @@ class AIController {
     async chat(req, res) {
         res.set('Cache-Control', 'no-store');
         const { childId, message } = req.body || {};
-        if (typeof childId !== 'string' || !UUID.test(childId) ||
-            typeof message !== 'string' || !message.trim() || message.length > 2000) {
-            return res.status(400).json({ success: false, error: 'Envie uma criança válida e uma mensagem de até 2.000 caracteres.' });
+        if (typeof childId !== 'string' || !UUID.test(childId)) {
+            return res.status(400).json({ success: false, code: 'INVALID_CHILD', error: 'Escolha a criança novamente em Trocar sessão.' });
+        }
+        if (typeof message !== 'string' || !message.trim() || message.length > 2000) {
+            return res.status(400).json({ success: false, code: 'INVALID_MESSAGE', error: 'Escreva uma mensagem de até 2.000 caracteres.' });
         }
         const id = childId.toLowerCase();
         let locked = false;

@@ -152,6 +152,10 @@ function digitarMensagem(texto) {
         "";
 
 
+    if (typeof TekoPreferencias !== "undefined" && TekoPreferencias.atual?.["toggle_reduced-motion"] === false) {
+        chatDisplay.textContent = texto;
+        return;
+    }
     let i = 0;
 
 
@@ -305,6 +309,8 @@ async function enviarMensagem() {
                 digitarMensagem("Essa criança não está disponível nesta conta. Peça ajuda ao responsável.");
             } else {
                 const errors = {
+                    INVALID_CHILD: "Escolha a criança novamente em Trocar sessão.",
+                    INVALID_MESSAGE: "Escreva uma mensagem de até 2.000 caracteres.",
                     AI_UNAVAILABLE: "Não consigo conversar agora. Peça ajuda ao responsável e tente mais tarde.",
                     AI_BUSY: "Preciso de uma pequena pausa. Tente novamente em um minuto.",
                     AI_TIMEOUT: "Demorei para responder. Você pode tentar de novo.",

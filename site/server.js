@@ -49,6 +49,7 @@ app.use("/api/activities", createActivityRouter());
 app.use("/api/ai", aiRoutes);
 
 app.use("/", childRoutes);
+app.use("/", require("./routes/preferencias"));
 
 app.use(authRoutes);
 

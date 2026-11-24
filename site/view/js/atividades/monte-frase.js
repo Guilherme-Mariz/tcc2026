@@ -245,11 +245,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderizarJogo() {
-        const blocosNecessarios =
-            frases[rodadaAtual].respostas[0].length;
-
-        elementos.quantidadeBlocos.textContent =
-            `${palavrasEscolhidas.length} de ${blocosNecessarios} blocos escolhidos`;
+        const total = palavrasEscolhidas.length;
+        elementos.quantidadeBlocos.textContent = total === 1 ? "1 bloco escolhido" : total + " blocos escolhidos";
 
         renderizarFrase();
         renderizarOpcoes();
@@ -421,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         fala.lang = "pt-BR";
 
-        window.speechSynthesis.speak(fala);
+        TekoAudio.falar(fala);
     }
 
     elementos.iniciar.addEventListener(

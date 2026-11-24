@@ -441,33 +441,6 @@ a{
 .destaque-card p { font-size:0.88rem; line-height:1.72; color:var(--text-soft); }
 
 
-/* ══ NUMBERS (nova seção) ══ */
-#numeros {
-    padding:90px 5%;
-    background:var(--white);
-    display:flex; align-items:center; justify-content:center;
-    position: relative;
-    overflow: hidden;
-}
-.numeros-inner {
-    max-width:900px; width:100%;
-    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
-    border:1.5px solid rgba(168,213,186,0.4); border-radius:var(--radius);
-    overflow:hidden;
-}
-.numero-item {
-    padding:44px 28px; text-align:center;
-    border-right:1.5px solid rgba(168,213,186,0.4);
-    transition:background 0.25s;
-}
-.numero-item:last-child { border-right:none; }
-.numero-item:hover { background:rgba(168,213,186,0.08); }
-.numero-num {
-    font-family:'Fraunces',serif; font-size:clamp(2.2rem,3.5vw,3rem);
-    font-weight:700; color:var(--green-deep); line-height:1;
-}
-.numero-label { font-size:0.78rem; color:var(--text-soft); margin-top:6px; line-height:1.5; font-weight:500; }
-
 /* ══ TEKOIA BANNER ══ */
 
 #tekoia h1 {
@@ -772,6 +745,7 @@ a{
     display: flex; gap: 6px;
 }
 .carrossel-dot {
+    border: 0; padding: 0;
     width: 7px; height: 7px; border-radius: 50%;
     background: rgba(107,176,138,0.35);
     transition: background 0.25s, transform 0.25s;
@@ -873,7 +847,6 @@ footer.footer-extenso { padding:60px 8% 0; flex-direction:column; align-items:un
 
 #trustbar,
 #sobre,
-#numeros,
 #cta-final {
     position: relative;
     overflow: hidden;
@@ -882,7 +855,6 @@ footer.footer-extenso { padding:60px 8% 0; flex-direction:column; align-items:un
 /* Grade visível verde-menta */
 #trustbar::before,
 #sobre::before,
-#numeros::before,
 #cta-final::before {
     content: '';
     position: absolute;
@@ -910,7 +882,6 @@ footer.footer-extenso { padding:60px 8% 0; flex-direction:column; align-items:un
 /* conteúdo interno sempre acima da textura */
 #trustbar > *,
 #sobre > *,
-#numeros > *,
 #cta-final > * {
     position: relative;
     z-index: 1;
@@ -938,11 +909,6 @@ footer.footer-extenso { padding:60px 8% 0; flex-direction:column; align-items:un
     .txt-sobre { margin-inline:auto; }
     #destaques, #depoimentos { padding:80px 6%; }
     .destaques-grid, .depoimentos-grid { grid-template-columns:1fr; max-width:420px; margin:0 auto; }
-    #numeros { padding:70px 6%; }
-    .numeros-inner { grid-template-columns:repeat(2,1fr); }
-    .numero-item:nth-child(2) { border-right:none; }
-    .numero-item:nth-child(3) { border-right:1.5px solid rgba(168,213,186,0.4); border-top:1.5px solid rgba(168,213,186,0.4); }
-    .numero-item:nth-child(4) { border-top:1.5px solid rgba(168,213,186,0.4); border-right:none; }
     #metodologia { padding:80px 6%; }
     .content-metodologia { flex-direction:column; align-items:center; }
     .card-metodologia { width:100%; max-width:340px; aspect-ratio:4/3; }
