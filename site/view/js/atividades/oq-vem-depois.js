@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         speech.lang = "pt-BR";
         speech.rate = 0.9;
-        window.speechSynthesis.speak(speech);
+        TekoAudio.falar(speech);
     }
 
     const activityEntry = TekoActivityCore.createEntryGate({

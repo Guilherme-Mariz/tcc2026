@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         fala.lang = "pt-BR";
 
-        window.speechSynthesis.speak(fala);
+        TekoAudio.falar(fala);
     }
 
     elementos.iniciar.addEventListener(

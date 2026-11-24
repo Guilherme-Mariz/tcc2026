@@ -92,43 +92,6 @@ gsap.utils.toArray('.card-metodologia').forEach((card, i) => {
     );
 });
 
-/* Números contador */
-gsap.utils.toArray('.numero-num').forEach(el => {
-    const text = el.textContent;
-
-    // Ignora intervalos como "6 a 10 anos"
-    if (text.includes('a')) return;
-
-    const num = parseFloat(text.replace(/[^0-9.]/g, ''));
-
-    if (!isNaN(num) && num > 1) {
-        const prefix = text.match(/^\+/) ? '+' : '';
-        const suffix = text.replace(/^[+\d.–]+/, '').trim();
-
-        gsap.fromTo(
-            { val: 0 },
-            { val: 0 },
-            {
-                val: num,
-                duration: 1.6,
-                ease: 'power2.out',
-
-                onUpdate: function () {
-                    el.textContent =
-                        prefix +
-                        Math.round(this.targets()[0].val) +
-                        (suffix || '');
-                },
-
-                scrollTrigger: {
-                    trigger: el,
-                    start: 'top 85%',
-                    once: true
-                }
-            }
-        );
-    }
-});
 
 /* Trustbar items */
 gsap.utils.toArray('.trust-item').forEach((item, i) => {
