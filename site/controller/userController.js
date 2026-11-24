@@ -83,6 +83,9 @@ function dadosComplementaresValidos(body) {
 }
 
 function statusErroCadastro(error) {
+    if (error?.code === "email_exists") {
+        return { status: 409, code: "email_exists", mensagem: "Este e-mail já está cadastrado." };
+    }
     if (error?.code === "23505") {
         return {
             status: 409,
@@ -152,7 +155,7 @@ async function registerCompleto(req, res) {
         const resposta = statusErroCadastro(error);
 
         return res.status(resposta.status).json({
-            erro: resposta.mensagem
+            erro: resposta.mensagem, code: resposta.code
         });
     }
 }

@@ -14,7 +14,6 @@ router.post("/register", userController.registerCompleto);
 // cookie HttpOnly durante os poucos minutos necessários para o redirecionamento.
 router.get(
     "/auth/google",
-    loginLimiter,
     userController.iniciarLoginGoogle
 );
 

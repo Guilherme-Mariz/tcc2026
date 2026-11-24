@@ -447,6 +447,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function finalizarCadastroFrontend(botao) {
+        const aviso = document.getElementById("cadastro-aviso");
+        aviso.hidden = true;
+        aviso.querySelector("a").hidden = true;
         try {
 
             const endpoint = modoCadastroGoogle
@@ -474,6 +477,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const resultado = await resposta.json();
 
             if (!resposta.ok) {
+                if (resultado.code === "email_exists") {
+                    irParaEtapa(1);
+                    aviso.querySelector("a").hidden = false;
+                }
                 throw new Error(
                     resultado.erro || "Erro ao realizar cadastro."
                 );
@@ -504,10 +511,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             botao.disabled = false;
 
-            alert(
-                error.message ||
-                "Não foi possível realizar o cadastro."
-            );
+            aviso.querySelector("span").textContent =
+                error.message || "Não foi possível realizar o cadastro.";
+            aviso.hidden = false;
+            aviso.focus();
         }
     }
 

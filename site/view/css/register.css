@@ -588,3 +588,15 @@ html, body {
   .success-content { padding: 32px 20px; }
   .success-title { font-size: 2rem; }
 }
+
+.cadastro-aviso {
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #eac8bf;
+    border-radius: 12px;
+    background: #fff4ef;
+    color: #71382a;
+    font-size: 0.9rem;
+}
+.cadastro-aviso a { color: #21573f; font-weight: 600; }
+.cadastro-aviso:focus-visible { outline: 2px solid #894b38; }

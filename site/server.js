@@ -18,6 +18,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 
 const app = express();
+if (process.env.RENDER === "true") app.set("trust proxy", 1);
 
 
 // ==============================
