@@ -3,7 +3,7 @@ const db = require("../config/supabase");
 const children = require("../services/childRepository");
 const auth = require("../middleware/authMiddleware");
 const router = express.Router();
-const switches = ["toggle_reduced-motion","toggle_cursor","toggle_narracao","toggle_efeitos"];
+const switches = ["toggle_reduced-motion","toggle_cursor","toggle_narracao","toggle_efeitos","darkMode"];
 function valid(cfg) {
     if (!cfg || typeof cfg !== "object" || Array.isArray(cfg)) return false;
     return Object.entries(cfg).every(([key, value]) => {
@@ -20,8 +20,10 @@ async function preferences(req, res) {
     const owner = await children.findResponsibleIdByUserId(req.user.id);
     if (!owner) return res.sendStatus(403);
     const table = db.from("criancas");
-    const query = write ? table.update({preferencias:req.body}) : table;
-    const {data,error} = await query.select("preferencias").eq("responsavel_id",owner).eq("id",req.params.childId).maybeSingle();
+    const query = write
+        ? table.update({ preferencias: req.body }).eq("responsavel_id", owner).eq("id", req.params.childId).select("preferencias")
+        : table.select("preferencias").eq("responsavel_id", owner).eq("id", req.params.childId);
+    const { data, error } = await query.maybeSingle();
     if (error) return res.sendStatus(500);
     if (!data) return res.sendStatus(403);
     return res.json(data.preferencias);

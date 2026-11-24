@@ -152,6 +152,10 @@ function digitarMensagem(texto) {
         "";
 
 
+    if (typeof TekoPreferencias !== "undefined" && TekoPreferencias.atual?.["toggle_reduced-motion"] === false) {
+        chatDisplay.textContent = texto;
+        return;
+    }
     let i = 0;
 
 

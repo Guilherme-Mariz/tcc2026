@@ -1,0 +1,46 @@
+html.tema-escuro {
+    color-scheme: dark;
+    --bg: #141c19;
+    --bg-card: #202c26;
+    --bg-soft: #2c3932;
+    --beige: #39372f;
+    --text: #edf4ef;
+    --text-mid: #d4e2d7;
+    --text-soft: #b2c6b8;
+    --border: #496052;
+}
+html.tema-escuro body { background-color: var(--bg); background-image: none; }
+.tema-escuro :is(.welcome-panel, .activity-stage, .activity-entry-card, .activity-success-popup-card,
+    .session-password-wrap input, .home-session-option:hover, #mobile-header, .resp-header-panel, .pin-card, .avatar-dialog) {
+    background: var(--bg-card);
+    color: var(--text);
+}
+.tema-escuro .activity-stage.activity-stage-active, .tema-escuro .activity-stage::before,
+.tema-escuro .home-page .welcome-panel { background: var(--bg-card); }
+.tema-escuro .snav-item.active { background: #284a38; color: #b6edcd; }
+.tema-escuro :is(.cfg-page, .session-switch-modal) :focus-visible { outline-color: #a8d5ba; }
+html.menos-movimento, .menos-movimento *, .menos-movimento *::before, .menos-movimento *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+@media (pointer: fine) {
+    html.cursor-grande, .cursor-grande * {
+        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath fill='white' stroke='black' stroke-width='2.5' d='M3 2v32l8-8 6 12 6-3-6-12 12-1z'/%3E%3C/svg%3E") 3 2, auto !important;
+    }
+}
+
+.tema-escuro .home-page .profile-color-control { background: var(--bg-soft); }
+.tema-escuro .home-page .suggestion-card { background: #383323; }
+.tema-escuro .home-page :is(.suggestion-content p, .suggestion-label, .suggestion-action) { color: #f2dba1; }
+/* Algumas atividades usam cartões em tons pastel com significado próprio. */
+.tema-escuro :is(.ce-emotion-card, .qe-cause-option, .mp-option, .ovd-option,
+    .ovd-selected-step, .oqfa-option, .opd-option:nth-child(n), .opma-option:nth-child(n),
+    .mvsv-teko-message, .mp-change-card, .ovd-sequence, .rt-countdown-wrap) {
+    background-color: var(--bg-soft);
+    color: var(--text);
+}
+.tema-escuro :is(.activity-answer-correct, .opd-option.is-selected) {
+    color: #214831;
+}

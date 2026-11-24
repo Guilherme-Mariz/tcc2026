@@ -3,11 +3,6 @@
    Usa os tokens do shell.css (--bg, --green-deep, etc.)
    ═══════════════════════════════════════════════════ */
 
-:root { --font-scale: 1; }
-body  { 
-    font-size: calc(16px * var(--font-scale));
-}
-
 /* ── main: mesma largura do home ── */
 #main-content { max-width: 860px !important; }
 
@@ -303,9 +298,6 @@ body  {
     .cfg-card-body    { padding: 0 16px; }
 }
 
-/* ── alto contraste ── */
-body.alto-contraste .cfg-card       { background: #111; border-color: #fff; }
-body.alto-contraste .cfg-card-title,
-body.alto-contraste .cfg-row-label  { color: #fff; }
-body.alto-contraste .toggle-track   { background: #444; }
-body.alto-contraste .teko-toggle input:checked ~ .toggle-track { background: #0f0; }
+.cfg-card.open .cfg-card-body { max-height: none; }
+.teko-toggle input:focus-visible + .toggle-track { outline: 3px solid currentColor; outline-offset: 3px; }
+#cfg-retry[hidden] { display: none; }

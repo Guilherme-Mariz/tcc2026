@@ -1,6 +1,10 @@
 (() => {
     "use strict";
 
+    function fatorDeRitmo() {
+        return ({ devagar: 1.6, rapido: 0.75 })[TekoPreferencias.atual?.speed] || 1;
+    }
+
     function shuffle(items) {
         const copy = [...items];
 
@@ -190,7 +194,7 @@
                         });
                     });
                 }, duration);
-            }, hold);
+            }, hold * fatorDeRitmo());
         }
 
         return { run, cancel };
@@ -229,6 +233,7 @@
         let frame = null;
         let previousTime = null;
         let elapsed = 0;
+        let intervalo = 1000;
         let counting = false;
         let blocking = false;
         let previousInert = false;
@@ -286,7 +291,7 @@
                 previousTime = now;
             } else previousTime = null;
 
-            if (elapsed >= 3000) {
+            if (elapsed >= 3 * intervalo) {
                 cancel();
                 document.dispatchEvent(new CustomEvent("teko:activity-started"));
                 onStart?.();
@@ -301,7 +306,7 @@
                 return;
             }
 
-            const remaining = String(3 - Math.floor(elapsed / 1000));
+            const remaining = String(3 - Math.floor(elapsed / intervalo));
             if (countdown.textContent !== remaining) renderCountdown(remaining);
             frame = window.requestAnimationFrame(tick);
         }
@@ -309,6 +314,7 @@
         start.addEventListener("click", () => {
             if (counting || !blocking) return;
             counting = true;
+            intervalo = 1000 * fatorDeRitmo();
             elapsed = 0;
             previousTime = null;
             start.disabled = true;
