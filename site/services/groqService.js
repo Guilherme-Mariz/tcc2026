@@ -5,11 +5,26 @@ const { schema } = require('./aiContract');
 class GroqService {
     constructor(clientFactory = getGroqClient) { this.clientFactory = clientFactory; }
     async chat(conversation, session, userMessage) {
-        const completion = await this.clientFactory().chat.completions.create({
-            model: 'openai/gpt-oss-20b', temperature: 0.3, reasoning_effort: 'low', max_completion_tokens: 4096,
+        const client = this.clientFactory();
+        const request = {
+            model: 'openai/gpt-oss-20b', temperature: 0.5, reasoning_effort: 'low', max_completion_tokens: 4096,
             response_format: { type: 'json_schema', json_schema: { name: 'teko_response', strict: true, schema } },
             messages: promptBuilder.build(conversation, session, userMessage)
-        });
+        };
+        let completion;
+        const started = Date.now();
+        try {
+            completion = await client.chat.completions.create(request);
+        } catch (error) {
+            const code = error.code || error.error?.error?.code;
+            const remaining = 20000 - (Date.now() - started);
+            if (error.status !== 400 || code !== 'json_validate_failed' || remaining < 1000) throw error;
+            // Uma nova geração em modo JSON ainda passa pelo mesmo validador local.
+            completion = await client.chat.completions.create({
+                ...request,
+                response_format: { type: 'json_object' }
+            }, { timeout: remaining });
+        }
         const choice = completion.choices?.[0];
         let parsed;
         try {

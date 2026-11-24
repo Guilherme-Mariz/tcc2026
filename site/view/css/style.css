@@ -745,6 +745,7 @@ a{
     display: flex; gap: 6px;
 }
 .carrossel-dot {
+    border: 0; padding: 0;
     width: 7px; height: 7px; border-radius: 50%;
     background: rgba(107,176,138,0.35);
     transition: background 0.25s, transform 0.25s;
