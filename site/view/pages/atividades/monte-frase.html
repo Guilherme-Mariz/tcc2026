@@ -220,11 +220,10 @@
                     aria-live="polite"
                 >
                     <div class="activity-loading-content">
-                        <img
-                            src="/img/mascot/teko-carregando.webp"
-                            alt=""
-                            class="activity-loading-gif"
-                        >
+                        <picture>
+                            <source media="(prefers-reduced-motion: no-preference)" srcset="/img/mascot/teko-andando.gif">
+                            <img src="/img/mascot/teko-carregando.webp" alt="" class="activity-loading-gif" width="140" height="140" fetchpriority="low">
+                        </picture>
 
                         <p class="activity-loading-text">
                             Carregando...
