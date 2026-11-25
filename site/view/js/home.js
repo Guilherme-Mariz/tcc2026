@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     applySavedColor();
-    loadChildren();
+    if (sessionStorage.getItem("teko_iniciar_sessao") !== "true") loadChildren();
 
     window.addEventListener("teko:session-changed", event => {
         updateNames(event.detail?.child || getActiveChild());

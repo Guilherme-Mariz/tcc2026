@@ -27,11 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let criancaSelecionada = null;
     let selecaoInicial = false;
 
-    carregarCriancas().then(() => {
-        const deveIniciar =
-            sessionStorage.getItem("teko_iniciar_sessao") === "true";
+    if (sessionStorage.getItem("teko_iniciar_sessao") === "true") iniciarSessao();
 
-        if (!deveIniciar) return;
+    async function iniciarSessao() {
+        await carregarCriancas();
 
         if (!criancasDisponiveis.length) {
             abrirModal(true);
@@ -45,13 +44,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         abrirModal(true);
-    });
+    }
 
-    elementos.abrir.addEventListener("click", () => abrirModal(false));
+    let consultaEmAndamento = null;
+    async function abrirTroca() {
+        if (selecaoInicial || sessionStorage.getItem("teko_iniciar_sessao") === "true") return;
+        abrirModal(false);
+        if (criancasDisponiveis.length) return;
+        elementos.opcoes.textContent = "Carregando perfis…";
+        consultaEmAndamento ??= carregarCriancas().finally(() => { consultaEmAndamento = null; });
+        await consultaEmAndamento;
+    }
+
+    elementos.abrir.addEventListener("click", abrirTroca);
 
     elementos.abrirMobile.addEventListener("click", () => {
         fecharMenuMobile();
-        abrirModal();
+        abrirTroca();
     });
 
     elementos.fechar.addEventListener("click", () => fecharModal());

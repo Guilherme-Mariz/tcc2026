@@ -295,18 +295,17 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }, { passive: true });
 
     /* render loop — só quando visível */
-    let visible = false;
+    let frame = null;
     const start = performance.now();
 
     const io = new IntersectionObserver(([entry]) => {
-        visible = entry.isIntersecting;
-        if (visible) tick(performance.now());
+        if (frame !== null) cancelAnimationFrame(frame);
+        frame = entry.isIntersecting ? requestAnimationFrame(tick) : null;
     }, { threshold: 0.05 });
     io.observe(block);
 
     function tick(now) {
-        if (!visible) return;
-        requestAnimationFrame(tick);
+        frame = requestAnimationFrame(tick);
         mx += (txm - mx) * 0.07;
         my += (tym - my) * 0.07;
         const t = (now - start) * 0.001;
