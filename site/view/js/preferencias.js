@@ -11,6 +11,19 @@ const TekoPreferencias = (() => {
         try { return JSON.parse(localStorage.getItem("teko_session"))?.crianca?.id || null; }
         catch { return null; }
     }
+    const cacheDuration = 60000;
+    function readCache(id) {
+        try {
+            const item = JSON.parse(sessionStorage.getItem("teko:prefs:" + id));
+            if (!Number.isFinite(item?.savedAt) || !item.cfg) return null;
+            return item;
+        } catch { return null; }
+    }
+    function writeCache(id, cfg) {
+        try {
+            sessionStorage.setItem("teko:prefs:" + id, JSON.stringify({ savedAt: Date.now(), cfg }));
+        } catch { /* As preferências continuam disponíveis em memória. */ }
+    }
     function aplicar(cfg) {
         const root = document.documentElement;
         root.classList.toggle("tema-escuro", cfg.darkMode);
@@ -30,18 +43,26 @@ const TekoPreferencias = (() => {
     function notify() {
         window.dispatchEvent(new Event("teko:preferencias"));
     }
-    async function carregar() {
+    async function carregar(force = false) {
         const version = ++generation;
         falhou = false;
         const id = perfil();
         loadedChild = null;
         current = null;
-        aplicar(defaults);
+        const cached = id && readCache(id);
+        aplicar(cached?.cfg || defaults);
+        if (cached && force !== true && Date.now() - cached.savedAt < cacheDuration) {
+            current = cached.cfg;
+            loadedChild = id;
+            notify();
+            return;
+        }
         notify();
         if (!id) return;
         try {
             const cfg = await request(id, "GET");
             if (version !== generation || id !== perfil()) return;
+            writeCache(id, cfg);
             loadedChild = id;
             current = cfg;
             aplicar(cfg);
@@ -58,13 +79,15 @@ const TekoPreferencias = (() => {
         if (!id || loadedChild !== id) throw Error("Selecione a criança novamente.");
         const cfg = await request(id, "PUT", value);
         if (generation !== version || perfil() !== id) throw Error("O perfil foi alterado.");
+        writeCache(id, cfg);
         current = cfg;
         aplicar(cfg);
         notify();
         channel?.postMessage(id);
     }
     const channel = typeof BroadcastChannel === "function" ? new BroadcastChannel("teko-preferencias") : null;
-    if (channel) channel.onmessage = event => { if (event.data === perfil()) carregar(); };
+    if (channel) channel.onmessage = event => { try { sessionStorage.removeItem("teko:prefs:" + event.data); } catch {}
+        if (event.data === perfil()) carregar(true); };
     window.addEventListener("teko:session-changed", carregar);
     window.addEventListener("storage", e => { if (e.key === "teko_session" || e.key === null) carregar(); });
     window.addEventListener("pageshow", e => { if (e.persisted) carregar(); });
