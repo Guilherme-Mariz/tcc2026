@@ -43,6 +43,13 @@ class ActivityController {
         } catch (error) { return this.failure(res, error); }
     }
 
+    async reportPdf(req, res) {
+        try {
+            const pdf = await this.service.guardianReport(req.user?.id, req.params.childId, req.body?.pin);
+            return res.attachment("relatorio-teko.pdf").send(pdf);
+        } catch (error) { return this.failure(res, error); }
+    }
+
     async report(req, res) {
         try {
             return res.json({ success: true, ...await this.service.report(req.user?.id, req.params.childId) });

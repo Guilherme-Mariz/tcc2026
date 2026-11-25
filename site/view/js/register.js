@@ -501,6 +501,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 JSON.stringify(criancasCadastradas)
             );
 
+            if (criancasCadastradas.length === 1) {
+                criancaSelecionada = criancasCadastradas[0];
+                iniciarSessao();
+                return;
+            }
             mostrarSucesso(criancasCadastradas);
 
             botao.disabled = false;
@@ -607,24 +612,17 @@ document.addEventListener("DOMContentLoaded", () => {
     function configurarBotaoDeSessao() {
         document
             .getElementById("btn-start-session")
-            .addEventListener("click", () => {
-                if (!criancaSelecionada) {
-                    return;
-                }
+            .addEventListener("click", iniciarSessao);
+    }
 
-                localStorage.setItem(
-                    "teko_session",
-                    JSON.stringify({
-                        responsavel: {
-                            nome_completo: dadosResponsavel.nome,
-                            email: dadosResponsavel.email
-                        },
-                        crianca: criancaSelecionada
-                    })
-                );
-
-                window.location.href = "/home";
-            });
+    function iniciarSessao() {
+        if (!criancaSelecionada) return;
+        sessionStorage.removeItem("teko_iniciar_sessao");
+        localStorage.setItem("teko_session", JSON.stringify({
+            responsavel: { nome_completo: dadosResponsavel.nome, email: dadosResponsavel.email },
+            crianca: criancaSelecionada
+        }));
+        window.location.href = "/home";
     }
 
     function reiniciarAnimacaoDoCheck() {

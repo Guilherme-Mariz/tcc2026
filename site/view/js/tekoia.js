@@ -20,7 +20,6 @@ const micBtn =
 
 let childIdSelecionado = null;
 
-let typingTimer = null;
 let gravando = false;
 let sending = false;
 let chatVersion = 0;
@@ -134,84 +133,16 @@ function carregarSessaoAtiva(child = obterCriancaAtivaLocal()) {
    ========================================================= */
 
 function digitarMensagem(texto) {
-
-    clearTimeout(
-        typingTimer
-    );
-
-
     if (!chatDisplay) return;
-
-
-    chatDisplay.classList.remove(
-        "is-loading"
-    );
-
-
-    chatDisplay.textContent =
-        "";
-
-
-    if (typeof TekoPreferencias !== "undefined" && TekoPreferencias.atual?.["toggle_reduced-motion"] === false) {
-        chatDisplay.textContent = texto;
-        return;
-    }
-    let i = 0;
-
-
-    (function passo() {
-
-        if (i < texto.length) {
-
-            chatDisplay.textContent +=
-                texto.charAt(i);
-
-
-            i++;
-
-
-            typingTimer =
-                setTimeout(
-                    passo,
-                    22
-                );
-
-        }
-
-    })();
-
+    chatDisplay.classList.remove("is-loading");
+    chatDisplay.textContent = texto;
 }
-
-
-/* =========================================================
-   CARREGANDO
-   ========================================================= */
 
 function mostrarCarregando() {
-
-    clearTimeout(
-        typingTimer
-    );
-
-
     if (!chatDisplay) return;
-
-
-    chatDisplay.classList.add(
-        "is-loading"
-    );
-
-
-    chatDisplay.innerHTML = `
-        <span class="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </span>
-    `;
-
+    chatDisplay.classList.add("is-loading");
+    chatDisplay.innerHTML = 'Teko está pensando… <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>';
 }
-
 
 /* =========================================================
    MICROFONE

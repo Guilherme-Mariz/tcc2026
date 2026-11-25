@@ -12,6 +12,7 @@ let criancaSelecionada = null;
 let diasExibidos = null;
 let accessVersion = 0;
 let pinAutorizado = false;
+let pinRelatorio = "";
 let avatarEscolhendo = false;
 let avatarEnviando = false;
 let avatarChildId = null;
@@ -78,6 +79,8 @@ async function verificarPin() {
             return;
         }
 
+        pinRelatorio = pin;
+        pinInput.value = "";
         pinAutorizado = true;
         await desbloquearDashboard();
     } catch (erro) {
@@ -131,6 +134,7 @@ function bloquearDashboard() {
     ++requestVersion;
     ++accessVersion;
     pinAutorizado = false;
+    pinRelatorio = "";
     pinOverlay.classList.remove("loading-data");
     respPage.setAttribute("aria-busy", "false");
     diasExibidos = null;
@@ -425,47 +429,36 @@ avatarInput.addEventListener("change", async () => {
     }
 });
 
-function escaparCSV(value) {
-    let text = String(value ?? "");
-    if (/^[=+\-@]/.test(text)) text = `'${text}`;
-    return /[;"\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
-function formatarDataRelatorio(value) {
-    return value ? new Date(value).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }) : "—";
-}
-
 document.getElementById("download-report").addEventListener("click", async event => {
     const button = event.currentTarget;
     if (!criancaSelecionada || button.disabled) return;
     const child = criancaSelecionada;
-    const original = button.querySelector("span").textContent;
+    const version = requestVersion;
     button.disabled = true;
     button.querySelector("span").textContent = "Preparando…";
     try {
-        const report = await buscarJSON(`/api/activities/report/${encodeURIComponent(child.id)}`);
-        const rows = [
-            ["Relatório de atividades — TEKO"],
-            ["Criança", obterNome(child)],
-            ["Gerado em", new Date().toLocaleString("pt-BR")],
-            ["Total de realizações", report.totalRealizations],
-            [],
-            ["Atividade", "Quantidade", "Primeira realização", "Última realização"],
-            ...report.activities.map(item => [item.title, item.count, formatarDataRelatorio(item.firstCompletedAt), formatarDataRelatorio(item.lastCompletedAt)])
-        ];
-        const csv = "\ufeff" + rows.map(row => row.map(escaparCSV).join(";")).join("\r\n");
-        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+        const response = await fetch(`/api/activities/report/${encodeURIComponent(child.id)}/pdf`, {
+            method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pin: pinRelatorio }), signal: AbortSignal.timeout(30000)
+        });
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || data.erro || "Não foi possível baixar o PDF.");
+        }
+        const blob = await response.blob();
+        if (version !== requestVersion) return;
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         const safeName = obterNome(child).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "crianca";
         link.href = url;
-        link.download = `relatorio-teko-${safeName}.csv`;
+        link.download = `relatorio-teko-${safeName}.pdf`;
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
-        atualizarTexto("dashboard-status", error.name === "TimeoutError" ? "O relatório demorou demais. Tente novamente." : error.message);
+        if (version === requestVersion) atualizarTexto("dashboard-status", error.name === "TimeoutError" ? "O relatório demorou demais. Tente novamente." : error.message);
     } finally {
-        button.querySelector("span").textContent = original;
-        button.disabled = !criancaSelecionada;
+        button.querySelector("span").textContent = "Baixar PDF";
+        if (version === requestVersion) button.disabled = false;
     }
 });
 

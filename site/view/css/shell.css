@@ -544,6 +544,8 @@ body {
 }
 
 
+.session-switch-modal [hidden] { display: none !important; }
+
 .session-password-field {
     display: flex;
     flex-direction: column;

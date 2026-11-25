@@ -23,6 +23,7 @@ class ActivityService {
         const responsibleId = await this.children.findResponsibleIdByUserId(userId);
         const child = responsibleId && await this.children.findById(childId, responsibleId);
         if (!child) reject(403, "Criança não disponível para esta conta.");
+        return child;
     }
 
     async complete(userId, body = {}) {
@@ -91,6 +92,22 @@ class ActivityService {
     async report(userId, rawChildId) {
         const childId = validId(rawChildId, 'childId');
         await this.authorize(userId, childId);
+        return this.activityReport(childId);
+    }
+
+    async guardianReport(userId, rawChildId, pin) {
+        const childId = validId(rawChildId, "childId");
+        const child = await this.authorize(userId, childId);
+        if (typeof pin !== "string" || !/^\d{4}$/.test(pin) || !await this.children.verifyPinByUserId(userId, pin)) {
+            reject(403, "Valide o PIN do responsável para baixar o relatório.");
+        }
+        const [report, summary] = await Promise.all([
+            this.activityReport(childId), this.repository.conversationSummary(childId)
+        ]);
+        return require("./guardianReportPdf")(child.firstName, report, summary);
+    }
+
+    async activityReport(childId) {
         const report = await this.repository.report(childId);
         return {
             childId,

@@ -33,7 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!deveIniciar) return;
 
-        sessionStorage.removeItem("teko_iniciar_sessao");
+        if (!criancasDisponiveis.length) {
+            abrirModal(true);
+            elementos.erro.textContent = "Nenhum perfil disponível. Recarregue a página para tentar novamente.";
+            return;
+        }
 
         if (criancasDisponiveis.length === 1) {
             ativarCrianca(criancasDisponiveis[0]);
@@ -115,12 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const resultado = await resposta.json();
 
-            console.log("===== DEBUG TROCA DE SESSÃO =====");
-            console.log("Status:", resposta.status);
-            console.log("OK:", resposta.ok);
-            console.log("Resposta /children:", resultado);
-            console.log("Children:", resultado?.children);
-
             if (!resposta.ok) {
                 throw new Error(
                     resultado.error ||
@@ -146,29 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (erro) {
             console.error("Erro ao carregar crianças:", erro);
 
-            const cadastradas = obterCriancasLocais();
-
-            criancasDisponiveis = cadastradas;
+            criancasDisponiveis = [];
             renderizarOpcoes();
-
-            if (cadastradas.length === 0) {
-                elementos.erro.textContent =
-                    "Não foi possível carregar as crianças.";
-            }
-        }
-    }
-
-    function obterCriancasLocais() {
-        try {
-            const lista = JSON.parse(
-                localStorage.getItem("teko_registered_children") || "[]"
-            );
-
-            return Array.isArray(lista)
-                ? lista.filter(crianca => crianca && obterNome(crianca))
-                : [];
-        } catch (erro) {
-            return [];
+            elementos.erro.textContent = "Não foi possível carregar as crianças. Recarregue para tentar novamente.";
         }
     }
 
@@ -442,6 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function ativarCrianca(crianca) {
         salvarCriancaAtiva(crianca);
+        sessionStorage.removeItem("teko_iniciar_sessao");
 
         window.dispatchEvent(
             new CustomEvent("teko:session-changed", {

@@ -59,6 +59,13 @@ class ActivityRepository {
         return summarizeFacts(data);
     }
 
+    async conversationSummary(childId) {
+        const { data, error } = await this.db.from("conversations")
+            .select("summary").eq("child_id", childId).maybeSingle();
+        if (error) throw error;
+        return data?.summary?.trim() || "";
+    }
+
     async report(childId) {
         const { data, error } = await this.db.rpc('teko_activity_report', { p_child_id: childId });
         if (error) throw error;
