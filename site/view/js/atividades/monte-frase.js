@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const TEMPO_CARREGAMENTO = 2000;
     const DURACAO_FADE_TELA = 220;
 
     const frases = [
@@ -303,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             carregarRodada();
             trocarTela("carregamento", "jogo", () => activityEntry.show());
-        }, TEMPO_CARREGAMENTO);
+        });
     }
 
     function limparFrase() {

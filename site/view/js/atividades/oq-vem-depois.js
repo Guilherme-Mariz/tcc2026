@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const LOADING_TIME = 2000;
 
     const phases = [
         {
@@ -358,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
             currentPhase = 0;
             loadPhase();
             switchScreen("game", () => activityEntry.show());
-        }, LOADING_TIME);
+        });
     }
 
     function resetActivity() {

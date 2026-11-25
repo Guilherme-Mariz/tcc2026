@@ -13,7 +13,7 @@ body {
     background-attachment: fixed;
 }
 html, body {
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
 }
 
@@ -31,9 +31,10 @@ body.page-leaving {
 
 /* ── layout ── */
 .tekoia-main {
+    width: 100%;
     flex: 1;
     padding: 36px 40px 56px;
-    overflow-x: hidden;
+    overflow-x: clip;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -64,28 +65,9 @@ body.page-leaving {
 
 .chat-card {
     width: 100%;
-    height: 500px;
-    background: var(--bg-card);
-    border-radius: var(--radius-xl);
-    border: 2px solid var(--green);
-    box-shadow:
-        var(--shadow-md),
-        0 0 0 4px rgba(168,213,186,0.15);
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    height: 560px;
-}
-
-/* ── header ── */
-.chat-card {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    overflow: visible;
 }
 
 .chat-header-info {
@@ -115,13 +97,13 @@ body.page-leaving {
 .chat-display {
     position: relative;
     z-index: 2;
-    min-height: clamp(200px, 34vh, 400px);
-    max-height: 58vh;
+    height: clamp(200px, 34vh, 400px);
+    flex: none;
     background: var(--bg-card);
     border: 2px solid var(--green);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md), 0 0 0 4px rgba(168,213,186,0.15);
-    padding: clamp(46px, 11vh, 116px) clamp(18px, 5vw, 56px) clamp(18px, 4vh, 44px);
+    padding: clamp(20px, 4vh, 44px) clamp(18px, 5vw, 56px) clamp(18px, 4vh, 44px);
     display: flex;
     overflow-y: auto;
     align-items: flex-start;
@@ -134,8 +116,9 @@ body.page-leaving {
     font-size: clamp(0.92rem, 1.5vw, 1.35rem);
     line-height: 1.7;
     color: var(--text);
+    overflow-wrap: anywhere;
+    margin-block: auto;
     max-width: 600px;
-    margin: 0;
 }
 
 .loading-dots { display: inline-flex; gap: 4px; vertical-align: middle; }
@@ -184,6 +167,7 @@ body.page-leaving {
 }
 
 .chat-input {
+    min-width: 0;
     flex: 1;
     padding: clamp(11px, 1.8vh, 18px) clamp(14px, 2vw, 24px);
     border-radius: 50px;
@@ -258,7 +242,7 @@ body.page-leaving {
     .chat-mascot img { width: 220px; }
     .chat-mascot { margin-bottom: -84px; }
     .chat-display {
-        min-height: 300px;
+        height: 300px;
         padding: 84px 32px 30px;
     }
     .chat-display-text { font-size: 1.05rem; }
@@ -273,7 +257,7 @@ body.page-leaving {
     .chat-mascot img { width: 230px; }
     .chat-mascot { margin-bottom: -52px; }
     .chat-display {
-        min-height: 300px;
+        height: 300px;
         padding: 84px 30px 30px;
     }
     .chat-display-text { font-size: 1.1rem; max-width: 100%; }
@@ -286,7 +270,7 @@ body.page-leaving {
     .chat-mascot img { width: 170px; }
     .chat-mascot { margin-bottom: -38px; }
     .chat-display {
-        min-height: 260px;
+        height: 260px;
         padding: 62px 20px 22px;
         border-radius: var(--radius-lg);
     }
@@ -298,7 +282,7 @@ body.page-leaving {
     .chat-mascot img { width: 140px; }
     .chat-mascot { margin-bottom: -30px; }
     .chat-display {
-        min-height: 220px;
+        height: 220px;
         padding: 50px 16px 18px;
     }
     .chat-display-text { font-size: 0.9rem; }
@@ -306,8 +290,8 @@ body.page-leaving {
     .send-btn { width: 44px; height: 44px; }
 }
 
-.chat-activity { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
-.chat-activity[hidden] { display: none; }
+.chat-activity { min-height: 3.2rem; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+.chat-activity[hidden] { display: flex; visibility: hidden; }
 .chat-activity-link, .chat-activity button { padding: 12px 16px; border-radius: 12px; font: 600 0.85rem/1.5 'Poppins', sans-serif; text-align: center; }
 .chat-activity-link { background: #315f49; color: white; text-decoration: none; }
 .chat-activity button { background: #f3f7f4; border: 1px solid #d9e5dc; color: #315f49; cursor: pointer; }

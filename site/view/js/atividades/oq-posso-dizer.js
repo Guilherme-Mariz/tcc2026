@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const TEMPO_CARREGAMENTO = 2000;
     const DURACAO_FADE_TELA = 220;
 
     const fases = [
@@ -212,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             carregarFase();
             trocarTela("carregamento", "jogo", () => activityEntry.show());
-        }, TEMPO_CARREGAMENTO);
+        });
     }
 
     function limparEscolha() {

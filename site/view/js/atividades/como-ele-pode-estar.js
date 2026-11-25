@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const MINIMUM_LOADING_TIME = 2000;
 
     const emotions = [
         {
@@ -241,14 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScreen("loading");
         elements.stage.classList.add("activity-stage-revealing");
 
-        const minimumDelay = new Promise(resolve => {
-            window.setTimeout(resolve, MINIMUM_LOADING_TIME);
-        });
-
-        await Promise.all([
-            minimumDelay,
-            Promise.all(emotions.map(emotion => preloadImage(emotion.image)))
-        ]);
+        await Promise.all(phases[0].options.map(id => preloadImage(emotionById.get(id).image)));
 
         if (token !== activityToken) {
             return;

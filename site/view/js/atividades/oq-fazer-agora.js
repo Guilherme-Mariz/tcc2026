@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const LOADING_TIME = 2000;
     const SCREEN_FADE_DURATION = 220;
 
     const phases = [
@@ -218,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
             totalExplored = 0;
             renderPhase();
             switchScreen("game", () => activityEntry.show());
-        }, LOADING_TIME);
+        });
     }
 
     elements.start.addEventListener("click", startActivity);

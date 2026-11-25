@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
     const TURN_DURATION = 10000;
-    const LOADING_DURATION = 2000;
     const TURN_GAP = 650;
     const WATER_COOLDOWN = 720;
 
@@ -140,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 resetCan(false);
                 activityEntry.show();
             });
-        }, LOADING_DURATION);
+        });
     }
 
     function startTurn(index) {

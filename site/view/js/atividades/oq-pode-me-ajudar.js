@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     "use strict";
 
-    const MINIMUM_LOADING_TIME = 2000;
     const SCREEN_FADE_DURATION = 220;
 
     const phases = [
@@ -484,11 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
         stage.classList.remove("activity-stage-revealing");
         switchScreen("loading", () => stage.classList.add("activity-stage-revealing"));
 
-        const imageSources = phases.flatMap(phase => [phase.background, phase.teko]);
-        await Promise.all([
-            new Promise(resolve => window.setTimeout(resolve, MINIMUM_LOADING_TIME)),
-            ...imageSources.map(preloadImage)
-        ]);
+        await Promise.all([phases[0].background, phases[0].teko].map(preloadImage));
         if (token !== loadingToken) return;
 
         currentPhase = 0;

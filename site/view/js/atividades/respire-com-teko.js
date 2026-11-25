@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const TOTAL_RESPIRACOES = 5;
     const DURACAO_INSPIRAR = 4000;
     const DURACAO_EXPIRAR = 5000;
-    const DURACAO_CARREGAMENTO = 2000;
 
     const telas = {
         inicio: document.getElementById("rt-intro"),
@@ -402,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             prepararJogo();
             trocarTela("jogo", () => activityEntry.show());
-        }, DURACAO_CARREGAMENTO);
+        });
     }
 
     function reiniciarAtividade() {

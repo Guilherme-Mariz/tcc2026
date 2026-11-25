@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const GRID_SIZE = 3;
     const PIECE_COUNT = GRID_SIZE * GRID_SIZE;
-    const MINIMUM_LOADING_TIME = 2000;
     const PREVIEW_TIME = 2600;
 
     const phases = [
@@ -416,14 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScreen("loading");
         elements.stage.classList.add("activity-stage-revealing");
 
-        const minimumDelay = new Promise(resolve => {
-            window.setTimeout(resolve, MINIMUM_LOADING_TIME);
-        });
-
-        await Promise.all([
-            minimumDelay,
-            Promise.all(phases.map(phase => preloadImage(phase.image)))
-        ]);
+        await preloadImage(phases[0].image);
 
         if (token !== activityToken) {
             return;
