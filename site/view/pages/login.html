@@ -61,7 +61,7 @@
             </div>
           </div>
 
-          <a href="#" class="esqueci-senha">Esqueci minha senha</a>
+          <button type="button" id="abrir-recuperacao" class="esqueci-senha">Esqueci minha senha</button>
 
           <button type="submit" class="btn-entrar">
             <i class="fa-solid fa-right-to-bracket"></i>
@@ -120,6 +120,22 @@
         <p class="loading-text">Carregando<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></p>
     </div>
   </div>
+<dialog id="recuperacao" aria-labelledby="rec-titulo">
+  <h2 id="rec-titulo">Recuperar senha</h2>
+  <form id="rec-form" class="login-form">
+    <label>E-mail da conta<input id="rec-email" type="email" autocomplete="email" maxlength="254" required></label>
+    <fieldset id="rec-dados" hidden disabled>
+      <label>Código recebido por e-mail<input id="rec-codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" maxlength="10" required></label>
+      <label>Nova senha (mínimo de 8 caracteres)<input id="rec-senha" type="password" autocomplete="new-password" minlength="8" required></label>
+      <label>Confirme a nova senha<input id="rec-confirmacao" type="password" autocomplete="new-password" required></label>
+    </fieldset>
+    <p id="rec-status" role="status"></p>
+    <button class="btn-entrar" id="rec-enviar">Enviar código</button>
+    <button type="button" id="rec-reiniciar" hidden>Solicitar outro código</button>
+    <button type="button" id="rec-fechar">Voltar ao login</button>
+  </form>
+</dialog>
+<script src="/js/recuperacao.js"></script>
 <script src="../js/login.js"></script>
 </body>
 </html>

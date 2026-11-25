@@ -7,6 +7,7 @@ const verificarAuth = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+router.use("/recuperar-senha", require("./passwordRecovery")());
 router.post("/login", loginLimiter, userController.login);
 router.post("/register", userController.registerCompleto);
 
