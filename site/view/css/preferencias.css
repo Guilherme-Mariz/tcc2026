@@ -44,3 +44,6 @@ html.menos-movimento, .menos-movimento *, .menos-movimento *::before, .menos-mov
 .tema-escuro :is(.activity-answer-correct, .opd-option.is-selected) {
     color: #214831;
 }
+
+.tema-escuro .pin-logo, .tema-escuro .pin-title { color: var(--text); }
+.tema-escuro .pin-sub { color: var(--text-mid); }

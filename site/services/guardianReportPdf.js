@@ -77,18 +77,7 @@ async function guardianReportPdf(childName, report, conversation) {
     }
     section("Conversas com o Teko");
     const summary = reportText(conversation?.summary);
-    const history = reportText(conversation?.history);
-    if (summary) paragraph(summary);
-    if (history && history !== summary) {
-        paragraph("Contexto das conversas", 12, bold);
-        paragraph(history);
-    }
-    if (!summary && !history) paragraph("Ainda não há uma síntese de conversa registrada.");
-    const interests = Array.isArray(conversation?.child_interests)
-        ? conversation.child_interests.map(item => reportText(item?.name)).filter(Boolean) : [];
-    if (interests.length) paragraph("Interesses mencionados: " + interests.join(", ") + ".");
-    const suggested = catalog.find(game => game.id === conversation?.last_activity?.id);
-    if (suggested) paragraph("Última atividade sugerida: " + suggested.titulo + " (módulo " + moduleNames[suggested.modulo_id] + ").");
+    paragraph(summary || "Ainda não há uma síntese de conversa registrada.");
     return Buffer.from(await pdf.save());
 }
 

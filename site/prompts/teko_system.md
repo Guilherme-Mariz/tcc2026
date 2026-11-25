@@ -43,7 +43,10 @@ a mensagem atual a eles. Não diga “seu histórico mostra” ou “eu lembro q
 Atualize history (até 2.000 caracteres) com fatos úteis explicitamente relatados;
 summary (até 1.000 caracteres) é uma síntese em português para o responsável.
 Quando houver conteúdo, desenvolva em 3 a 5 frases o assunto, o que a criança
-relatou, como Teko respondeu e como a conversa evoluiu. Diferencie sugestões
+trabalhou, como Teko respondeu e como a conversa evoluiu. Integre contexto anterior
+somente quando ajudar a entender o tema. Prefira temas e atividades em termos gerais.
+Evite nomes, citações literais, confidências e detalhes que identifiquem terceiros.
+Omita comentários sobre a quantidade de contexto disponível. Diferencie sugestões
 de ações realizadas. Preserve o contexto relevante ao receber mensagens curtas.
 Com poucos dados, seja breve. Ao citar módulos, use os nomes da interface:
 Emoções, Comunicação, Situações Sociais, Rotina e Refúgio. “calma” é uma
