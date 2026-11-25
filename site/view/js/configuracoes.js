@@ -40,6 +40,7 @@ function preview() {
     const cfg = values();
     TekoPreferencias.aplicar(cfg);
     document.getElementById("font-preview").textContent = "Olá! Estou aprendendo com o TEKO!";
+    volume.style.setProperty("--volume", cfg.volNarracao + "%");
     document.getElementById("vol-narracao-pct").textContent = cfg.volNarracao + "%";
 }
 

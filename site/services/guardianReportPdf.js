@@ -2,12 +2,20 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const { PDFDocument, StandardFonts, PageSizes, rgb } = require("pdf-lib");
 
+const catalog = require("../data/activities.json");
+const moduleNames = ["", "Emoções", "Comunicação", "Situações Sociais", "Rotina", "Refúgio"];
+
+function reportText(value) {
+    if (typeof value !== "string") return "";
+    return value.trim().replace(/(m[oó]dulo\s+)(?:de\s+)?["“']?calma\b["”']?/giu, "$1Refúgio");
+}
+
 const margin = 48;
 const green = rgb(0.12, 0.36, 0.28);
 const ink = rgb(0.13, 0.18, 0.16);
 const date = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo" });
 
-async function guardianReportPdf(childName, report, summary) {
+async function guardianReportPdf(childName, report, conversation) {
     const pdf = await PDFDocument.create();
     pdf.setTitle("Relatório de acompanhamento | Teko");
     const regular = await pdf.embedFont(StandardFonts.Helvetica);
@@ -61,12 +69,26 @@ async function guardianReportPdf(childName, report, summary) {
     for (const item of report.activities) {
         y -= 6;
         if (y < 96) newPage();
-        paragraph(item.title + " (" + item.count + "×)", 12, bold);
+        const game = catalog.find(entry => entry.id === item.activityId);
+        const moduleName = moduleNames[game?.modulo_id];
+        paragraph((moduleName ? moduleName + " • " : "") + item.title + " (" + item.count + "×)", 12, bold);
         const dates = [item.firstCompletedAt, item.lastCompletedAt].filter(Boolean).map(timestamp => date.format(new Date(timestamp)));
         if (dates.length) paragraph("Período registrado: " + [...new Set(dates)].join(" a "));
     }
     section("Conversas com o Teko");
-    paragraph(summary || "Ainda não há uma síntese de conversa registrada.");
+    const summary = reportText(conversation?.summary);
+    const history = reportText(conversation?.history);
+    if (summary) paragraph(summary);
+    if (history && history !== summary) {
+        paragraph("Contexto das conversas", 12, bold);
+        paragraph(history);
+    }
+    if (!summary && !history) paragraph("Ainda não há uma síntese de conversa registrada.");
+    const interests = Array.isArray(conversation?.child_interests)
+        ? conversation.child_interests.map(item => reportText(item?.name)).filter(Boolean) : [];
+    if (interests.length) paragraph("Interesses mencionados: " + interests.join(", ") + ".");
+    const suggested = catalog.find(game => game.id === conversation?.last_activity?.id);
+    if (suggested) paragraph("Última atividade sugerida: " + suggested.titulo + " (módulo " + moduleNames[suggested.modulo_id] + ").");
     return Buffer.from(await pdf.save());
 }
 

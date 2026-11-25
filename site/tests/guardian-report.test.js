@@ -30,6 +30,6 @@ test("PDF pagina atividades extensas e aceita acentos e emojis na síntese", asy
     const activities = Array.from({ length: 48 }, (_, i) => ({
         title: "Emoções e escolhas " + i, count: 2, firstCompletedAt: "2026-01-15T15:00:00Z"
     }));
-    const bytes = await makePdf("José", { activities, totalRealizations: 96 }, "Conversou sobre gratidão 🌻.");
+    const bytes = await makePdf("José", { activities, totalRealizations: 96 }, { summary: "Conversou sobre gratidão 🌻.", history: "Mencionou o módulo calma." });
     assert.ok((await PDFDocument.load(bytes)).getPageCount() > 1);
 });

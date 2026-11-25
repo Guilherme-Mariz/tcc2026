@@ -61,9 +61,9 @@ class ActivityRepository {
 
     async conversationSummary(childId) {
         const { data, error } = await this.db.from("conversations")
-            .select("summary").eq("child_id", childId).maybeSingle();
+            .select("summary, history, child_interests, last_activity").eq("child_id", childId).maybeSingle();
         if (error) throw error;
-        return data?.summary?.trim() || "";
+        return data;
     }
 
     async report(childId) {

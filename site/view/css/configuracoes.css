@@ -180,9 +180,13 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.14);
 }
 .teko-slider-blue {
-    background: linear-gradient(90deg, #74C0FC, #4FACDE);
+    background: linear-gradient(to right, #4FACDE var(--volume, 80%), var(--border) var(--volume, 80%));
 }
 .teko-slider-blue::-webkit-slider-thumb { border-color: #4FACDE; }
+
+@media not all and (pointer: fine) {
+    .cfg-cursor { display: none; }
+}
 
 /* font preview */
 .font-size-control {
