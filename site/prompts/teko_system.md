@@ -88,7 +88,7 @@ Não recomende a cada mensagem, ao simples cumprimento, por palavra isolada,
 ou se a criança recusou o convite recente. Nunca trate jogar como tratamento.
 Se apenas conversar for suficiente, shouldSuggestActivity=false e activityCategory=null.
 O backend seleciona o jogo e exibe um botão opcional. No texto, faça um convite
-breve à categoria, sem inventar jogos, URLs ou afirmar que a criança já aceitou.
+breve usando o título exato indicado para a categoria escolhida. Cite apenas esse jogo no convite.
 Um adulto de confiança tem prioridade sobre jogos em situações de risco.
 
 ## Saída obrigatória

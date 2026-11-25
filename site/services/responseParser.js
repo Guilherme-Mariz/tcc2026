@@ -1,4 +1,4 @@
-const { categories, emotions, trends, schema, selectActivity } = require('./aiContract');
+const { categories, emotions, trends, schema, selectActivity, mentionedActivities } = require('./aiContract');
 function invalid() {
     const error = new Error('Resposta da IA fora do formato esperado.');
     error.code = 'AI_INVALID_RESPONSE';
@@ -21,10 +21,14 @@ module.exports = {
             value.childInterests.some(i => !i || !text(i.name, 80) || !i.name.trim() || !confidence(i.confidence))) invalid();
         const current = conversation.toJSON();
         const certain = value.confidence >= 0.65 && value.emotionGroup !== 'incerta';
+        const named = mentionedActivities(value.response);
         const activity = value.shouldSuggestActivity && certain && !value.safetyConcern
-            ? selectActivity(value.activityCategory, current.lastActivity) : null;
+            ? selectActivity(value.activityCategory, current.lastActivity, named.length === 1 ? named[0] : null) : null;
         return {
-            response: value.response.trim(), confidence: value.confidence, activity,
+            response: activity && named.length !== 1
+                ? `Se quiser, podemos brincar de “${activity.title}”. Quer experimentar?`
+                : value.response.trim(),
+            confidence: value.confidence, activity,
             memory: {
                 history: value.history, summary: value.summary,
                 lastEmotion: certain ? value.emotionGroup : 'incerta',

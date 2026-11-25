@@ -26,11 +26,24 @@ const properties = {
     } }
 };
 const schema = { type: 'object', properties, required: Object.keys(properties), additionalProperties: false };
-function selectActivity(category, previous) {
+function normalizeTitle(text) {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function mentionedActivities(response) {
+    const words = ' ' + normalizeTitle(response) + ' ';
+    return catalog.filter(game => words.includes(' ' + normalizeTitle(game.titulo) + ' '));
+}
+
+function selectActivity(category, previous, named) {
     const choices = categories[category];
     if (!choices) return null;
-    const slug = choices.find(slug => catalog.find(a => a.slug === slug)?.id !== previous?.id) || choices[0];
+    if (named && !choices.includes(named.slug)) {
+        category = Object.keys(categories).find(key => categories[key].includes(named.slug));
+    }
+    const slug = named?.slug || choices.find(slug => catalog.find(a => a.slug === slug)?.id !== previous?.id) || choices[0];
     const activity = catalog.find(a => a.slug === slug);
     return activity ? { id: activity.id, title: activity.titulo, category, url: `/atividades/${activity.slug}` } : null;
 }
-module.exports = { categories, emotions, trends, schema, selectActivity };
+module.exports = { categories, emotions, trends, schema, selectActivity, mentionedActivities };

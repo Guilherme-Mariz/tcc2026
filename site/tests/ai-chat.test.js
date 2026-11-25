@@ -153,3 +153,16 @@ test('recupera uma rejeição JSON da Groq e valida também a segunda geração'
         assert.deepEqual(modes, ['json_schema', 'json_object']);
     }
 });
+
+test('o jogo citado define o botão mesmo quando a rotação escolheria outro', () => {
+    const game = catalog.find(a => a.slug === 'respire-com-teko');
+    const session = new Conversation({childId:'a', lastActivity:{ id:game.id }});
+    const value = valid({response:'Quer brincar de “Respire com o Teko”?', shouldSuggestActivity:true, activityCategory:'calma'});
+    const result = parser.parse(value, session);
+    assert.equal(result.activity.url, '/atividades/respire-com-teko');
+    assert.equal(result.response, value.response);
+    assert.equal(result.memory.lastActivity.id, game.id);
+    const ambiguous = parser.parse({...value, response:'Respire com o Teko ou Monte a Frase?'}, session);
+    assert.ok(ambiguous.response.includes(ambiguous.activity.title));
+    assert.ok(!ambiguous.response.includes('Monte a Frase'));
+});

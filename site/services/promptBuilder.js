@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { categories } = require('./aiContract');
-const catalog = require('../data/activities.json');
+const { categories, selectActivity } = require('./aiContract');
 const systemPrompt = fs.readFileSync(path.join(__dirname, '../prompts/teko_system.md'), 'utf8');
 module.exports = {
     build(conversation, session, userMessage) {
@@ -15,8 +14,8 @@ module.exports = {
             lastActivity: memory.lastActivity,
             childInterests: Array.isArray(memory.childInterests) ? memory.childInterests.slice(0, 10) : []
         };
-        const activities = Object.entries(categories).map(([category, slugs]) => ({
-            category, activities: slugs.map(slug => catalog.find(a => a.slug === slug)?.titulo)
+        const activities = Object.keys(categories).map(category => ({
+            category, title: selectActivity(category, memory.lastActivity).title
         }));
         return [
             { role: 'system', content: systemPrompt + '\nCatálogo permitido (o servidor escolhe o jogo):\n' + JSON.stringify(activities) },
