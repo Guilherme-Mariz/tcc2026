@@ -1,6 +1,10 @@
 const supabaseAdmin = require("../config/supabase");
 const createAuthClient = require("../config/supabaseAuth");
 
+function registrarAceite() {
+    return { versao: "2026-11-24", aceito_em: new Date().toISOString() };
+}
+
 // CADASTRO ________________________________________________________________________________
 
 async function criarUsuarioEcriancas(
@@ -19,6 +23,7 @@ async function criarUsuarioEcriancas(
         await supabaseAdmin.auth.admin.createUser({
             email: email,
             password: senha,
+            app_metadata: { aceite_termos_privacidade: registrarAceite() },
             email_confirm: true
         });
 
@@ -140,6 +145,10 @@ async function completarCadastroGoogle(
     relacao,
     criancas
 ) {
+    const { error: erroAceite } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+        app_metadata: { aceite_termos_privacidade: registrarAceite() }
+    });
+    if (erroAceite) throw erroAceite;
     let responsavel = await buscarResponsavelPorUsuario(userId);
     let criouResponsavel = false;
 

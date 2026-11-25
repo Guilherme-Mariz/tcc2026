@@ -16,6 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let perfilGoogle = null;
 
+    const aceite = document.getElementById("aceite");
+    for (const link of document.querySelectorAll("[data-documento]")) {
+        link.addEventListener("click", event => {
+            event.preventDefault();
+            document.querySelector(link.hash).showModal();
+        });
+    }
     configurarModoGoogle();
     configurarIntroducao();
     configurarSenhas();
@@ -223,6 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 sacudir(formularios.responsavel);
                 return;
             }
+
+            if (!aceite.reportValidity()) return;
 
             const dados = new FormData(formularios.responsavel);
 
@@ -470,6 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     pin: dadosResponsavel.pin,
                     telefone: dadosResponsavel.telefone,
                     relacao: dadosResponsavel.relacao,
+                    aceiteTermos: aceite.checked,
                     criancas: dadosCriancas
                 })
             });

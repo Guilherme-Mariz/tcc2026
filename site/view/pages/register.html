@@ -187,6 +187,10 @@
               </div>
             </div>
           </div>
+          <div class="legal-accept">
+            <input type="checkbox" id="aceite" required aria-label="Concordo com os Termos de Uso e a Política de Privacidade">
+            <span><label for="aceite">Li e concordo com os</label> <a href="#termos" data-documento>Termos de Uso</a> e a <a href="#privacidade" data-documento>Política de Privacidade</a>.</span>
+          </div>
           <div class="form-footer">
             <button type="submit" class="btn-next">Continuar <i class="fa-solid fa-arrow-right"></i></button>
           </div>
@@ -278,5 +282,25 @@
 
   <script src="../js/vendor/gsap.min.js"></script>
   <script src="../js/register.js"></script>
+  <dialog id="termos" class="legal-dialog" aria-labelledby="titulo-termos">
+    <h2 id="titulo-termos">Termos de Uso</h2>
+    <p>O Teko é um projeto educacional com jogos e conversas para crianças. O cadastro deve ser feito por um adulto autorizado a acompanhar a criança. Informe dados corretos e guarde sua senha e seu PIN.</p>
+    <h3>Uso em família</h3>
+    <p>Explique à criança que você pode ver as atividades concluídas e um resumo dos assuntos conversados. Ela pode recusar sugestões de jogos e encerrar a conversa quando quiser.</p>
+    <h3>Conversas com a IA</h3>
+    <p>O Teko pode interpretar uma mensagem de forma incorreta. Suas respostas e relatórios têm finalidade educativa. Para decisões sobre saúde e desenvolvimento, procure um profissional qualificado.</p>
+    <form method="dialog"><button>Fechar</button></form>
+  </dialog>
+  <dialog id="privacidade" class="legal-dialog" aria-labelledby="titulo-privacidade">
+    <h2 id="titulo-privacidade">Política de Privacidade</h2>
+    <h3>Cadastro e acesso</h3>
+    <p>O cadastro reúne nome, CPF, e-mail, telefone quando informado, vínculo com a criança e PIN do responsável. Para cada criança, registra nome, CPF, nascimento e gênero informado. A conta usa senha ou login pelo Google. Cookies mantêm a sessão e o navegador guarda o perfil selecionado.</p>
+    <h3>Atividades e conversas</h3>
+    <p>O Teko registra preferências, atividades concluídas e progresso por perfil. Para responder, envia à Groq a mensagem, o primeiro nome e informações de contexto, como interesses e conversas recentes. O Supabase mantém a autenticação, os dados dos perfis, o progresso e a memória resumida das conversas. O site é hospedado no Render.</p>
+    <p>Com o PIN, o responsável pode baixar um PDF com as atividades e uma síntese dos temas conversados. Oriente a criança a evitar endereços, senhas, documentos e detalhes que identifiquem outras pessoas no chat.</p>
+    <h3>Dúvidas e pedidos</h3>
+    <p>Para consultar, corrigir ou solicitar a exclusão dos dados da família, escreva à equipe pelo <a href="mailto:tekoteatcc@gmail.com">tekoteatcc@gmail.com</a>. Informe o e-mail da conta. Guarde a senha e o PIN com você.</p>
+    <form method="dialog"><button>Fechar</button></form>
+  </dialog>
 </body>
 </html>

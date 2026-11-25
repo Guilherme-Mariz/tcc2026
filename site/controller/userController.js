@@ -66,6 +66,7 @@ function dadosComplementaresValidos(body) {
     } = body;
 
     return Boolean(
+        body.aceiteTermos === true &&
         nome?.trim() &&
         cpf?.replace(/\D/g, "").length === 11 &&
         /^\d{4}$/.test(String(pin || "")) &&

@@ -600,3 +600,12 @@ html, body {
 }
 .cadastro-aviso a { color: #21573f; font-weight: 600; }
 .cadastro-aviso:focus-visible { outline: 2px solid #894b38; }
+
+.legal-accept { display: flex; align-items: baseline; gap: .65rem; margin: 1rem 0; line-height: 1.5; color: var(--text-mid); }
+.legal-accept input { accent-color: var(--green-forest); flex: none; }
+.legal-accept a, .legal-dialog a { color: var(--green-forest); text-decoration: underline; }
+.legal-dialog { margin: auto; width: min(34rem, 92vw); max-height: 80dvh; overflow: auto; padding: clamp(1.3rem, 4vw, 2rem); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); background: var(--cream); box-shadow: var(--shadow-md); }
+.legal-dialog::backdrop { background: rgb(15 40 30 / 60%); }
+.legal-dialog p { margin: .75rem 0; line-height: 1.6; }
+.legal-dialog h3 { margin-top: 1rem; font-size: 1.05rem; }
+.legal-dialog button { margin-top: .75rem; padding: .7rem 1.4rem; border: 0; border-radius: var(--radius-sm); background: var(--green-forest); color: white; font: inherit; cursor: pointer; }
