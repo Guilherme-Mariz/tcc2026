@@ -188,7 +188,7 @@ async function carregarDados() {
         if (!Array.isArray(children.children)) throw new Error("Não foi possível carregar os perfis. Tente novamente.");
         criancasDashboard = children.children;
         const name = profile.responsavel?.nome_completo || profile.responsavel?.nome || "";
-        atualizarTexto("resp-nome", name.trim().split(/\s+/)[0] || "Responsável");
+        atualizarTexto("resp-nome", primeiroNome(name) || "Responsável");
         criancaSelecionada = criancasDashboard.find(c => c.id === criancaSelecionada?.id) || criancasDashboard[0] || null;
         renderizarSeletor();
         return await renderizarPainel(criancaSelecionada);
@@ -220,6 +220,10 @@ function prepararPainel() {
     document.getElementById("download-report").disabled = true;
 }
 document.getElementById("dashboard-retry").addEventListener("click", carregarDados);
+
+function primeiroNome(nome) {
+    return String(nome || "").trim().split(/\s+/)[0];
+}
 
 function obterNome(crianca) {
     return String(
@@ -253,7 +257,7 @@ function renderizarSeletor() {
     seletor.hidden = false;
 
     criancasDashboard.forEach((crianca, indice) => {
-        const nome = obterNome(crianca) || `Criança ${indice + 1}`;
+        const nome = primeiroNome(obterNome(crianca)) || `Criança ${indice + 1}`;
         const botao = document.createElement("button");
         const ativo = crianca === criancaSelecionada;
 
@@ -307,7 +311,7 @@ async function renderizarPainel(crianca) {
     const version = ++requestVersion;
     if (crianca) prepararPainel();
     else mostrarEstado("Nenhuma criança cadastrada.");
-    const nome = obterNome(crianca) || "Nenhuma criança cadastrada";
+    const nome = primeiroNome(obterNome(crianca)) || "Nenhuma criança cadastrada";
     atualizarTexto("resp-crianca-nome-sub", nome);
     atualizarTexto("dado-nome", nome);
     atualizarTexto("dado-inicial", obterInicial(nome));
@@ -346,7 +350,7 @@ function renderizarAvatar(crianca) {
     imagem.hidden = !possuiFoto;
     if (possuiFoto) imagem.src = crianca.avatarUrl;
     else imagem.removeAttribute("src");
-    imagem.alt = possuiFoto ? `Foto de ${obterNome(crianca)}` : "";
+    imagem.alt = possuiFoto ? `Foto de ${primeiroNome(obterNome(crianca))}` : "";
     inicial.hidden = possuiFoto;
     botao.disabled = !crianca || avatarEnviando;
     botao.setAttribute("aria-label", possuiFoto ? "Alterar foto da criança" : "Adicionar foto da criança");
