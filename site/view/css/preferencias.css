@@ -34,61 +34,29 @@ html.menos-movimento, .menos-movimento *, .menos-movimento *::before, .menos-mov
 .tema-escuro .home-page .profile-color-control { background: var(--bg-soft); }
 .tema-escuro .home-page .suggestion-card { background: #383323; }
 .tema-escuro .home-page :is(.suggestion-content p, .suggestion-label, .suggestion-action) { color: #f2dba1; }
-/* Superfícies de leitura das atividades, incluindo os painéis sobre as ilustrações. */
-.tema-escuro .activity-stage :is(
-    .ce-emotion-card, .qe-cause-option, .mp-option, .mp-plan-card, .mp-change-card,
-    .ovd-option, .ovd-selected-step, .ovd-sequence, .ovd-sequence-item,
-    .oqfa-option, .oqfa-story-card, .oqfa-consequence, .oqfa-btn-secondary,
-    .opd-option, .opma-option, .opma-feedback, .opma-btn-secondary,
-    .mvsv-loading, .mvsv-teko-message, .mvsv-button-secondary,
-    .rt-control-button, .rt-scene-start-card, .rt-guide-panel, .rt-countdown-wrap,
-    .rt-session-panel, .rt-feeling-button, .rt-checkin-response, .rt-button-secondary
-), .tema-escuro .mvsv-teko-message::before {
-    background: var(--bg-soft);
+/* Algumas atividades usam cartões em tons pastel com significado próprio. */
+.tema-escuro :is(.ce-emotion-card, .qe-cause-option, .mp-option, .ovd-option,
+    .ovd-selected-step, .oqfa-option, .opd-option:nth-child(n), .opma-option:nth-child(n),
+    .mvsv-teko-message, .ovd-sequence) {
+    background-color: var(--bg-soft);
     color: var(--text);
 }
-
-.tema-escuro :is(.module-select, .activity-page-header, .activity-stage) :is(.welcome-label, .welcome-title em),
-.tema-escuro :is(.atv-card-tag, .qe-cause-label, .ovd-context-label, .rt-guide-copy span,
-    .rt-countdown-wrap span, .opma-pack-status.is-ready),
-.tema-escuro .activity-stage :is(.ce-feedback-correct, .qe-cause-feedback-correct,
-    .mf-feedback-correct, .mp-feedback-correct, .ovd-feedback-correct, .opd-feedback-correct,
-    .mvsv-turn-count, .mvsv-guide-time strong, .rt-button-secondary) {
-    color: #a8dfba;
-}
-
-.tema-escuro .activity-stage :is(.oqfa-story-label, .oqfa-imagination-badge, .oqfa-effect-label) {
-    color: #e0c7fa;
-}
-.tema-escuro .activity-stage :is(.mvsv-game.teko-active .mvsv-turn-count,
-    .mvsv-game.teko-active .mvsv-guide-time strong, .mvsv-game.teko-active .mvsv-teko-message p) {
-    color: #b5dafa;
-}
-.tema-escuro .activity-stage :is(.ce-feedback-retry, .qe-cause-feedback-retry,
-    .mf-feedback-retry, .mf-feedback-warn, .mp-feedback-retry, .mp-feedback-warn,
-    .ovd-feedback-retry, .ovd-feedback-warn, .opd-feedback-retry, .opd-feedback-warn) {
-    color: #f5d68e;
-}
-
-.tema-escuro .activity-stage :is(.mp-option-selected, .opma-option.is-selected,
-    .oqfa-option.is-selected, .opd-option.opd-selected) {
-    background: #294657 !important;
-    color: #e6f4ff;
-}
-.tema-escuro .activity-stage .activity-answer-correct,
-.tema-escuro .activity-answer-correct :is(.ovd-selected-step, .ovd-sequence-item) {
-    background: #294c38 !important;
-    color: #ddf6e5 !important;
-}
-
-.tema-escuro .module-btn.active,
-.tema-escuro .activity-stage :is(.activity-start-button, .activity-entry-start, #rt-journey-btn,
-    .rt-button-primary, .ce-button-primary, .qe-button-primary, .opma-btn-primary,
-    .opd-btn-primary, .oqfa-btn-primary, .ovd-button-primary, .mp-button-primary,
-    .mf-btn-primary, .mvsv-button-primary) {
-    background-color: #286344;
-    color: #fff;
+.tema-escuro :is(.activity-answer-correct, .opd-option.is-selected) {
+    color: #214831;
 }
 
 .tema-escuro .pin-logo, .tema-escuro .pin-title { color: var(--text); }
 .tema-escuro .pin-sub { color: var(--text-mid); }
+
+/* Texto sobre cartões claros em Mudou o Plano! e Respire com o Teko. */
+.tema-escuro :is(.mp-situation-card, .rt-scene-start-card, .rt-guide-copy,
+    .rt-session-panel, .rt-feeling-button, .rt-checkin-response) {
+    --text: #24352c;
+    --text-mid: #3d5145;
+    --text-soft: #495e52;
+    --rt-ink: var(--text);
+    color: var(--text);
+}
+.tema-escuro :is(.rt-guide-copy span, .rt-countdown-wrap span) {
+    color: #285c40;
+}
