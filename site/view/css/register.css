@@ -564,7 +564,27 @@ html, body {
    RESPONSIVO
 ══════════════════════════════════════ */
 @media (max-width: 900px) {
-  .reg-layout { grid-template-columns: 1fr; }
+  /* No celular, os campos e o botão avançam juntos na rolagem da página. */
+  html, body {
+    height: auto;
+    overflow: visible;
+  }
+
+  #app {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: clip;
+  }
+
+  .reg-layout { display: block; flex: 1 0 auto; }
+  .reg-left, .etapa, .form-body { overflow: visible; }
+  .etapa, .form-body { flex: none; }
+  .form-footer {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 
   .reg-right {
     display: none;
